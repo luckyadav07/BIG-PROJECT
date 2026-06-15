@@ -1,20 +1,20 @@
 import express from "express";
 
-import { getallusers,getuserbyid,deleteuser,updateuser,createjobs,getAllJobs,getJobById,updateJob,deleteJob} from "../controllers/admin.controller.js";
+import { getAllUsers, getUserById, deleteuser, updateUser, createJobs, getAllJobs, getJobById, updateJob, deleteJob} from "../controllers/admin.controller.js";
 
 const router = express.Router();
 
 // User Routes 
 
-router.get("/users", getallusers);
-router.get("/users/:id", getuserbyid);
-router.put("/users/:id", updateuser);
-router.delete("/users/:id", deleteuser);
+router.get("/users", getAllUsers);
+router.get("/users/:id", getUserById);
+router.put("/users/:id", updateUser);
+router.delete("/users/:id", deleteUser);
 
 
 // Job Routes
 
-router.post("/jobs", createjobs);
+router.post("/jobs", createJobs);
 router.get("/jobs", getAllJobs);
 router.get("/jobs/:id", getJobById);
 router.put("/jobs/:id", updateJob);
