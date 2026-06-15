@@ -16,6 +16,15 @@ const jobSchema=new Schema({
     skills:{
         type:[String]
     },
+     stipend:{
+        type:Number
+    },
+    deadline:{
+    type:Date
+},
+  duration:{
+        type:String
+    },
     jobUrl:{
         type:String,
         required:true,
