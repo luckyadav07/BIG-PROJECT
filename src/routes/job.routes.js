@@ -5,9 +5,12 @@ import {
     getRecommendedJobs,
 } from "../controllers/job.controller.js";
 
+import authMiddle from "../middleware/auth.middleware.js";
+
 const router = express.Router();
 router.get("/", getAllJobs);
-router.get("/:id", getJobById);
-router.get("/recommended", getRecommendedJobs);
+router.get("/recommended", authMiddle,getRecommendedJobs); //<- moves UP
+router.get("/:id", getJobById);  //<- moved Down
+
 
 export default router;

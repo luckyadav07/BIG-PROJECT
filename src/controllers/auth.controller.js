@@ -8,7 +8,7 @@ const register = async (req, res) => {
     const { name, email, password } = req.body
 
     // Step 2 - check if user already exists in database
-    const existingUser = await User.findOne({ email })+
+    const existingUser = await User.findOne({ email })
     if(existingUser) {
         // if exists - stop here and send error
         return res.status(400).json({ message: "User already exist... tuu fraud h" })
@@ -77,12 +77,20 @@ const login = async(req, res) => {
 
     // Step 7 - send token and user data back
     // 200 = success
+    // 
+    // res.status(200).json({
+        // // message: "Login successful",
+        // token: token,
+        // user: user
+    // })
+
+    const userWithoutPassword = await User.findById(user._id).select("-password")
+
     res.status(200).json({
         message: "Login successful",
         token: token,
-        user: user
+        user: userWithoutPassword
     })
-
 }
 
 export { register, login }
