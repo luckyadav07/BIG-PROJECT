@@ -2,8 +2,7 @@ import User from '../models/user.models.js';
 import Job from "../models/job.models.js";
 
 // sab user nikal ke dega
-
-export const getallusers = async(req,res)=>{
+export const getAllUsers = async(req,res)=>{
   try {
         const users = await User.find().select("-password");
         res.status(200).json({ success: true, users});
@@ -14,7 +13,7 @@ export const getallusers = async(req,res)=>{
 
 // specific user nikal ke dega
 
-export const getuserbyid = async(req,res)=>{
+export const getUserById = async(req,res)=>{
     try{
         const user = await User.findById(req.params.id).select("-password");
          if (!user) {
@@ -27,7 +26,7 @@ export const getuserbyid = async(req,res)=>{
 };
 
 // user delete karega
-export const deleteuser = async(req,res)=>{
+export const deleteUser = async(req,res)=>{
 try{
     const user = await User.findById(req.params.id);
     if (!user) {
@@ -47,7 +46,7 @@ try{
 //To ye API basically user ko admin banana ya admin ko user banana ka kaam kar rahi hai
 
 
-export const updateuser = async(req,res)=>{
+export const updateUser = async(req,res)=>{
 try{
     const user = await User.findById(req.params.id);
         if (!user) {
@@ -78,7 +77,7 @@ try{
 
 
 // create job ka API
-export const createjobs = async(req,res)=>{
+export const createJobs = async(req,res)=>{
     try {
         const { title, company, location, skills, stipend, deadline, duration, jobUrl } = req.body;
          if (!title || !company || !jobUrl) {
