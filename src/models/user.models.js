@@ -21,7 +21,7 @@ const userSchema=new Schema({
     },
     resume:{
         type:String,
-        required:true
+
     },
     role:{
         type:String,
