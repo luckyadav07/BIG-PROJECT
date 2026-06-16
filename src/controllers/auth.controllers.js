@@ -8,7 +8,7 @@ const register = async (req, res) => {
     const { name, email, password } = req.body
 
     // Step 2 - check if user already exists in database
-    const existingUser = await User.findOne({ email })
+    const existingUser = await User.findOne({ email })+
     if(existingUser) {
         // if exists - stop here and send error
         return res.status(400).json({ message: "User already exist... tuu fraud h" })

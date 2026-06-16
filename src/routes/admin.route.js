@@ -11,7 +11,6 @@ router.get("/users/:id", getuserbyid);
 router.put("/users/:id", updateuser);
 router.delete("/users/:id", deleteuser);
 
-
 // Job Routes
 
 router.post("/jobs", createjobs);

@@ -4,12 +4,12 @@ import dotenv from "dotenv";
 import helmet from "helmet";
 import morgan from "morgan";
 import connectdb from "./config/db.js";
-
+import jobRoutes from "./src/routes/job.routes.js";
 dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 8000;
-
+app.use("/api/jobs", jobRoutes);
 
 app.use(helmet());                              // hides server info from hackers
 app.use(cors());                                // allows frontend to talk to backend
