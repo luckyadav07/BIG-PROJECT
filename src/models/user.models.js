@@ -1,48 +1,56 @@
 import mongoose,{Schema} from "mongoose";
 const userSchema=new Schema({
-    name:{
-        type:String,
-        required:true
-    },
-    email:{
-        type:String,
-        required:true
-    },
-    password:{
-        type:String,
-        required:true
-    },
-    phone:{
-        type:Number
-    },
-    skills:{
-        type:[String],
-        required:true
-    },
-    resume:{
-        type:String,
-        required:true
-    },
-    role:{
-        type:String,
-        default:"user"
-    },
+        name:{
+            type:String,
+            required:true
+        },
 
-    createdAt: {
-        type: Date,
-        default: Date.now
-    },
-    updatedAt: {
-        type: Date,
-        default: Date.now
-    },
-    isActive: {
-        type: Boolean,
-        default: true
-    },
-    profilePic: {
-        type: String
-    }
-})
+        // email should be unique and also optimised 
+        email:{
+            type:String,
+            required:true,
+            unique: true,
+            lowercase:true,
+            trim:true
+        },
+        password:{
+            type:String,
+            required:true
+        },
+
+        // phone number is better in string
+        phone:{
+            type: String
+        },
+        skills:{
+            type:[String],
+            required:true
+        },
+        resume:{
+            type:String,
+            required:true
+        },
+
+        // better for designing
+        role:{
+            type: String,
+            enum: ["user", "admin"],
+            default: "user"
+        },
+
+        isActive: {
+            type: Boolean,
+            default: true
+        },
+        profilePic: {
+            type: String
+        },
+    }, 
+
+    // much better than manully writing timestamps
+        {
+        timestamps: true
+        }
+    )
 
 export default mongoose.model("User",userSchema)
