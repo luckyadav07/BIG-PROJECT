@@ -21,13 +21,28 @@ const userSchema=new Schema({
     },
     resume:{
         type:String,
-        required:true
+
     },
     role:{
         type:String,
         default:"user"
-    }
+    },
 
+    createdAt: {
+        type: Date,
+        default: Date.now
+    },
+    updatedAt: {
+        type: Date,
+        default: Date.now
+    },
+    isActive: {
+        type: Boolean,
+        default: true
+    },
+    profilePic: {
+        type: String
+    }
 })
 
 export default mongoose.model("User",userSchema)

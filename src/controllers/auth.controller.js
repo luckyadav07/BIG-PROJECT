@@ -28,11 +28,13 @@ const register = async (req, res) => {
     // password field stores the hashed version not original
     const user = await User.create({ name, email, password: hashedpassword })
 
+    const userWithoutPassword = await User.findById(user._id).select("-password")
+
     // Step 6 - send success response
     // 201 = created (new resource was created)
     res.status(201).json({
         message: "User registered successfully",
-        user: user
+        user: userWithoutPassword
     })
 
 }
