@@ -7,6 +7,7 @@ import connectdb from "./config/db.js";
 import jobRoutes from "./routes/job.routes.js";
 import authRouter from "./routes/auth.routes.js"
 import adminRouter from "./routes/admin.routes.js"
+import notificationRouter from "./routes/notification.routes.js";
 
 dotenv.config();
 
@@ -25,6 +26,8 @@ app.use(express.urlencoded({ extended: true })); // reads form data from request
 app.use("/api/jobs", jobRoutes);
 app.use("/api/auth",authRouter)
 app.use("/api/admin",adminRouter)
+app.use("/api/notifications", notificationRouter);
+
 
 app.get("/", (req, res) => {
     res.json({ message: "YEAH BABY SERVER IS RUNNING.........." })
