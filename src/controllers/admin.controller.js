@@ -1,4 +1,4 @@
-import User from '../models/user.model.js';
+import User from '../models/user.models.js';
 import Job from "../models/job.models.js";
 
 // sab user nikal ke dega
