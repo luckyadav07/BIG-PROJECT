@@ -7,16 +7,15 @@ const register = async (req, res) => {
     // Step 1 - get name, email, password from request body
     const { name, email, password } = req.body
 
-    // Step 2 - check if user already exists in database
-    const existingUser = await User.findOne({ email })
-    if(existingUser) {
-        // if exists - stop here and send error
-        return res.status(400).json({ message: "User already exist... tuu fraud h" })
+    // Step 2 - validate all fields are present (now checked FIRST)
+    if (!name || !email || !password) {
+        return res.status(400).json({ message: "All FIELDS REQUIRED" })
     }
 
-    // Step 3 - validate all fields are present
-    if(!name || !email || !password) {
-        return res.status(400).json({ message: "All FIELDS REQUIRED" })
+    // Step 3 - check if user already exists in database (now checked SECOND)
+    const existingUser = await User.findOne({ email })
+    if (existingUser) {
+        return res.status(400).json({ message: "User already exist... tuu fraud h" })
     }
 
     // Step 4 - hash the password before saving
