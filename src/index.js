@@ -8,6 +8,7 @@ import jobRoutes from "./routes/job.routes.js";
 import authRouter from "./routes/auth.routes.js"
 import adminRouter from "./routes/admin.routes.js"
 import notificationRouter from "./routes/notification.routes.js";
+import campaignRoutes from "./routes/campaign.routes.js"
 
 dotenv.config();
 
@@ -27,6 +28,9 @@ app.use("/api/jobs", jobRoutes);
 app.use("/api/auth",authRouter)
 app.use("/api/admin",adminRouter)
 app.use("/api/notifications", notificationRouter);
+
+// for campaign
+app.use("/api/campaigns", campaignRoutes);
 
 
 app.get("/", (req, res) => {
