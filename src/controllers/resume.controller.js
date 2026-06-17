@@ -1,7 +1,8 @@
-import { asyncHandler } from "../utils/asyncHandler.js";
-import { ApiError } from "../utils/ApiError.js";
-import { ApiResponse } from "../utils/ApiResponse.js";
-import pdfParse from "pdf-parse";
+import asyncHandler  from "../utils/asyncHandler.js";
+import ApiError  from "../utils/ApiError.js";
+import  ApiResponse  from "../utils/ApiResponse.js";
+import * as pdfParseModule from "pdf-parse";
+const pdfParse = pdfParseModule.default;
 
 export const uploadResume = asyncHandler(async (req, res) => {
     // 1. Validation
