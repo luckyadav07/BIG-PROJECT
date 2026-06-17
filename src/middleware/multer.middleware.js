@@ -1,20 +1,22 @@
-import { asyncHandler } from "../utils/asyncHandler.js";
-import { ApiError } from "../utils/ApiError.js";
-import { ApiResponse } from "../utils/ApiResponse.js";
-import pdfParse from "pdf-parse";
+import multer from "multer";
 
-export const uploadResume = asyncHandler(async (req, res) => {
-    // 1. Validation
-    if (!req.file) {
-        throw new ApiError(400, "Resume file is required");
+// Temporarily hold the file in RAM (Buffer) for fast text extraction
+const storage = multer.memoryStorage();
+
+// Reject any file that isn't a PDF
+const fileFilter = (req, file, cb) => {
+    if (file.mimetype === "application/pdf") {
+        cb(null, true);
+    } else {
+        cb(new Error("Only PDF files are allowed"), false);
     }
+};
 
-    // 2. Parsing the Buffer
-    const pdfData = await pdfParse(req.file.buffer);
-    const extractedText = pdfData.text;
-
-    // 3. Sending the Response
-    return res.status(200).json(
-        new ApiResponse(200, { text: extractedText }, "Resume parsed successfully")
-    );
+// Export middleware with memory storage, a 5MB limit, and the PDF filter
+export const upload = multer({
+    storage: storage,
+    limits: {
+        fileSize: 5 * 1024 * 1024 
+    },
+    fileFilter: fileFilter
 });
