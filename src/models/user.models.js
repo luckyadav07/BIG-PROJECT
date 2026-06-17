@@ -1,55 +1,62 @@
-import mongoose,{Schema} from "mongoose";
+import mongoose, { Schema } from "mongoose";
 
 const userSchema = new Schema(
-{
-    name:{
-        type:String,
-        required:true
+  {
+    name: {
+      type: String,
+      required: true,
     },
 
-    email:{
-        type:String,
-        required:true,
-        unique:true,
-        lowercase:true,
-        trim:true
+    // email should be unique
+    email: {
+      type: String,
+      required: true,
+      unique: true,
+      lowercase: true,
+      trim: true,
     },
 
-    password:{
-        type:String,
-        required:true
+    password: {
+      type: String,
+      required: true,
     },
 
-    phone:{
-        type:String
+    // phone number is better as string
+    phone: {
+      type: String,
     },
 
-    skills:{
-        type:[String],
-        required:true
+    skills: {
+      type: [String],
+      required: true,
     },
 
-    resume:{
-        type:String
+    resume: {
+      type: String,
+      required: true,
     },
 
-    role:{
-        type:String,
-        enum:["user","admin"],
-        default:"user"
+    // role-based access control
+    role: {
+      type: String,
+      enum: ["user", "admin"],
+      default: "user",
     },
 
-    isActive:{
-        type:Boolean,
-        default:true
+    isActive: {
+      type: Boolean,
+      default: true,
     },
 
-    profilePic:{
-        type:String
-    }
-},
-{
-    timestamps:true
-});
+    profilePic: {
+      type: String,
+    },
+  },
 
-export default mongoose.model("User",userSchema);
+  // much better than manually writing createdAt and updatedAt
+  {
+    timestamps: true,
+  }
+);
+
+export default mongoose.model("User", userSchema);

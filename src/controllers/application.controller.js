@@ -4,103 +4,73 @@
 // updateApplicationStatus → updates application status (Applied/Interview/Offer/Rejected)
 
 import Application from "../models/applications.models.js"
+import asyncHandler from "../utils/asyncHandler.js"
+import ApiError from "../utils/ApiError.js"
+import ApiResponse from "../utils/ApiResponse.js"
+
 
 // Apply to a job
-export const applyJob = async (req, res) => {
-    try {
+export const applyJob = asyncHandler(async (req, res) => {
 
-        const { jobId } = req.body
+    const { jobId } = req.body
+    const userId = req.user._id
 
-
-        const userId = req.user._id
-
-
-        const existingApplication = await Application.findOne({ userId, jobId })
-        if(existingApplication) {
-            return res.status(400).json({
-                success: false,
-                message: "Already applied to this job"
-            })
-        }
-
-
-        const newapplication = await Application.create({
-            userId,
-            jobId,
-            status: "Applied"
-        })
-
-
-        return res.status(201).json({
-            success: true,
-            message: "Applied successfully",
-            application: newapplication
-        })
-
-    } catch (error) {
-        res.status(500).json({ success: false, message: error.message })
+    // Check if already applied
+    const existingApplication = await Application.findOne({ userId, jobId })
+    if (existingApplication) {
+        throw new ApiError(400, "Already applied to this job")
     }
-}
+
+    // Create new application
+    const newApplication = await Application.create({
+        userId,
+        jobId,
+        status: "Applied"
+    })
+
+    res.status(201).json(
+        new ApiResponse(201, newApplication, "Applied successfully")
+    )
+
+})
 
 
-export const getUserApplications = async (req, res) => {
-    try {
+// Get all applications of logged in user
+export const getUserApplications = asyncHandler(async (req, res) => {
 
-        const applications = await Application.find({ userId: req.user._id })
+    const applications = await Application.find({ userId: req.user._id })
 
-
-        if(!applications) {
-            return res.status(404).json({
-                success: false,
-                message: "No application found"
-            })
-        }
-
-
-        return res.status(200).json({
-            success: true,
-            applications: applications
-        })
-
-    } catch (error) {
-        res.status(500).json({ success: false, message: error.message })
+    // .find() returns empty array [] not null — so check length not !applications
+    if (applications.length === 0) {
+        throw new ApiError(404, "No applications found")
     }
-}
+
+    res.status(200).json(
+        new ApiResponse(200, applications, "Applications fetched successfully")
+    )
+
+})
+
 
 // Update application status
-export const updateApplicationStatus = async (req, res) => {
-    try {
+export const updateApplicationStatus = asyncHandler(async (req, res) => {
 
-        const { id } = req.params
+    const { id } = req.params
+    const { status } = req.body
 
+    // findByIdAndUpdate returns null if not found
+    const application = await Application.findByIdAndUpdate(
+        id,
+        { status },
+        { new: true }
+    )
 
-        const { status } = req.body
-
-
-        const application = await Application.findByIdAndUpdate(
-            id,
-            { status },
-            { new: true }
-        )
-
-
-        if(!application) {
-            return res.status(404).json({
-                success: false,
-                message: "Application not found"
-            })
-        }
-
-
-        return res.status(200).json({
-            success: true,
-            message: "Status updated successfully",
-            application: application
-        })
-
-    } catch (error) {
-        res.status(500).json({ success: false, message: error.message })
+    if (!application) {
+        throw new ApiError(404, "Application not found")
     }
-}
 
-export { applyJob, getUserApplications, updateApplicationStatus }
+    res.status(200).json(
+        new ApiResponse(200, application, "Status updated successfully")
+    )
+
+})
