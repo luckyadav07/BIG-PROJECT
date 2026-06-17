@@ -1,0 +1,119 @@
+=========================
+BEFORE BULLMQ
+=========================
+
+User Create Campaign
+        ↓
+Campaign MongoDB me Save
+        ↓
+For Loop Start
+
+Email 1 Send
+Email 2 Send
+Email 3 Send
+...
+Email 500 Send
+
+        ↓
+Response Send
+
+
+Code:
+
+await Campaign.create(...);
+
+for(const email of recruiterEmails){
+    await sendEmail(email, template);
+}
+
+res.json({
+    message: "Campaign Created"
+});
+
+
+Problem:
+
+❌ User ko wait karna padega
+❌ API slow ho jayegi
+❌ 500 emails = 500 operations request ke andar
+❌ Server load badhega
+❌ Email fail hua to poori request affect ho sakti hai
+
+
+
+
+
+=========================
+AFTER BULLMQ
+=========================
+
+User Create Campaign
+        ↓
+Campaign MongoDB me Save
+        ↓
+Queue Me Job Add
+        ↓
+Response Turant
+
+
+Background Worker
+        ↓
+Queue Se Job Uthata Hai
+        ↓
+Email 1 Send
+Email 2 Send
+Email 3 Send
+...
+Email 500 Send
+        ↓
+Job Complete
+
+
+Controller:
+
+await Campaign.create(...);
+
+await jobQueue.add("campaign-email", {
+    recruiterEmails,
+    template
+});
+
+res.json({
+    message: "Campaign Created"
+});
+
+
+Worker:
+
+if(job.name === "campaign-email"){
+
+    for(const email of job.data.recruiterEmails){
+
+        await sendEmail(
+            email,
+            job.data.template
+        );
+    }
+}
+
+
+
+
+=========================
+INTERVIEW EXPLANATION
+=========================
+
+Pehle campaign create hote hi saare recruiter emails
+request ke andar send hote the.
+
+Agar emails zyada hoti to API slow ho jati aur
+user ko response ke liye wait karna padta.
+
+BullMQ use karne ke baad campaign save karke
+email job queue me add kar dete hain.
+
+User ko instant response mil jata hai aur
+worker background me emails process karta hai.
+
+Isse performance, scalability aur user experience
+better ho jata hai.

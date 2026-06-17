@@ -10,8 +10,10 @@ import adminRouter from "./routes/admin.routes.js"
 import notificationRouter from "./routes/notification.routes.js";
 import campaignRoutes from "./routes/campaign.routes.js";
 import resumeRouter from "./routes/resume.routes.js";
+import jobQueue from "./queues/jobQueue.js";
 
-dotenv.config();
+import "./workers/jobWorker.js";
+dotenv.config({ path: "./src/.env" });
 
 const app = express();
 const PORT = process.env.PORT || 8000;
@@ -33,9 +35,16 @@ app.use("/api/resume",resumeRouter);
 app.use("/api/campaigns", campaignRoutes);
 
 
-app.get("/", (req, res) => {
-    res.json({ message: "YEAH BABY SERVER IS RUNNING.........." })
-})
+app.get("/", async (req, res) => {
+    await jobQueue.add("test-job", {
+        name: "Narendar Damodardas Modi",
+        message: "BullMQ Working"
+    });
+    res.json({
+        message: "Job Added To Queue"
+    });
+
+});
 
 // global errror handler
 app.use((err, req, res, next) => {
