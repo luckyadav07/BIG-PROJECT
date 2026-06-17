@@ -27,13 +27,14 @@ const userSchema = new Schema(
     },
 
     skills: {
-      type: [String],
-      required: true,
+        type: [String],
+        default: [],
+      
     },
 
     resume: {
       type: String,
-      required: true,
+      
     },
 
     // role-based access control
