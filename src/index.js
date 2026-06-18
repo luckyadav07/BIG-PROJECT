@@ -12,12 +12,15 @@ import campaignRoutes from "./routes/campaign.routes.js";
 import resumeRouter from "./routes/resume.routes.js";
 import jobQueue from "./queues/jobQueue.js";
 import applicationRouter from "./routes/application.routes.js";
+import logger from "./utils/logger.js";
 
 import "./workers/jobWorker.js";
+import { RootNodesUnavailableError } from "redis";
 
 dotenv.config();
+console.log("Mongo URI:", process.env.MONGODB_URI);
 
-
+RootNodesUnavailableError
 const app = express();
 const PORT = process.env.PORT || 8000;
 
@@ -65,6 +68,7 @@ app.use((err, req, res, next) => {
 
 connectdb().then(() => {
     app.listen(PORT, () => {
-        console.log(`SERVER RUNNING ka LIYE YHA pa jayye <--> nhi jaayege  ${PORT}`)
+        //  console.log(`SERVER RUNNING ka LIYE YHA pa jayye <--> nhi jaayege  ${PORT}`)
+        logger.info(`server running on port ${PORT}`);
     })
 })
