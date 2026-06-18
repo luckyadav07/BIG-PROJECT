@@ -1,0 +1,106 @@
+DOCKER FLOW (Main Part Only)
+
+Problem:
+Har developer ke system me Node, MongoDB, Redis alag versions ya installed hi nahi hote.
+
+Solution:
+Docker poore project ko containers me pack kar deta hai taaki sabke system pe same chale.
+
+---------------------------------------
+
+1. Dockerfile
+
+Purpose:
+Docker ko batata hai ki Node.js app kaise banani aur chalani hai.
+
+FROM node:22
+→ Node.js wala environment lo
+
+WORKDIR /app
+→ Project ke liye folder banao
+
+COPY package*.json ./
+→ package.json copy karo
+
+RUN npm install
+→ Dependencies install karo
+
+COPY . .
+→ Baaki project files copy karo
+
+CMD ["npm","start"]
+→ App start karo
+
+---------------------------------------
+
+2. docker build -t big-project .
+
+Purpose:
+Dockerfile ko use karke Image banao.
+
+Dockerfile = Recipe
+Image = Ready Template
+
+---------------------------------------
+
+3. docker run
+
+Purpose:
+Image se actual running Container banao.
+
+Image = Blueprint
+Container = Running App
+
+---------------------------------------
+
+4. docker-compose.yml
+
+Purpose:
+Multiple containers ko ek saath manage karna.
+
+Hamare project me:
+
+- Node.js App
+- MongoDB
+- Redis
+
+Sab ek file me define kar diye.
+
+---------------------------------------
+
+5. docker compose up --build
+
+Purpose:
+Ek hi command me:
+
+✓ App build
+✓ MongoDB start
+✓ Redis start
+✓ Node app start
+
+---------------------------------------
+
+6. docker compose down
+
+Purpose:
+Poora project stop kar do.
+
+---------------------------------------
+
+Project Architecture:
+
+                Docker Compose
+                       |
+        --------------------------------
+        |              |              |
+      App          MongoDB         Redis
+   (Node.js)      (Database)      (Cache)
+
+App -> MongoDB se data store/fetch karta hai
+App -> Redis se fast cache access karta hai
+
+---------------------------------------
+
+One-Line Interview Answer:
+
+Docker is used to package an application along with its dependencies into containers so that it runs consistently on every machine.

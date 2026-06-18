@@ -1,0 +1,85 @@
+Problem without Docker
+
+Suppose your project needs:
+
+Node.js v22
+MongoDB
+Redis
+
+On your laptop you install all three manually.
+
+Now your teammate tries to run the project:
+
+He has Node v20
+MongoDB not installed
+Redis not installed
+
+Project breaks 😭
+///////////////////////////////////////////////////////////////////////////////////////////////
+
+Docker puts everything needed by the project inside containers.
+
+Think:
+
+Image = blueprint/template
+Container = running application from that template
+
+Just like:
+
+Class → Object
+Image → Container
+
+////////////////////////////////////////////////////////////////
+
+
+Why your team is using Docker?
+
+Your project has:
+
+Backend (Node.js)
+Database (MongoDB)
+Cache (Redis)
+
+Instead of asking every teammate to install all these manually:
+
+npm install
+install mongodb
+install redis
+
+you create Docker configuration once.
+
+Then anyone can run:
+
+( docker-compose up  )
+
+and everything starts automatically.
+
+////////////////////////////////////////////////////////////////////
+
+
+What is a Dockerfile?
+
+A Dockerfile is simply a set of instructions for Docker.
+
+It tells Docker:
+
+Which OS/runtime to use
+Where to put project files
+How to install dependencies
+How to start the app
+
+Think of it like a recipe:
+
+Take Node.js
+↓
+Copy package.json
+↓
+Install npm packages
+↓
+Copy source code
+↓
+Start server
+
+
+////////////////////////////////////////////////////////////////
+

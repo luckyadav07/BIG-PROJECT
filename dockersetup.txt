@@ -1,0 +1,74 @@
+# Project Setup After Pulling
+
+## 1. Pull Latest Code
+
+```bash
+git pull origin main
+```
+
+## 2. Make Sure Docker Desktop Is Running
+
+Check:
+
+```bash
+docker ps
+```
+
+If no error comes, Docker is running.
+
+## 3. Build and Start All Services
+
+```bash
+docker compose up --build
+```
+
+This command will:
+
+* Build the Node.js application
+* Start MongoDB container
+* Start Redis container
+* Start Backend container
+
+## 4. Verify Containers
+
+```bash
+docker compose ps
+```
+
+Expected services:
+
+* app
+* mongodb
+* redis
+
+## 5. Stop Project
+
+```bash
+docker compose down
+```
+
+## Important Commands
+
+Build & Start:
+
+```bash
+docker compose up --build
+```
+
+View Running Containers:
+
+```bash
+docker ps
+```
+
+View Logs:
+
+```bash
+docker compose logs
+```
+
+Stop Everything:
+
+```bash
+docker compose down
+```
