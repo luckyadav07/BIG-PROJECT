@@ -11,6 +11,7 @@ import notificationRouter from "./routes/notification.routes.js";
 import campaignRoutes from "./routes/campaign.routes.js";
 import resumeRouter from "./routes/resume.routes.js";
 import jobQueue from "./queues/jobQueue.js";
+import applicationRouter from "./routes/application.routes.js";
 
 import "./workers/jobWorker.js";
 
@@ -35,6 +36,7 @@ app.use("/api/admin", adminRouter)
 app.use("/api/notifications", notificationRouter);
 app.use("/api/resume", resumeRouter);
 app.use("/api/campaigns", campaignRoutes);
+app.use("/api/applications", applicationRouter);
 
 
 app.get("/", async (req, res) => {
