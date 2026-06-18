@@ -5,7 +5,6 @@ import asyncHandler from "../utils/asyncHandler.js";
 import ApiError from "../utils/ApiError.js";
 import ApiResponse from "../utils/ApiResponse.js";
 
-
 // saari job nikal ke dega jab frontend request karega
 export const getAllJobs = asyncHandler (async(req, res) => {
     

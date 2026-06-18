@@ -1,33 +1,30 @@
 import { Worker } from "bullmq";
 import redisConnection from "../config/redis.js";
+import { sendSingleEmail } from "../services/email.service.js"
 
 const worker = new Worker(
     "jobQueue",
-
     // queue se aayi hui job ko process karega
     async (job) => {
-
         // campaign email wali job hai
         if (job.name === "campaign-email") {
-
             console.log("Campaign Processing...");
-
             // queue me jo data bheja tha wo yaha milega
             console.log(job.data);
 
             // har recruiter ko email bhejne ka logic
             for (const email of job.data.recruiterEmails) {
+                console.log(`Sending email to ${email}`);
 
-                console.log(
-                    `Sending email to ${email}`
+                await sendSingleEmail(
+                    email,
+                    "Job Application Inquiry",
+                    job.data.template,
+                    job.data.template
                 );
-
-                // future me:
-                // await sendEmail(email, job.data.template);
             }
         }
     },
-
     {
         connection: redisConnection
     }

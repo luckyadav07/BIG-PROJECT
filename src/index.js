@@ -13,7 +13,9 @@ import resumeRouter from "./routes/resume.routes.js";
 import jobQueue from "./queues/jobQueue.js";
 
 import "./workers/jobWorker.js";
-dotenv.config({ path: "./src/.env" });
+
+dotenv.config();
+
 
 const app = express();
 const PORT = process.env.PORT || 8000;
@@ -28,10 +30,10 @@ app.use(express.urlencoded({ extended: true })); // reads form data from request
 
 // routes after
 app.use("/api/jobs", jobRoutes);
-app.use("/api/auth",authRouter)
-app.use("/api/admin",adminRouter)
+app.use("/api/auth", authRouter)
+app.use("/api/admin", adminRouter)
 app.use("/api/notifications", notificationRouter);
-app.use("/api/resume",resumeRouter);
+app.use("/api/resume", resumeRouter);
 app.use("/api/campaigns", campaignRoutes);
 
 
