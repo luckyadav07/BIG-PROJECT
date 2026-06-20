@@ -1,3 +1,6 @@
+import dotenv from "dotenv";
+dotenv.config(); // Yeh line pakka karegi ki transporter banne se pehle .env load ho jaye
+
 import nodemailer from "nodemailer"
 
 // transporter sets up the connection to Gmail to send emails

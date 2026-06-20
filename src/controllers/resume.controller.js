@@ -1,21 +1,35 @@
-import asyncHandler  from "../utils/asyncHandler.js";
-import ApiError  from "../utils/ApiError.js";
-import  ApiResponse  from "../utils/ApiResponse.js";
-import * as pdfParseModule from "pdf-parse";
-const pdfParse = pdfParseModule.default;
+import asyncHandler from "../utils/asyncHandler.js";
+import ApiError from "../utils/ApiError.js";
+import ApiResponse from "../utils/ApiResponse.js";
+import { createRequire } from "module";
+
+const require = createRequire(import.meta.url);
+const pdfParse = require("pdf-parse");
 
 export const uploadResume = asyncHandler(async (req, res) => {
-    // 1. Validation
+    // Check if file exists
     if (!req.file) {
         throw new ApiError(400, "Resume file is required");
     }
 
-    // 2. Parsing the Buffer
-    const pdfData = await pdfParse(req.file.buffer);
-    const extractedText = pdfData.text;
+    try {
+        // Parse PDF
+        const pdfData = await pdfParse(req.file.buffer);
 
-    // 3. Sending the Response
-    return res.status(200).json(
-        new ApiResponse(200, { text: extractedText }, "Resume parsed successfully")
-    );
+        return res.status(200).json(
+            new ApiResponse(
+                200,
+                {
+                    text: pdfData.text,
+                    pages: pdfData.numpages,
+                },
+                "Resume parsed successfully"
+            )
+        );
+    } catch (error) {
+        throw new ApiError(
+            500,
+            `Failed to parse PDF: ${error.message}`
+        );
+    }
 });

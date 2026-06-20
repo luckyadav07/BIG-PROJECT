@@ -35,3 +35,29 @@
 2026-06-20T06:16:15.999Z [INFO]: server RUNNING ka liye iss PORT par aaye 8000
 2026-06-20T06:16:21.941Z [INFO]: OHHH YEAHHHH Database connected
 2026-06-20T06:16:21.949Z [INFO]: server RUNNING ka liye iss PORT par aaye 8000
+2026-06-20T06:29:41.971Z [INFO]: OHHH YEAHHHH Database connected
+2026-06-20T06:29:41.980Z [INFO]: server RUNNING ka liye iss PORT par aaye 8000
+2026-06-20T07:07:53.487Z [INFO]: OHHH YEAHHHH Database connected
+2026-06-20T07:07:53.499Z [INFO]: server RUNNING ka liye iss PORT par aaye 8000
+2026-06-20T07:09:31.109Z [INFO]: OHHH YEAHHHH Database connected
+2026-06-20T07:09:31.114Z [INFO]: server RUNNING ka liye iss PORT par aaye 8000
+2026-06-20T07:09:37.923Z [INFO]: OHHH YEAHHHH Database connected
+2026-06-20T07:09:37.933Z [INFO]: server RUNNING ka liye iss PORT par aaye 8000
+2026-06-20T07:12:14.552Z [INFO]: OHHH YEAHHHH Database connected
+2026-06-20T07:12:14.561Z [INFO]: server RUNNING ka liye iss PORT par aaye 8000
+2026-06-20T07:14:28.906Z [INFO]: OHHH YEAHHHH Database connected
+2026-06-20T07:14:28.915Z [INFO]: server RUNNING ka liye iss PORT par aaye 8000
+2026-06-20T07:14:56.137Z [INFO]: OHHH YEAHHHH Database connected
+2026-06-20T07:14:56.142Z [INFO]: server RUNNING ka liye iss PORT par aaye 8000
+2026-06-20T07:16:38.300Z [INFO]: OHHH YEAHHHH Database connected
+2026-06-20T07:16:38.309Z [INFO]: server RUNNING ka liye iss PORT par aaye 8000
+2026-06-20T07:49:55.405Z [INFO]: Campaign Processing...
+2026-06-20T07:49:55.405Z [INFO]: {"campaignId":"6a364623b11055ceee1d639c","template":"Hello HR Team,\n\nI am applying for the Software Development Engineer role. I have strong experience building full-stack applications using React, Node.js, Express, and MongoDB. Please find my application attached.\n\nBest Regards,\nLucky","recruiterEmails":["luckyyadav61715@gmail.com"]}
+2026-06-20T07:49:55.405Z [INFO]: Sending email to luckyyadav61715@gmail.com
+2026-06-20T07:49:56.715Z [INFO]: Job 1 completed
+2026-06-20T07:57:33.916Z [INFO]: OHHH YEAHHHH Database connected
+2026-06-20T07:57:33.921Z [INFO]: server RUNNING ka liye iss PORT par aaye 8000
+2026-06-20T07:58:40.129Z [INFO]: Campaign Processing...
+2026-06-20T07:58:40.130Z [INFO]: {"campaignId":"6a36483065733130cb17c2fa","template":"Hello HR Team,\n\nI am applying for the Software Development Engineer role. I have strong experience building full-stack applications using React, Node.js, Express, and MongoDB. Please find my application attached.\n\nBest Regards,\nLucky","recruiterEmails":["luckyyadav61715@gmail.com"]}
+2026-06-20T07:58:40.130Z [INFO]: Sending email to luckyyadav61715@gmail.com
+2026-06-20T07:58:44.881Z [INFO]: Job 2 completed
