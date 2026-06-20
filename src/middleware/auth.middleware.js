@@ -1,39 +1,37 @@
-import jwt from "jsonwebtoken"
-import User from "../models/user.models.js"
+import jwt from "jsonwebtoken";
+import User from "../models/user.models.js";
+import { asyncHandler } from "../utils/asyncHandler.js";
+import { ApiError } from "../utils/ApiError.js";
 
-const authMiddle= async(req,res,next)=>{
+const authMiddle = asyncHandler(async (req, res, next) => {
+    // 1. Token nikalna (Bearer <token>)
+    const token = req.headers.authorization?.split(" ")[1];
 
-    try {
-        const token=req.headers.authorization?.split(" ")[1]
-    
-        if(!token){
-            return res.status(401).json({
-                message:"No token , access nhi milegaa laadle"
-            })
-        }
-    
-        const decoded= jwt.verify(token,process.env.JWT_SECRET)
-    
-        const user= await User.findById(decoded.id).select("-password")
-    
-        if(!user){
-            return res.status(401).
-            json({
-                message:"User not found"
-            })
-        }
-    
-        req.user=user;
-    
-        next()
-
-    } catch (error) {
-        return res.status(401).
-        json({ message: "Invalid token" })
+    if (!token) {
+        throw new ApiError(401, "No token, access nhi milegaa laadle");
     }
 
-}
+    try {
+        // 2. Token verify karna
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
+        // 3. User find karna (password hata ke)
+        const user = await User.findById(decoded.id).select("-password");
 
+        if (!user) {
+            throw new ApiError(401, "User not found");
+        }
 
-export default authMiddle
+        // 4. Request me user daalna taaki aage ke controllers isko use kar sake
+        req.user = user;
+        
+        // 5. Agle function (controller) ko call karna
+        next();
+
+    } catch (error) {
+        // Agar token expire ho gaya ya galat hai
+        throw new ApiError(401, "Invalid or expired token");
+    }
+});
+
+export default authMiddle;

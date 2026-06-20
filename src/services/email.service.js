@@ -14,13 +14,16 @@ const transporter = nodemailer.createTransport({
 // called in a loop from campaign controller to send bulk emails
 
 export const sendSingleEmail = async (to, subject, text, html) => {
+
     try {
         const mailOptions = {
+
             from: process.env.EMAIL_USER,
             to: to,
             subject: subject,
             text: text,
             html: html,
+
         }
 
         const info = await transporter.sendMail(mailOptions)
@@ -32,4 +35,5 @@ export const sendSingleEmail = async (to, subject, text, html) => {
         console.error(`Failed to send email to ${to}:`, error.message)
         return { success: false, error: error.message }
     }
+    
 }

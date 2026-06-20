@@ -1,6 +1,8 @@
+version: '3.8'
+
 services:
   redis:
-    image: redis
+    image: redis:alpine
     ports:
       - "6379:6379"
 
@@ -13,6 +15,8 @@ services:
     build: .
     ports:
       - "8000:8000"
+    env_file:          # <-- THIS IS CRITICAL
+      - .env           # Injects your passwords and secrets into the container
     depends_on:
       - redis
       - mongodb

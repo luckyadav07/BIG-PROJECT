@@ -6,18 +6,18 @@ import ApiError from "../utils/ApiError.js";
 import ApiResponse from "../utils/ApiResponse.js";
 
 // saari job nikal ke dega jab frontend request karega
-export const getAllJobs = asyncHandler (async(req, res) => {
-    
-        const jobs = await Job.find();
+export const getAllJobs = asyncHandler(async (req, res) => {
+
+    const jobs = await Job.find();
     res.status(200).json(
-            new ApiResponse(200,jobs, "Jobs fetched successfully")
-        );
+        new ApiResponse(200, jobs, "Jobs fetched successfully")
+    );
 });
 
 // single job nikal ke dega jab frontend request karega
 
 export const getJobById = asyncHandler(async (req, res) => {
-    
+
     const { id } = req.params;
 
     // check if id is valid MongoDB ObjectId
@@ -37,27 +37,27 @@ export const getJobById = asyncHandler(async (req, res) => {
 // recommended jobs nikal ke dega jab frontend request karega 
 
 export const getRecommendedJobs = asyncHandler(async (req, res) => {
-   
-        const user = await User.findById(req.user.id);
-        if (!user) {
-            throw new ApiError(404, "User not found");
-        }
-      const jobs = await Job.find();
-        const recommendedJobs = jobs
-            .map((job) => {
-                const score = job.skills.filter((skill) =>
-                    user.skills.includes(skill)
-                ).length;
 
-                return {
-                    ...job.toObject(),
-                    score,
-                };
-            })
-            .sort((a, b) => b.score - a.score);
+    const user = await User.findById(req.user.id);
+    if (!user) {
+        throw new ApiError(404, "User not found");
+    }
+    const jobs = await Job.find();
+    const recommendedJobs = jobs
+        .map((job) => {
+            const score = job.skills.filter((skill) =>
+                user.skills.includes(skill)
+            ).length;
 
-        res.status(200).json(
-            new ApiResponse(200, recommendedJobs, "Recommended jobs fetched successfully")
-        );
-    
+            return {
+                ...job.toObject(),
+                score,
+            };
+        })
+        .sort((a, b) => b.score - a.score);
+
+    res.status(200).json(
+        new ApiResponse(200, recommendedJobs, "Recommended jobs fetched successfully")
+    );
+
 });
