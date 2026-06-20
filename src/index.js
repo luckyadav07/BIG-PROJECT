@@ -13,14 +13,13 @@ import resumeRouter from "./routes/resume.routes.js";
 import jobQueue from "./queues/jobQueue.js";
 import applicationRouter from "./routes/application.routes.js";
 import logger from "./utils/logger.js";
+import chatbotRouter from "./routes/chatbot.routes.js"
 
 import "./workers/jobWorker.js";
-import { RootNodesUnavailableError } from "redis";
 
 dotenv.config();
 
 
-RootNodesUnavailableError
 const app = express();
 const PORT = process.env.PORT || 8000;
 
@@ -40,6 +39,7 @@ app.use("/api/notifications", notificationRouter);
 app.use("/api/resume", resumeRouter);
 app.use("/api/campaigns", campaignRoutes);
 app.use("/api/applications", applicationRouter);
+app.use("/api/chatbot", chatbotRouter);
 
 
 app.get("/", async (req, res) => {
