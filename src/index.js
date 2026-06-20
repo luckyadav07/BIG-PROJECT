@@ -18,7 +18,7 @@ import "./workers/jobWorker.js";
 import { RootNodesUnavailableError } from "redis";
 
 dotenv.config();
-console.log("Mongo URI:", process.env.MONGODB_URI);
+
 
 RootNodesUnavailableError
 const app = express();
@@ -69,6 +69,6 @@ app.use((err, req, res, next) => {
 connectdb().then(() => {
     app.listen(PORT, () => {
         //  console.log(`SERVER RUNNING ka LIYE YHA pa jayye <--> nhi jaayege  ${PORT}`)
-        logger.info(`server running on port ${PORT}`);
+        logger.info(`server RUNNING ka liye iss PORT par aaye ${PORT}`);
     })
 })

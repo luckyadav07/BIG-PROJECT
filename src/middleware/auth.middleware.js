@@ -1,7 +1,7 @@
 import jwt from "jsonwebtoken";
 import User from "../models/user.models.js";
-import { asyncHandler } from "../utils/asyncHandler.js";
-import { ApiError } from "../utils/ApiError.js";
+import  asyncHandler  from "../utils/asyncHandler.js";
+import  ApiError  from "../utils/ApiError.js";
 
 const authMiddle = asyncHandler(async (req, res, next) => {
     // 1. Token nikalna (Bearer <token>)
