@@ -1,32 +1,33 @@
-// ProtectedRoute.jsx — guards pages that require login
-
-// What it does:
-// - Wraps any page that should only be visible to logged-in users
-// - Checks if a token exists (using useAuth)
-// - No token → redirects to /login automatically
-// - Has token → shows the page normally
-
-// How to use it (in App.jsx routes):
-// <Route path="/jobs" element={
-//     <ProtectedRoute>
-//         <Jobs />
-//     </ProtectedRoute> 
-// } />
-
+/**
+ * components/ProtectedRoute.jsx
+ * Wraps pages that require authentication (e.g. Dashboard).
+ * - Shows a loading spinner while auth state is being restored
+ * - Redirects to /login if no valid token
+ * - Renders children when user is authenticated
+ */
 
 import { Navigate } from "react-router-dom";
-import { useAuth } from "../context/AuthContext";
+import { useAuth } from "../context/AuthContext.jsx";
 
 const ProtectedRoute = ({ children }) => {
-    const { token } = useAuth();
+  const { token, loading } = useAuth();
 
-    console.log("ProtectedRoute Token:", token);
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-slate-50">
+        <div className="flex flex-col items-center gap-3">
+          <div className="h-10 w-10 animate-spin rounded-full border-4 border-indigo-200 border-t-indigo-600" />
+          <p className="text-sm text-slate-500">Loading...</p>
+        </div>
+      </div>
+    );
+  }
 
-    if (!token) {
-        return <Navigate to="/login" />;
-    }
+  if (!token) {
+    return <Navigate to="/login" replace />;
+  }
 
-    return children;
+  return children;
 };
 
 export default ProtectedRoute;

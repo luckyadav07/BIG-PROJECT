@@ -1,76 +1,96 @@
-// AuthContext.jsx — manages login state across the whole app
+/**
+ * context/AuthContext.jsx
+ * Global authentication state for the entire React app.
+ *
+ * Provides:
+ * - user, token — current session data
+ * - loading — true while restoring session from localStorage / verifying token
+ * - login(user, token) — save session to state + localStorage
+ * - logout() — clear session everywhere
+ * - useAuth() — hook to access auth state in any component
+ *
+ * On app load, if a token exists in localStorage, it calls GET /auth/me
+ * to verify the token is still valid and refresh user data.
+ */
 
-// What it does:
-// - Stores user and token in React state
-// - On page load, checks localStorage to see if user was already logged in (so refresh doesn't log you out)
-// - login(userData, tokenData) → saves user + token to state AND localStorage
-// - logout() → clears user + token from state AND localStorage
-// - Wraps the whole app in <AuthContext.Provider> so any page can access user/token without prop drilling
-// - useAuth() → custom hook, use this in any page to get { user, token, login, logout }
+import {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  useCallback,
+} from "react";
+import { getCurrentUser } from "../services/authService.js";
 
-// How to use it in any page:
-// import { useAuth } from "../context/AuthContext"
-// const { user, token, logout } = useAuth()
-
-
-// createContext → ek khaali dabba (box) banata hai
-// useContext → us dabbe se cheez nikalne ke liye
-// useState → kisi value ko yaad rakhne ke liye, aur change hone par screen update karne ke liye
-// useEffect → page load hone ke baad automatically kuch karne ke liye
-
-import { createContext, useContext, useState, useEffect } from "react"
-
-const AuthContext = createContext()
+const AuthContext = createContext(null);
 
 export const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState(null)
-  const [token, setToken] = useState(null)
+  const [user, setUser] = useState(null);
+  const [token, setToken] = useState(null);
+  const [loading, setLoading] = useState(true);
 
+  const logout = useCallback(() => {
+    setUser(null);
+    setToken(null);
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+  }, []);
+
+  const login = useCallback((userData, tokenData) => {
+    setUser(userData);
+    setToken(tokenData);
+    localStorage.setItem("token", tokenData);
+    localStorage.setItem("user", JSON.stringify(userData));
+  }, []);
+
+  // Restore session on page load / refresh
   useEffect(() => {
-    try {
+    const restoreSession = async () => {
       const savedToken = localStorage.getItem("token");
       const savedUser = localStorage.getItem("user");
 
-      if (savedToken && savedUser) {
-        setToken(savedToken);
-        setUser(JSON.parse(savedUser));
+      if (!savedToken) {
+        setLoading(false);
+        return;
       }
-    } catch (error) {
-      console.error("Auth Error:", error);
 
-      localStorage.removeItem("token");
-      localStorage.removeItem("user");
-    }
-  }, []);
+      setToken(savedToken);
 
+      // Optimistically restore user from localStorage for faster UI
+      if (savedUser) {
+        try {
+          setUser(JSON.parse(savedUser));
+        } catch {
+          localStorage.removeItem("user");
+        }
+      }
 
-  const login = (userData, tokenData) => {
-    console.log("USER:", userData);
-    console.log("TOKEN:", tokenData);
+      // Verify token with backend
+      try {
+        const data = await getCurrentUser();
+        setUser(data.data.user);
+        localStorage.setItem("user", JSON.stringify(data.data.user));
+      } catch {
+        logout();
+      } finally {
+        setLoading(false);
+      }
+    };
 
-    setUser(userData);
-    setToken(tokenData);
-
-    localStorage.setItem("token", tokenData);
-    localStorage.setItem("user", JSON.stringify(userData));
-  };
-
-  const logout = () => {
-    setUser(null)
-    setToken(null)
-    localStorage.removeItem("token")
-    localStorage.removeItem("user")
-
-  }
+    restoreSession();
+  }, [logout]);
 
   return (
-    <AuthContext.Provider value={{ user, token, login, logout }}>
+    <AuthContext.Provider value={{ user, token, loading, login, logout }}>
       {children}
     </AuthContext.Provider>
-  )
+  );
+};
 
-}
-
-
-
-export const useAuth = () => useContext(AuthContext)
+export const useAuth = () => {
+  const context = useContext(AuthContext);
+  if (!context) {
+    throw new Error("useAuth must be used within an AuthProvider");
+  }
+  return context;
+};
