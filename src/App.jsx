@@ -1,62 +1,50 @@
-/**
- * App.jsx
- * Root router — defines all public and protected routes.
- */
-
-import { Routes, Route, Navigate } from "react-router-dom";
-import Login from "./pages/Login.jsx";
-import Register from "./pages/Register.jsx";
-import Dashboard from "./pages/Dashboard.jsx";
-import Jobs from "./pages/Jobs.jsx";
+import { Routes, Route } from "react-router-dom";
+import LandingPage from "./pages/landing/LandingPage.jsx";
+import LoginPage from "./pages/auth/LoginPage.jsx";
+import RegisterPage from "./pages/auth/RegisterPage.jsx";
+import ForgotPasswordPage from "./pages/auth/ForgotPasswordPage.jsx";
+import DashboardPage from "./pages/dashboard/DashboardPage.jsx";
+import ApplicationsPage from "./pages/dashboard/ApplicationsPage.jsx";
+import ProfilePage from "./pages/dashboard/ProfilePage.jsx";
+import CareerCoachPage from "./pages/dashboard/CareerCoachPage.jsx";
+import NotificationsPage from "./pages/dashboard/NotificationsPage.jsx";
+import JobsPage from "./pages/job/JobsPage.jsx";
+import JobDetailPage from "./pages/job/JobDetailPage.jsx";
+import RecommendedJobsPage from "./pages/job/RecommendedJobsPage.jsx";
+import AdminDashboard from "./pages/admin/AdminDashboard.jsx";
+import AdminJobsManagement from "./pages/admin/AdminJobsManagement.jsx";
+import NotFoundPage from "./pages/NotFoundPage.jsx";
 import ProtectedRoute from "./components/ProtectedRoute.jsx";
 import GuestRoute from "./components/GuestRoute.jsx";
 
 function App() {
   return (
     <Routes>
-      {/* Default redirect */}
-      <Route path="/" element={<Navigate to="/dashboard" replace />} />
+      {/* Public routes */}
+      <Route path="/" element={<LandingPage />} />
+      <Route path="/login" element={<GuestRoute><LoginPage /></GuestRoute>} />
+      <Route path="/register" element={<GuestRoute><RegisterPage /></GuestRoute>} />
+      <Route path="/forgot-password" element={<GuestRoute><ForgotPasswordPage /></GuestRoute>} />
 
-      {/* Public auth pages */}
-      <Route
-        path="/login"
-        element={
-          <GuestRoute>
-            <Login />
-          </GuestRoute>
-        }
-      />
+      {/* Protected routes — DashboardLayout via ProtectedRoute outlet */}
+      <Route element={<ProtectedRoute />}>
+        <Route path="/dashboard" element={<DashboardPage />} />
+        <Route path="/jobs" element={<JobsPage />} />
+        <Route path="/jobs/:id" element={<JobDetailPage />} />
+        <Route path="/recommended" element={<RecommendedJobsPage />} />
+        <Route path="/applications" element={<ApplicationsPage />} />
+        <Route path="/profile" element={<ProfilePage />} />
+        <Route path="/career-coach" element={<CareerCoachPage />} />
+        <Route path="/notifications" element={<NotificationsPage />} />
+      </Route>
 
-      <Route
-        path="/register"
-        element={
-          <GuestRoute>
-            <Register />
-          </GuestRoute>
-        }
-      />
+      {/* Admin routes */}
+      <Route element={<ProtectedRoute adminOnly />}>
+        <Route path="/admin" element={<AdminDashboard />} />
+        <Route path="/admin/jobs" element={<AdminJobsManagement />} />
+      </Route>
 
-      {/* Protected pages */}
-      <Route
-        path="/dashboard"
-        element={
-          <ProtectedRoute>
-            <Dashboard />
-          </ProtectedRoute>
-        }
-      />
-
-      <Route
-        path="/jobs"
-        element={
-          <ProtectedRoute>
-            <Jobs />
-          </ProtectedRoute>
-        }
-      />
-
-      {/* Catch-all */}
-      <Route path="*" element={<Navigate to="/dashboard" replace />} />
+      <Route path="*" element={<NotFoundPage />} />
     </Routes>
   );
 }
