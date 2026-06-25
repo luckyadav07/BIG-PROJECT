@@ -27,6 +27,7 @@ export const uploadResume = asyncHandler(async (req, res) => {
             )
         );
     } catch (error) {
+        console.error("PDF ERROR:", error);
         throw new ApiError(
             500,
             `Failed to parse PDF: ${error.message}`

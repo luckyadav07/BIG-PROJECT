@@ -38,8 +38,12 @@ export const applyJob = asyncHandler(async (req, res) => {
 // Get all applications of logged in user
 export const getUserApplications = asyncHandler(async (req, res) => {
 
-    const applications = await Application.find({ userId: req.user._id })
-
+    const applications = await Application.find({
+    userId: req.user._id
+    }).populate(
+    "jobId",
+    "title company location"
+    );
     // .find() returns empty array [] not null — so check length not !applications
     if (applications.length === 0) {
         throw new ApiError(404, "No applications found")
