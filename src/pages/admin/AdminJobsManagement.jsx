@@ -73,14 +73,14 @@ function AdminJobsManagement() {
   const openCreateModal = () => {
     setEditingJob(null);
     setForm({
-      title: "",
-      company: "",
-      location: "",
-      type: "Full-time",
-      salary: "",
-      description: "",
-      status: "active",
-    });
+  title: "",
+  company: "",
+  location: "",
+  type: "Full-time",
+  salary: "",
+  description: "",
+  status: "active",
+});
     setError("");
     setModalOpen(true);
   };
@@ -89,14 +89,19 @@ function AdminJobsManagement() {
     setEditingJob(job);
 
     setForm({
-      title: job.title || "",
-      company: job.company || "",
-      location: job.location || "",
-      type: job.type || "Full-time",
-      salary: job.salary || "",
-      description: job.description || "",
-      status: job.status || "active",
-    });
+    title: job.title || "",
+    company: job.company || "",
+    location: job.location || "",
+    skills: Array.isArray(job.skills)
+      ? job.skills.join(", ")
+      : job.skills || "",
+    stipend: job.stipend || "",
+    deadline: job.deadline
+      ? job.deadline.substring(0, 10)
+      : "",
+    duration: job.duration || "",
+    jobUrl: job.jobUrl || "",
+  });
 
     setError("");
     setModalOpen(true);
@@ -130,95 +135,72 @@ function AdminJobsManagement() {
     }));
   };
 
-  const handleSubmit = async (event) => {
-    event.preventDefault();
+  const handleSubmit = async (e) => {
+  e.preventDefault();
 
-    setSaving(true);
-    setError("");
+  setSaving(true);
+  setError("");
 
-    try {
-      if (editingJob) {
-<<<<<<< HEAD
-        const response = await updateAdminJob(
-          getJobId(editingJob),
-          form
-        );
-
-        const updatedJob =
-          response?.job ||
-          response?.data?.job ||
-          response?.data ||
-          response;
-
-        setJobs((prev) =>
-          prev.map((job) =>
-            getJobId(job) === getJobId(updatedJob)
-              ? updatedJob
-              : job
-=======
-        const response = await updateAdminJob(getJobId(editingJob), form);
-        const updatedJob = response?.job || response;
-
-        setJobs((prev) =>
-          prev.map((job) =>
-            getJobId(job) === getJobId(updatedJob) ? updatedJob : job
->>>>>>> d797af7 (CHANGES)
-          )
-        );
-
-        addToast("Job updated successfully");
-      } else {
-        const response = await createAdminJob(form);
-<<<<<<< HEAD
-
-        const createdJob =
-          response?.job ||
-          response?.data?.job ||
-          response?.data ||
-          response;
-=======
-        const createdJob = response?.job || response;
->>>>>>> d797af7 (CHANGES)
-
-        setJobs((prev) => [createdJob, ...prev]);
-
-        addToast("Job created successfully");
-      }
-
-      closeModal();
-    } catch (err) {
-<<<<<<< HEAD
-      setError(
-        err.response?.data?.message ||
-          err.message ||
-          "Unable to save job."
-=======
-      console.error("========== JOB CREATION ERROR ==========");
-      console.error("Full Error:", err);
-      console.error("Response:", err.response);
-      console.error("Status:", err.response?.status);
-      console.error("Data:", err.response?.data);
-      console.error("Message:", err.response?.data?.message);
-      console.error("Errors:", err.response?.data?.errors);
-
-      setError(
-        err.response?.data?.message ||
-        err.response?.data?.error ||
-        err.message ||
-        "Unable to save job."
-      );
-
-      addToast(
-        err.response?.data?.message ||
-        err.response?.data?.error ||
-        "Unable to save job.",
-        "danger"
->>>>>>> d797af7 (CHANGES)
-      );
-    } finally {
-      setSaving(false);
-    }
+  const payload = {
+    title: form.title,
+    company: form.company,
+    location: form.location,
+    skills: form.skills
+      ? form.skills.split(",").map((s) => s.trim())
+      : [],
+    stipend: Number(form.stipend) || 0,
+    deadline: form.deadline,
+    duration: form.duration,
+    jobUrl: form.jobUrl,
   };
+
+  try {
+    if (editingJob) {
+      const response = await updateAdminJob(
+        getJobId(editingJob),
+        payload
+      );
+
+      const updatedJob =
+        response?.data?.job ||
+        response?.job ||
+        response?.data ||
+        response;
+
+      setJobs((prev) =>
+        prev.map((job) =>
+          getJobId(job) === getJobId(updatedJob)
+            ? updatedJob
+            : job
+        )
+      );
+
+      addToast("Job updated successfully");
+    } else {
+      const response = await createAdminJob(payload);
+
+      const createdJob =
+        response?.data?.job ||
+        response?.job ||
+        response?.data ||
+        response;
+
+      setJobs((prev) => [createdJob, ...prev]);
+
+      addToast("Job created successfully");
+    }
+
+    closeModal();
+  } catch (err) {
+    setError(
+      err.response?.data?.message ||
+      err.message ||
+      "Unable to save job."
+    );
+  } finally {
+    setSaving(false);
+  }
+};
 
   const handleDelete = async (job) => {
     if (!window.confirm("Delete this job permanently?")) return;
@@ -362,188 +344,125 @@ function AdminJobsManagement() {
       </Card>
 
       {modalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4">
-          <div className="w-full max-w-2xl rounded-3xl bg-navy-light border border-white/10 p-6 shadow-2xl">
-            <div className="flex items-center justify-between mb-6">
-              <div>
-                <h2 className="text-xl font-semibold text-white">
-                  {editingJob ? "Edit Job" : "Create Job"}
-                </h2>
-
-                <p className="text-sm text-gray-400">
-                  Use backend job admin controls to keep listings up to
-                  date.
-                </p>
-              </div>
-
-              <button
-                onClick={closeModal}
-                className="text-gray-400 hover:text-white"
-              >
-                <X size={20} />
-              </button>
-            </div>
-
-            <form onSubmit={handleSubmit} className="space-y-4">
-              <Input
-                label="Job Title"
-                value={form.title}
-<<<<<<< HEAD
-                onChange={(e) =>
-                  handleFieldChange("title", e.target.value)
-                }
-=======
-                onChange={(e) => handleFieldChange("title", e.target.value)}
-                placeholder="Frontend Developer"
->>>>>>> d797af7 (CHANGES)
-                required
-              />
-
-              <Input
-                label="Company"
-                value={form.company}
-<<<<<<< HEAD
-                onChange={(e) =>
-                  handleFieldChange("company", e.target.value)
-                }
-                required
-              />
-
-              <div className="grid gap-4 md:grid-cols-2">
-                <Input
-                  label="Location"
-                  placeholder="Bangalore, India"
-                  value={form.location}
-                  onChange={(e) =>
-                    handleFieldChange("location", e.target.value)
-                  }
-                />
-
-                <Input
-                  label="Job Type"
-                  placeholder="Full-time"
-                  value={form.type}
-                  onChange={(e) =>
-                    handleFieldChange("type", e.target.value)
-                  }
-                />
-              </div>
-
-              <div className="grid gap-4 md:grid-cols-2">
-                <Input
-                  label="Salary"
-                  placeholder="₹12,00,000 - ₹18,00,000"
-                  value={form.salary}
-                  onChange={(e) =>
-                    handleFieldChange("salary", e.target.value)
-                  }
-                />
-
-                <Input
-                  label="Status"
-                  placeholder="active"
-                  value={form.status}
-                  onChange={(e) =>
-                    handleFieldChange("status", e.target.value)
-                  }
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-300 mb-2">
-                  Description
-                </label>
-
-                <textarea
-                  rows={5}
-                  value={form.description}
-                  onChange={(e) =>
-                    handleFieldChange(
-                      "description",
-                      e.target.value
-                    )
-                  }
-                  className="w-full rounded-2xl border border-white/20 bg-white/5 px-4 py-3 text-sm text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-accent"
-                  placeholder="Write the job description and requirements here..."
-                />
-              </div>
-
-              <div className="flex justify-end gap-3 pt-2">
-=======
-                onChange={(e) => handleFieldChange("company", e.target.value)}
-                placeholder="Google"
-                required
-              />
-
-              <Input
-                label="Location"
-                value={form.location}
-                onChange={(e) => handleFieldChange("location", e.target.value)}
-                placeholder="Bangalore"
-              />
-
-              <Input
-                label="Skills"
-                value={form.skills}
-                onChange={(e) => handleFieldChange("skills", e.target.value)}
-                placeholder="React, Node.js, MongoDB"
-              />
-
-              <Input
-                label="Stipend"
-                type="number"
-                value={form.stipend}
-                onChange={(e) => handleFieldChange("stipend", e.target.value)}
-                placeholder="1200000"
-              />
-
-              <Input
-                label="Duration"
-                value={form.duration}
-                onChange={(e) => handleFieldChange("duration", e.target.value)}
-                placeholder="6 Months"
-              />
-
-              <Input
-                label="Deadline"
-                type="date"
-                value={form.deadline}
-                onChange={(e) => handleFieldChange("deadline", e.target.value)}
-              />
-
-              <Input
-                label="Job URL"
-                value={form.jobUrl}
-                onChange={(e) => handleFieldChange("jobUrl", e.target.value)}
-                placeholder="https://company.com/jobs/frontend"
-                required
-              />
-
-              <div className="flex justify-end gap-3 pt-3">
->>>>>>> d797af7 (CHANGES)
-                <Button
-                  type="button"
-                  variant="outline"
-                  onClick={closeModal}
-                >
-                  Cancel
-                </Button>
-
-<<<<<<< HEAD
-                <Button type="submit" loading={saving}>
-=======
-                <Button
-                  type="submit"
-                  loading={saving}
-                >
->>>>>>> d797af7 (CHANGES)
-                  {editingJob ? "Update Job" : "Create Job"}
-                </Button>
-              </div>
-            </form>
-          </div>
+  <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4">
+    <div className="w-full max-w-2xl rounded-3xl bg-navy-light border border-white/10 p-6 shadow-2xl">
+      <div className="flex items-center justify-between mb-6">
+        <div>
+          <h2 className="text-xl font-semibold text-white">
+            {editingJob ? "Edit Job" : "Create Job"}
+          </h2>
+          <p className="text-sm text-gray-400">
+            Fill the job details below.
+          </p>
         </div>
-      )}
+
+        <button
+          onClick={closeModal}
+          className="text-gray-400 hover:text-white"
+        >
+          <X size={20} />
+        </button>
+      </div>
+
+      <form onSubmit={handleSubmit} className="space-y-4">
+        <Input
+          label="Job Title"
+          placeholder="Frontend Developer"
+          value={form.title}
+          onChange={(e) =>
+            handleFieldChange("title", e.target.value)
+          }
+          required
+        />
+
+        <Input
+          label="Company"
+          placeholder="Google"
+          value={form.company}
+          onChange={(e) =>
+            handleFieldChange("company", e.target.value)
+          }
+          required
+        />
+
+        <Input
+          label="Location"
+          placeholder="Bangalore"
+          value={form.location}
+          onChange={(e) =>
+            handleFieldChange("location", e.target.value)
+          }
+        />
+
+        <Input
+          label="Skills (comma separated)"
+          placeholder="React, Node.js, MongoDB"
+          value={form.skills}
+          onChange={(e) =>
+            handleFieldChange("skills", e.target.value)
+          }
+        />
+
+        <div className="grid grid-cols-2 gap-4">
+          <Input
+            label="Stipend"
+            type="number"
+            placeholder="25000"
+            value={form.stipend}
+            onChange={(e) =>
+              handleFieldChange("stipend", e.target.value)
+            }
+          />
+
+          <Input
+            label="Duration"
+            placeholder="6 Months"
+            value={form.duration}
+            onChange={(e) =>
+              handleFieldChange("duration", e.target.value)
+            }
+          />
+        </div>
+
+        <Input
+          label="Deadline"
+          type="date"
+          value={form.deadline}
+          onChange={(e) =>
+            handleFieldChange("deadline", e.target.value)
+          }
+        />
+
+        <Input
+          label="Job URL"
+          placeholder="https://company.com/careers/job123"
+          value={form.jobUrl}
+          onChange={(e) =>
+            handleFieldChange("jobUrl", e.target.value)
+          }
+          required
+        />
+
+        <div className="flex justify-end gap-3 pt-2">
+          <Button
+            type="button"
+            variant="outline"
+            onClick={closeModal}
+          >
+            Cancel
+          </Button>
+
+          <Button
+            type="submit"
+            loading={saving}
+          >
+            {editingJob ? "Update Job" : "Create Job"}
+          </Button>
+        </div>
+      </form>
+    </div>
+  </div>
+)}
     </div>
   );
 }
