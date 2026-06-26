@@ -229,8 +229,8 @@ const seedUsers = async () => {
       },
 
       {
-        name: "Yash Malhotra",
-        email: "yash@gmail.com",
+        name: "Tushar Sharma",
+        email: "god@gmail.com",
         password,
         role: "user",
         phone: "9876543221",
@@ -239,8 +239,8 @@ const seedUsers = async () => {
       },
 
       {
-        name: "Divya Arora",
-        email: "divya@gmail.com",
+        name: "Komal Rathore",
+        email: "komal@gmail.com",
         password,
         role: "user",
         phone: "9876543222",
@@ -249,8 +249,8 @@ const seedUsers = async () => {
       },
 
       {
-        name: "Sourabh Jain",
-        email: "sourabh@gmail.com",
+        name: "Lucky Yadav",
+        email: "lucky@gmail.com",
         password,
         role: "user",
         phone: "9876543223",
