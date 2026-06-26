@@ -2,14 +2,14 @@ import { useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import {
   LayoutDashboard, Briefcase, Sparkles, FileCheck, MessageCircle,
-  Bell, User, LogOut, Menu, X, Shield,
+  Bell, User, Users, LogOut, Menu, X, Shield,
 } from "lucide-react";
 import { useAuth } from "../../context/AuthContext.jsx";
 import { DASHBOARD_NAV, APP_NAME } from "../../utils/constants.js";
 import { getInitials } from "../../utils/formatters.js";
 
 const iconMap = {
-  LayoutDashboard, Briefcase, Sparkles, FileCheck, MessageCircle, Bell, User,
+  LayoutDashboard, Briefcase, Sparkles, FileCheck, MessageCircle, Bell, User, Users,
 };
 
 function DashboardLayout({ children }) {
@@ -24,7 +24,12 @@ function DashboardLayout({ children }) {
   };
 
   const navItems = user?.role === "admin"
-    ? [...DASHBOARD_NAV, { label: "Admin", path: "/admin", icon: "Shield" }]
+    ? [
+      ...DASHBOARD_NAV,
+      { label: "Admin", path: "/admin", icon: "Shield" },
+      { label: "Manage Jobs", path: "/admin/jobs", icon: "Briefcase" },
+      { label: "Manage Users", path: "/admin/users", icon: "Users" },
+    ]
     : DASHBOARD_NAV;
 
   return (
@@ -50,9 +55,8 @@ function DashboardLayout({ children }) {
                 key={item.path}
                 to={item.path}
                 onClick={() => setSidebarOpen(false)}
-                className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition ${
-                  active ? "bg-accent/20 text-accent" : "text-gray-400 hover:text-white hover:bg-white/5"
-                }`}
+                className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition ${active ? "bg-accent/20 text-accent" : "text-gray-400 hover:text-white hover:bg-white/5"
+                  }`}
               >
                 <Icon size={18} />
                 {item.label}
