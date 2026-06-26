@@ -31,22 +31,38 @@ export const getAdminJobs = async () => {
   return extractJobsArray(response.data);
 };
 
+const isJobObject = (data) => {
+  return (
+    data &&
+    typeof data === "object" &&
+    !Array.isArray(data) &&
+    (data.id || data._id || data.title || data.company || data.description)
+  );
+};
+
+const extractJobObject = (data) => {
+  if (!data || typeof data !== "object" || Array.isArray(data)) return null;
+
+  const directJob = data.job || data.data?.job;
+  if (isJobObject(directJob)) return directJob;
+
+  const nestedJobs = data.jobs || data.data?.jobs;
+  if (Array.isArray(nestedJobs) && nestedJobs.length > 0 && isJobObject(nestedJobs[0])) {
+    return nestedJobs[0];
+  }
+
+  const candidate = data.data || data;
+  return isJobObject(candidate) ? candidate : null;
+};
+
 export const createAdminJob = async (jobData) => {
   const response = await api.post(ADMIN.JOBS, jobData);
-  // Extract single job from response.data.job or response.data
-  if (response.data && typeof response.data === "object") {
-    return response.data.job || response.data;
-  }
-  return null;
+  return extractJobObject(response.data);
 };
 
 export const updateAdminJob = async (id, jobData) => {
   const response = await api.put(`${ADMIN.JOBS}/${id}`, jobData);
-  // Extract updated job from response.data.job or response.data
-  if (response.data && typeof response.data === "object") {
-    return response.data.job || response.data;
-  }
-  return null;
+  return extractJobObject(response.data);
 };
 
 export const deleteAdminJob = async (id) => {

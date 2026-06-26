@@ -24,10 +24,11 @@ function AdminJobsManagement() {
     title: "",
     company: "",
     location: "",
-    type: "Full-time",
-    salary: "",
-    description: "",
-    status: "active",
+    skills: "",
+    stipend: "",
+    deadline: "",
+    duration: "",
+    jobUrl: "",
   });
 
   const addToast = useUIStore((s) => s.addToast);
@@ -107,6 +108,21 @@ function AdminJobsManagement() {
     setError("");
   };
 
+  const parseApiError = (apiError) => {
+    if (!apiError) return null;
+    if (typeof apiError === "string") return apiError;
+    if (apiError.message) return apiError.message;
+    if (apiError.error) return apiError.error;
+    if (Array.isArray(apiError)) return apiError.join(" ");
+
+    const values = Object.values(apiError).flatMap((value) => {
+      if (typeof value === "string") return [value];
+      if (Array.isArray(value)) return value;
+      return [];
+    });
+    return values.join(" ") || null;
+  };
+
   const handleFieldChange = (field, value) => {
     setForm((prev) => ({
       ...prev,
@@ -122,6 +138,7 @@ function AdminJobsManagement() {
 
     try {
       if (editingJob) {
+<<<<<<< HEAD
         const response = await updateAdminJob(
           getJobId(editingJob),
           form
@@ -138,18 +155,30 @@ function AdminJobsManagement() {
             getJobId(job) === getJobId(updatedJob)
               ? updatedJob
               : job
+=======
+        const response = await updateAdminJob(getJobId(editingJob), form);
+        const updatedJob = response?.job || response;
+
+        setJobs((prev) =>
+          prev.map((job) =>
+            getJobId(job) === getJobId(updatedJob) ? updatedJob : job
+>>>>>>> d797af7 (CHANGES)
           )
         );
 
         addToast("Job updated successfully");
       } else {
         const response = await createAdminJob(form);
+<<<<<<< HEAD
 
         const createdJob =
           response?.job ||
           response?.data?.job ||
           response?.data ||
           response;
+=======
+        const createdJob = response?.job || response;
+>>>>>>> d797af7 (CHANGES)
 
         setJobs((prev) => [createdJob, ...prev]);
 
@@ -158,10 +187,33 @@ function AdminJobsManagement() {
 
       closeModal();
     } catch (err) {
+<<<<<<< HEAD
       setError(
         err.response?.data?.message ||
           err.message ||
           "Unable to save job."
+=======
+      console.error("========== JOB CREATION ERROR ==========");
+      console.error("Full Error:", err);
+      console.error("Response:", err.response);
+      console.error("Status:", err.response?.status);
+      console.error("Data:", err.response?.data);
+      console.error("Message:", err.response?.data?.message);
+      console.error("Errors:", err.response?.data?.errors);
+
+      setError(
+        err.response?.data?.message ||
+        err.response?.data?.error ||
+        err.message ||
+        "Unable to save job."
+      );
+
+      addToast(
+        err.response?.data?.message ||
+        err.response?.data?.error ||
+        "Unable to save job.",
+        "danger"
+>>>>>>> d797af7 (CHANGES)
       );
     } finally {
       setSaving(false);
@@ -335,18 +387,22 @@ function AdminJobsManagement() {
             <form onSubmit={handleSubmit} className="space-y-4">
               <Input
                 label="Job Title"
-                placeholder="Frontend Developer"
                 value={form.title}
+<<<<<<< HEAD
                 onChange={(e) =>
                   handleFieldChange("title", e.target.value)
                 }
+=======
+                onChange={(e) => handleFieldChange("title", e.target.value)}
+                placeholder="Frontend Developer"
+>>>>>>> d797af7 (CHANGES)
                 required
               />
 
               <Input
                 label="Company"
-                placeholder="JobReach AI"
                 value={form.company}
+<<<<<<< HEAD
                 onChange={(e) =>
                   handleFieldChange("company", e.target.value)
                 }
@@ -413,6 +469,58 @@ function AdminJobsManagement() {
               </div>
 
               <div className="flex justify-end gap-3 pt-2">
+=======
+                onChange={(e) => handleFieldChange("company", e.target.value)}
+                placeholder="Google"
+                required
+              />
+
+              <Input
+                label="Location"
+                value={form.location}
+                onChange={(e) => handleFieldChange("location", e.target.value)}
+                placeholder="Bangalore"
+              />
+
+              <Input
+                label="Skills"
+                value={form.skills}
+                onChange={(e) => handleFieldChange("skills", e.target.value)}
+                placeholder="React, Node.js, MongoDB"
+              />
+
+              <Input
+                label="Stipend"
+                type="number"
+                value={form.stipend}
+                onChange={(e) => handleFieldChange("stipend", e.target.value)}
+                placeholder="1200000"
+              />
+
+              <Input
+                label="Duration"
+                value={form.duration}
+                onChange={(e) => handleFieldChange("duration", e.target.value)}
+                placeholder="6 Months"
+              />
+
+              <Input
+                label="Deadline"
+                type="date"
+                value={form.deadline}
+                onChange={(e) => handleFieldChange("deadline", e.target.value)}
+              />
+
+              <Input
+                label="Job URL"
+                value={form.jobUrl}
+                onChange={(e) => handleFieldChange("jobUrl", e.target.value)}
+                placeholder="https://company.com/jobs/frontend"
+                required
+              />
+
+              <div className="flex justify-end gap-3 pt-3">
+>>>>>>> d797af7 (CHANGES)
                 <Button
                   type="button"
                   variant="outline"
@@ -421,7 +529,14 @@ function AdminJobsManagement() {
                   Cancel
                 </Button>
 
+<<<<<<< HEAD
                 <Button type="submit" loading={saving}>
+=======
+                <Button
+                  type="submit"
+                  loading={saving}
+                >
+>>>>>>> d797af7 (CHANGES)
                   {editingJob ? "Update Job" : "Create Job"}
                 </Button>
               </div>
