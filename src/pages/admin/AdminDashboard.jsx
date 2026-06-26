@@ -9,6 +9,7 @@ import {
 
 import Card from "../../components/common/Card.jsx";
 import { getDashboardStats } from "../../services/adminDashboardService.js";
+import { getRecentActivities } from "../../services/activityService.js";
 
 function AdminDashboard() {
   const [stats, setStats] =useState({
@@ -18,9 +19,12 @@ function AdminDashboard() {
     activeUsers: 0,
   });
 
+  const [activities, setActivities] = useState([]);
+
   useEffect(() => {
     fetchDashboard();
-  }, []);
+    fetchActivities();
+}, []);
 
   const fetchDashboard = async () => {
     try {
@@ -31,12 +35,16 @@ function AdminDashboard() {
     }
   };
 
-  const activities = [
-    { action: "New user registered", time: "2 min ago" },
-    { action: "Job posted: Frontend Developer", time: "15 min ago" },
-    { action: "Application submitted", time: "1 hour ago" },
-    { action: "User promoted to Admin", time: "3 hours ago" },
-  ];
+  const fetchActivities = async () => {
+    try {
+        const data = await getRecentActivities();
+        setActivities(data);
+    } catch (err) {
+        console.log(err);
+    }
+};
+
+  
 
   return (
     <div>
@@ -124,17 +132,17 @@ function AdminDashboard() {
           </h2>
 
           <div className="space-y-3">
-            {activities.map((activity, index) => (
+            {activities.map((activity) => (
               <div
-                key={index}
-                className="flex justify-between border-b border-white/5 pb-2"
+                key={activity._id}
+                className="flex justify-between text-sm border-b border-white/5 pb-2"
               >
                 <span className="text-gray-300">
-                  {activity.action}
+                  {activity.description}
                 </span>
 
-                <span className="text-gray-500 text-sm">
-                  {activity.time}
+                <span className="text-gray-500">
+                  {new Date(activity.createdAt).toLocaleDateString()}
                 </span>
               </div>
             ))}
