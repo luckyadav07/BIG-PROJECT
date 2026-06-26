@@ -13,8 +13,11 @@ const applicationSchema=new Schema({
     },
     status:{
         type:String,
+        enum:["Saved", "Applied", "Interview", "Offer", "Rejected"],
         default:"Saved"
     }
+},{
+    timestamps:true
 })
 
 export default mongoose.model("Application",applicationSchema)

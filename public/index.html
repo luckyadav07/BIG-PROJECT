@@ -1,0 +1,207 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Hireflow</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;450;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="#home" aria-label="Hireflow home">
+      <span class="brand-mark">H</span>
+      <span>Hireflow</span>
+    </a>
+    <nav class="nav-links" aria-label="Main navigation">
+      <a href="#jobs">Jobs</a>
+      <a href="#workflow">Workflow</a>
+      <a href="#integrations">Integrations</a>
+      <a href="#admin">Admin</a>
+    </nav>
+    <div class="header-actions">
+      <button class="button ghost" data-open-auth="login">Log in</button>
+      <button class="button gradient" data-open-auth="register">Sign up</button>
+      <button class="button dark hidden" id="logoutButton">Log out</button>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero" id="home">
+      <div class="hero-copy">
+        <p class="eyebrow">Applicant tracking, connected to your backend</p>
+        <h1>Everything you need to hire in one place</h1>
+        <p class="hero-text">Publish roles, manage applicants, and make decisions from one clean hiring workspace.</p>
+        <div class="hero-actions">
+          <a class="button dark large" href="#jobs">View open roles</a>
+          <button class="button soft large" data-open-auth="login">Admin login</button>
+        </div>
+      </div>
+      <div class="product-shell" aria-label="Hiring dashboard preview">
+        <div class="product-topbar">
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
+        <div class="product-grid">
+          <aside class="product-sidebar">
+            <strong>Pipeline</strong>
+            <span class="active">Overview</span>
+            <span>Jobs</span>
+            <span>Candidates</span>
+            <span>Messages</span>
+          </aside>
+          <div class="product-main">
+            <div class="mini-stats">
+              <article><span id="heroJobCount">0</span><small>Open jobs</small></article>
+              <article><span id="heroApplicationCount">0</span><small>Applications</small></article>
+              <article><span id="heroUserCount">0</span><small>Team users</small></article>
+            </div>
+            <div class="pipeline-preview" id="pipelinePreview"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="logo-band" aria-label="Product highlights">
+      <span>Company job board</span>
+      <span>Candidate management</span>
+      <span>Team collaboration</span>
+      <span>Admin analytics</span>
+    </section>
+
+    <section class="section split" id="jobs">
+      <div>
+        <p class="eyebrow">Live job board</p>
+        <h2>Open roles from your database</h2>
+        <p class="section-copy">Jobs are loaded from the backend. Sign in to apply, or use an admin account to manage postings and candidates.</p>
+      </div>
+      <div class="toolbar">
+        <input id="jobSearch" type="search" placeholder="Search jobs, skills, company">
+        <button class="button dark" id="refreshJobs">Refresh</button>
+      </div>
+    </section>
+    <section class="jobs-grid" id="jobsGrid" aria-live="polite"></section>
+
+    <section class="section feature-layout" id="workflow">
+      <div>
+        <p class="eyebrow">Manage the process</p>
+        <h2>Review, shortlist, offer, and reject with clear status updates</h2>
+        <p class="section-copy">The admin panel uses protected backend routes, so only admin users can see applications and change candidate stages.</p>
+      </div>
+      <div class="feature-list">
+        <article>
+          <strong>Flexible applicant tracking</strong>
+          <span>Applications move through saved, applied, interview, offer, and rejected stages.</span>
+        </article>
+        <article>
+          <strong>Rich candidate profiles</strong>
+          <span>Admin views include applicant details, job data, skills, and timestamps.</span>
+        </article>
+        <article>
+          <strong>Real backend connection</strong>
+          <span>No placeholder records are used. Empty database collections show useful empty states.</span>
+        </article>
+      </div>
+    </section>
+
+    <section class="section integrations" id="integrations">
+      <p class="eyebrow">Integrate with the best</p>
+      <h2>Built for hiring operations</h2>
+      <div class="integration-grid">
+        <article>API</article>
+        <article>Email</article>
+        <article>Resume parser</article>
+        <article>Notifications</article>
+        <article>Campaigns</article>
+        <article>Chatbot</article>
+      </div>
+    </section>
+
+    <section class="admin-panel" id="admin">
+      <div class="admin-heading">
+        <div>
+          <p class="eyebrow">Admin workspace</p>
+          <h2>Operate hiring from one protected view</h2>
+        </div>
+        <button class="button dark" data-open-auth="login">Open admin</button>
+      </div>
+
+      <div class="admin-locked" id="adminLocked">
+        <strong>Admin access required</strong>
+        <span>Log in with an admin account to manage jobs, users, applications, and analytics.</span>
+      </div>
+
+      <div class="admin-content hidden" id="adminContent">
+        <div class="metrics" id="adminMetrics"></div>
+        <div class="admin-tabs" role="tablist" aria-label="Admin sections">
+          <button class="active" data-admin-tab="jobsAdmin">Jobs</button>
+          <button data-admin-tab="applicationsAdmin">Applications</button>
+          <button data-admin-tab="usersAdmin">Users</button>
+        </div>
+
+        <section class="admin-tab-panel" id="jobsAdmin">
+          <form class="job-form" id="jobForm">
+            <input type="hidden" id="jobId">
+            <label>Title<input id="jobTitle" required></label>
+            <label>Company<input id="jobCompany" required></label>
+            <label>Location<input id="jobLocation"></label>
+            <label>Skills<input id="jobSkills" placeholder="React, Node.js, MongoDB"></label>
+            <label>Stipend<input id="jobStipend" type="number" min="0"></label>
+            <label>Deadline<input id="jobDeadline" type="date"></label>
+            <label>Duration<input id="jobDuration"></label>
+            <label>Apply URL<input id="jobUrl" type="url" required></label>
+            <div class="form-actions">
+              <button class="button dark" type="submit">Save job</button>
+              <button class="button soft" type="button" id="resetJobForm">Clear</button>
+            </div>
+          </form>
+          <div class="admin-list" id="adminJobsList"></div>
+        </section>
+
+        <section class="admin-tab-panel hidden" id="applicationsAdmin">
+          <div class="admin-list" id="adminApplicationsList"></div>
+        </section>
+
+        <section class="admin-tab-panel hidden" id="usersAdmin">
+          <div class="admin-list" id="adminUsersList"></div>
+        </section>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <strong>Hireflow</strong>
+    <span>Hiring made simple.</span>
+  </footer>
+
+  <dialog class="auth-dialog" id="authDialog">
+    <form method="dialog" class="dialog-card">
+      <button class="icon-button" aria-label="Close">x</button>
+    </form>
+    <div class="dialog-body">
+      <div class="auth-tabs">
+        <button class="active" data-auth-tab="login">Log in</button>
+        <button data-auth-tab="register">Sign up</button>
+      </div>
+      <form id="loginForm" class="auth-form">
+        <label>Email<input type="email" id="loginEmail" required></label>
+        <label>Password<input type="password" id="loginPassword" required></label>
+        <button class="button dark" type="submit">Log in</button>
+      </form>
+      <form id="registerForm" class="auth-form hidden">
+        <label>Name<input id="registerName" required></label>
+        <label>Email<input type="email" id="registerEmail" required></label>
+        <label>Password<input type="password" id="registerPassword" required minlength="6"></label>
+        <button class="button gradient" type="submit">Create account</button>
+      </form>
+      <p class="form-message" id="authMessage"></p>
+    </div>
+  </dialog>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <script src="app.js" type="module"></script>
+</body>
+</html>

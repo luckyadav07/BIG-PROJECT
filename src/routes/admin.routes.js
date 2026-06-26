@@ -1,5 +1,6 @@
 import express from "express";
 
+<<<<<<< Updated upstream
 import {
   getAllUsers,
   getUserById,
@@ -13,6 +14,9 @@ import {
   getDashboardStats,
   getRecentActivities,
 } from "../controllers/admin.controller.js";
+=======
+import { getAllUsers, getUserById, deleteUser, updateUser, createJobs, getAllJobs, getJobById, updateJob, deleteJob, getAllApplications, updateApplicationStatus, getAnalytics, getStats } from "../controllers/admin.controller.js"
+>>>>>>> Stashed changes
 
 // 1. IMPORT YOUR MIDDLEWARE
 import authMiddle from "../middleware/auth.middleware.js";
@@ -41,7 +45,17 @@ router.get("/jobs", getAllJobs)
 router.get("/jobs/:id", getJobById)
 router.put("/jobs/:id", updateJob)
 router.delete("/jobs/:id", deleteJob)
+<<<<<<< Updated upstream
 router.get("/activities", getRecentActivities);
 
 
 export default router;
+=======
+
+router.get("/applications", getAllApplications)
+router.put("/applications/:id/status", updateApplicationStatus)
+router.get("/stats", getStats)
+router.get("/analytics", getAnalytics)
+
+export default router;
+>>>>>>> Stashed changes

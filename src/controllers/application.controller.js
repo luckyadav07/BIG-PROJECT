@@ -38,6 +38,7 @@ export const applyJob = asyncHandler(async (req, res) => {
 // Get all applications of logged in user
 export const getUserApplications = asyncHandler(async (req, res) => {
 
+<<<<<<< Updated upstream
     const applications = await Application.find({
     userId: req.user._id
     }).populate(
@@ -48,6 +49,11 @@ export const getUserApplications = asyncHandler(async (req, res) => {
     if (applications.length === 0) {
         throw new ApiError(404, "No applications found")
     }
+=======
+    const applications = await Application.find({ userId: req.user._id })
+        .populate("jobId")
+        .sort({ createdAt: -1 })
+>>>>>>> Stashed changes
 
     res.status(200).json(
         new ApiResponse(200, applications, "Applications fetched successfully")
@@ -61,12 +67,21 @@ export const updateApplicationStatus = asyncHandler(async (req, res) => {
 
     const { id } = req.params
     const { status } = req.body
+    const allowedStatuses = ["Saved", "Applied", "Interview", "Offer", "Rejected"]
+
+    if (req.user.role !== "admin") {
+        throw new ApiError(403, "Only admins can update application status")
+    }
+
+    if (!allowedStatuses.includes(status)) {
+        throw new ApiError(400, "Invalid application status")
+    }
 
     // findByIdAndUpdate returns null if not found
     const application = await Application.findByIdAndUpdate(
         id,
         { status },
-        { new: true }
+        { new: true, runValidators: true }
     )
 
     if (!application) {

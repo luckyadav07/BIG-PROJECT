@@ -29,6 +29,8 @@ const jobSchema=new Schema({
         type:String,
         required:true,
     }
+},{
+    timestamps:true
 })
 
 export default mongoose.model("Job",jobSchema)

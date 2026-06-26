@@ -1,5 +1,6 @@
 import User from '../models/user.models.js';
 import Job from "../models/job.models.js";
+import Application from "../models/applications.models.js";
 import asyncHandler from "../utils/asyncHandler.js";
 import ApiError from "../utils/ApiError.js";
 import ApiResponse from "../utils/ApiResponse.js";
@@ -162,6 +163,7 @@ export const deleteJob = asyncHandler(async (req, res) => {
     );
 });
 
+<<<<<<< Updated upstream
 export const getDashboardStats = asyncHandler(async (req, res) => {
     const totalUsers = await User.countDocuments();
 
@@ -176,10 +178,84 @@ export const getDashboardStats = asyncHandler(async (req, res) => {
     });
 
     res.status(200).json(
+=======
+export const getAllApplications = asyncHandler(async (req, res) => {
+    const applications = await Application.find()
+        .populate("userId", "-password")
+        .populate("jobId")
+        .sort({ createdAt: -1 });
+
+    return res.status(200).json(
+        new ApiResponse(200, applications, "Applications fetched successfully")
+    );
+});
+
+export const updateApplicationStatus = asyncHandler(async (req, res) => {
+    const allowedStatuses = ["Saved", "Applied", "Interview", "Offer", "Rejected"];
+    const { status } = req.body;
+
+    if (!allowedStatuses.includes(status)) {
+        throw new ApiError(400, "Invalid application status");
+    }
+
+    const application = await Application.findByIdAndUpdate(
+        req.params.id,
+        { status },
+        {
+            new: true,
+            runValidators: true,
+        }
+    )
+        .populate("userId", "-password")
+        .populate("jobId");
+
+    if (!application) {
+        throw new ApiError(404, "Application not found");
+    }
+
+    return res.status(200).json(
+        new ApiResponse(200, application, "Application status updated successfully")
+    );
+});
+
+export const getStats = asyncHandler(async (req, res) => {
+    const [totalUsers, totalJobs, totalApplications] = await Promise.all([
+        User.countDocuments(),
+        Job.countDocuments(),
+        Application.countDocuments(),
+    ]);
+
+    return res.status(200).json(
+        new ApiResponse(
+            200,
+            { totalUsers, totalJobs, totalApplications },
+            "Stats fetched successfully"
+        )
+    );
+});
+
+export const getAnalytics = asyncHandler(async (req, res) => {
+    const [totalUsers, totalJobs, totalApplications, applicationsByStatus] = await Promise.all([
+        User.countDocuments(),
+        Job.countDocuments(),
+        Application.countDocuments(),
+        Application.aggregate([
+            { $group: { _id: "$status", count: { $sum: 1 } } },
+        ]),
+    ]);
+
+    const statusBreakdown = applicationsByStatus.reduce((acc, item) => {
+        acc[item._id || "Unknown"] = item.count;
+        return acc;
+    }, {});
+
+    return res.status(200).json(
+>>>>>>> Stashed changes
         new ApiResponse(
             200,
             {
                 totalUsers,
+<<<<<<< Updated upstream
                 totalAdmins,
                 totalJobs,
                 activeUsers,
@@ -205,3 +281,13 @@ export const getRecentActivities = asyncHandler(async (req, res) => {
     );
 
 });
+=======
+                totalJobs,
+                totalApplications,
+                statusBreakdown,
+            },
+            "Analytics fetched successfully"
+        )
+    );
+});
+>>>>>>> Stashed changes
