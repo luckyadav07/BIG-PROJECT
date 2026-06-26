@@ -145,3 +145,30 @@ export const deleteJob = asyncHandler(async (req, res) => {
         new ApiResponse(200, null, "Job deleted successfully")
     );
 });
+
+export const getDashboardStats = asyncHandler(async (req, res) => {
+    const totalUsers = await User.countDocuments();
+
+    const totalAdmins = await User.countDocuments({
+        role: "admin",
+    });
+
+    const totalJobs = await Job.countDocuments();
+
+    const activeUsers = await User.countDocuments({
+        isActive: true,
+    });
+
+    res.status(200).json(
+        new ApiResponse(
+            200,
+            {
+                totalUsers,
+                totalAdmins,
+                totalJobs,
+                activeUsers,
+            },
+            "Dashboard stats fetched successfully"
+        )
+    );
+});
