@@ -38,22 +38,16 @@ export const applyJob = asyncHandler(async (req, res) => {
 // Get all applications of logged in user
 export const getUserApplications = asyncHandler(async (req, res) => {
 
-<<<<<<< Updated upstream
     const applications = await Application.find({
     userId: req.user._id
     }).populate(
     "jobId",
     "title company location"
-    );
+    ).sort({ createdAt: -1 });
     // .find() returns empty array [] not null — so check length not !applications
     if (applications.length === 0) {
         throw new ApiError(404, "No applications found")
     }
-=======
-    const applications = await Application.find({ userId: req.user._id })
-        .populate("jobId")
-        .sort({ createdAt: -1 })
->>>>>>> Stashed changes
 
     res.status(200).json(
         new ApiResponse(200, applications, "Applications fetched successfully")

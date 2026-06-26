@@ -1,6 +1,5 @@
 import express from "express";
 
-<<<<<<< Updated upstream
 import {
   getAllUsers,
   getUserById,
@@ -13,49 +12,41 @@ import {
   deleteJob,
   getDashboardStats,
   getRecentActivities,
+  getAllApplications,
+  updateApplicationStatus,
+  getAnalytics,
+  getStats,
 } from "../controllers/admin.controller.js";
-=======
-import { getAllUsers, getUserById, deleteUser, updateUser, createJobs, getAllJobs, getJobById, updateJob, deleteJob, getAllApplications, updateApplicationStatus, getAnalytics, getStats } from "../controllers/admin.controller.js"
->>>>>>> Stashed changes
 
-// 1. IMPORT YOUR MIDDLEWARE
 import authMiddle from "../middleware/auth.middleware.js";
-
-// 2. IMPORT YOUR NEW MIDDLEWARE
 import isAdmin from "../middleware/isAdmin.middleware.js";
+
 const router = express.Router();
 
+// Protect all admin routes
+router.use(authMiddle, isAdmin);
 
-// 3. APPLY MIDDLEWARE TO ALL ROUTES IN THIS FILE
-// This line ensures every route below it requires a valid token
-
-// First check if they are logged in (authMiddle), THEN check if they are an admin (isAdmin)
-router.use(authMiddle,isAdmin);
+// Dashboard
 router.get("/dashboard", getDashboardStats);
+router.get("/activities", getRecentActivities);
+router.get("/stats", getStats);
+router.get("/analytics", getAnalytics);
 
-// User Routes 
-router.get("/users", getAllUsers)      // was getallusers
-router.get("/users/:id", getUserById)  // was getuserbyid
-router.put("/users/:id", updateUser)   // was updateuser
-router.delete("/users/:id", deleteUser) // was deleteuser
+// User Routes
+router.get("/users", getAllUsers);
+router.get("/users/:id", getUserById);
+router.put("/users/:id", updateUser);
+router.delete("/users/:id", deleteUser);
 
 // Job Routes
-router.post("/jobs", createJobs)       
-router.get("/jobs", getAllJobs)
-router.get("/jobs/:id", getJobById)
-router.put("/jobs/:id", updateJob)
-router.delete("/jobs/:id", deleteJob)
-<<<<<<< Updated upstream
-router.get("/activities", getRecentActivities);
+router.post("/jobs", createJobs);
+router.get("/jobs", getAllJobs);
+router.get("/jobs/:id", getJobById);
+router.put("/jobs/:id", updateJob);
+router.delete("/jobs/:id", deleteJob);
 
-
-export default router;
-=======
-
-router.get("/applications", getAllApplications)
-router.put("/applications/:id/status", updateApplicationStatus)
-router.get("/stats", getStats)
-router.get("/analytics", getAnalytics)
+// Application Routes
+router.get("/applications", getAllApplications);
+router.put("/applications/:id/status", updateApplicationStatus);
 
 export default router;
->>>>>>> Stashed changes

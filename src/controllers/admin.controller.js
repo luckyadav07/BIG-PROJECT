@@ -163,22 +163,43 @@ export const deleteJob = asyncHandler(async (req, res) => {
     );
 });
 
-<<<<<<< Updated upstream
+// Dashboard
 export const getDashboardStats = asyncHandler(async (req, res) => {
     const totalUsers = await User.countDocuments();
-
-    const totalAdmins = await User.countDocuments({
-        role: "admin",
-    });
-
+    const totalAdmins = await User.countDocuments({ role: "admin" });
     const totalJobs = await Job.countDocuments();
+    const activeUsers = await User.countDocuments({ isActive: true });
 
-    const activeUsers = await User.countDocuments({
-        isActive: true,
-    });
+    return res.status(200).json(
+        new ApiResponse(
+            200,
+            {
+                totalUsers,
+                totalAdmins,
+                totalJobs,
+                activeUsers,
+            },
+            "Dashboard stats fetched successfully"
+        )
+    );
+});
 
-    res.status(200).json(
-=======
+// Recent Activities
+export const getRecentActivities = asyncHandler(async (req, res) => {
+    const activities = await Activity.find()
+        .sort({ createdAt: -1 })
+        .limit(8);
+
+    return res.status(200).json(
+        new ApiResponse(
+            200,
+            activities,
+            "Activities fetched successfully"
+        )
+    );
+});
+
+// Applications
 export const getAllApplications = asyncHandler(async (req, res) => {
     const applications = await Application.find()
         .populate("userId", "-password")
@@ -191,7 +212,14 @@ export const getAllApplications = asyncHandler(async (req, res) => {
 });
 
 export const updateApplicationStatus = asyncHandler(async (req, res) => {
-    const allowedStatuses = ["Saved", "Applied", "Interview", "Offer", "Rejected"];
+    const allowedStatuses = [
+        "Saved",
+        "Applied",
+        "Interview",
+        "Offer",
+        "Rejected",
+    ];
+
     const { status } = req.body;
 
     if (!allowedStatuses.includes(status)) {
@@ -214,10 +242,15 @@ export const updateApplicationStatus = asyncHandler(async (req, res) => {
     }
 
     return res.status(200).json(
-        new ApiResponse(200, application, "Application status updated successfully")
+        new ApiResponse(
+            200,
+            application,
+            "Application status updated successfully"
+        )
     );
 });
 
+// Dashboard Stats
 export const getStats = asyncHandler(async (req, res) => {
     const [totalUsers, totalJobs, totalApplications] = await Promise.all([
         User.countDocuments(),
@@ -228,19 +261,34 @@ export const getStats = asyncHandler(async (req, res) => {
     return res.status(200).json(
         new ApiResponse(
             200,
-            { totalUsers, totalJobs, totalApplications },
+            {
+                totalUsers,
+                totalJobs,
+                totalApplications,
+            },
             "Stats fetched successfully"
         )
     );
 });
 
+// Analytics
 export const getAnalytics = asyncHandler(async (req, res) => {
-    const [totalUsers, totalJobs, totalApplications, applicationsByStatus] = await Promise.all([
+    const [
+        totalUsers,
+        totalJobs,
+        totalApplications,
+        applicationsByStatus,
+    ] = await Promise.all([
         User.countDocuments(),
         Job.countDocuments(),
         Application.countDocuments(),
         Application.aggregate([
-            { $group: { _id: "$status", count: { $sum: 1 } } },
+            {
+                $group: {
+                    _id: "$status",
+                    count: { $sum: 1 },
+                },
+            },
         ]),
     ]);
 
@@ -250,38 +298,10 @@ export const getAnalytics = asyncHandler(async (req, res) => {
     }, {});
 
     return res.status(200).json(
->>>>>>> Stashed changes
         new ApiResponse(
             200,
             {
                 totalUsers,
-<<<<<<< Updated upstream
-                totalAdmins,
-                totalJobs,
-                activeUsers,
-            },
-            "Dashboard stats fetched successfully"
-        )
-    );
-});
-
-export const getRecentActivities = asyncHandler(async (req, res) => {
-
-    const activities = await Activity
-        .find()
-        .sort({ createdAt: -1 })
-        .limit(8);
-
-    res.status(200).json(
-        new ApiResponse(
-            200,
-            activities,
-            "Activities fetched successfully"
-        )
-    );
-
-});
-=======
                 totalJobs,
                 totalApplications,
                 statusBreakdown,
@@ -290,4 +310,3 @@ export const getRecentActivities = asyncHandler(async (req, res) => {
         )
     );
 });
->>>>>>> Stashed changes
