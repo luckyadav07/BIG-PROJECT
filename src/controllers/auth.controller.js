@@ -4,6 +4,7 @@ import jwt from "jsonwebtoken"
 import asyncHandler from "../utils/asyncHandler.js"
 import ApiError from "../utils/ApiError.js"
 import ApiResponse from "../utils/ApiResponse.js"
+import Activity from "../models/activity.models.js";
 
 const register = asyncHandler(async (req, res) => {
 
@@ -26,6 +27,11 @@ const register = asyncHandler(async (req, res) => {
 
     // Step 5 - create new user in MongoDB
     const user = await User.create({ name, email, password: hashedpassword })
+
+    await Activity.create({
+    type: "USER_REGISTERED",
+    description: `${user.name} registered`
+});
 
     const userWithoutPassword = await User.findById(user._id).select("-password")
 

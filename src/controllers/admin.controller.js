@@ -3,6 +3,7 @@ import Job from "../models/job.models.js";
 import asyncHandler from "../utils/asyncHandler.js";
 import ApiError from "../utils/ApiError.js";
 import ApiResponse from "../utils/ApiResponse.js";
+import Activity from "../models/activity.models.js";
 
 // sab user nikal ke dega
 export const getAllUsers = asyncHandler(async (req, res) => {
@@ -58,6 +59,11 @@ export const updateUser = asyncHandler(async (req, res) => {
     user.role = role;
     await user.save();
 
+    await Activity.create({
+    type: "ROLE_CHANGED",
+    description: `${user.name} promoted to ${role}`
+});
+
     return res.status(200).json(
         new ApiResponse(200, user, "Role updated successfully")
     );
@@ -81,6 +87,11 @@ export const createJobs = asyncHandler(async (req, res) => {
         duration,
         jobUrl
     });
+
+    await Activity.create({
+    type: "JOB_CREATED",
+    description: `${company} posted ${title}`
+});
 
     return res.status(201).json(
         new ApiResponse(201, job, "Job created successfully")
@@ -139,6 +150,11 @@ export const deleteJob = asyncHandler(async (req, res) => {
         throw new ApiError(404, "Job not found");
     }
 
+    await Activity.create({
+    type: "JOB_DELETED",
+    description: `${job.title} deleted`
+});
+
     await Job.findByIdAndDelete(req.params.id);
 
     return res.status(200).json(
@@ -171,4 +187,21 @@ export const getDashboardStats = asyncHandler(async (req, res) => {
             "Dashboard stats fetched successfully"
         )
     );
+});
+
+export const getRecentActivities = asyncHandler(async (req, res) => {
+
+    const activities = await Activity
+        .find()
+        .sort({ createdAt: -1 })
+        .limit(8);
+
+    res.status(200).json(
+        new ApiResponse(
+            200,
+            activities,
+            "Activities fetched successfully"
+        )
+    );
+
 });

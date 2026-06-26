@@ -11,6 +11,7 @@ import {
   updateJob,
   deleteJob,
   getDashboardStats,
+  getRecentActivities,
 } from "../controllers/admin.controller.js";
 
 // 1. IMPORT YOUR MIDDLEWARE
@@ -40,6 +41,7 @@ router.get("/jobs", getAllJobs)
 router.get("/jobs/:id", getJobById)
 router.put("/jobs/:id", updateJob)
 router.delete("/jobs/:id", deleteJob)
+router.get("/activities", getRecentActivities);
 
 
 export default router;
