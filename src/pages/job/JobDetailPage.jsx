@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { MapPin, Clock, Share2, Bookmark } from "lucide-react";
 import api from "../../services/api.js";
+import { applyJob } from "../../services/applicationService.js";
 import { MOCK_JOBS } from "../../utils/mockData.js";
 import { getInitials, formatRelativeTime } from "../../utils/formatters.js";
 import Card from "../../components/common/Card.jsx";
@@ -14,6 +15,7 @@ function JobDetailPage() {
   const { id } = useParams();
   const [job, setJob] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [applying, setApplying] = useState(false);
   const addToast = useUIStore((s) => s.addToast);
 
   useEffect(() => {
@@ -29,6 +31,23 @@ function JobDetailPage() {
     };
     fetchJob();
   }, [id]);
+
+  const handleApply = async () => {
+  try {
+    setApplying(true);
+
+    await applyJob(job._id);
+
+    addToast("Application submitted successfully!", "success");
+  } catch (err) {
+    const message =
+      err.response?.data?.message || "Failed to apply";
+
+    addToast(message, "error");
+  } finally {
+    setApplying(false);
+  }
+};
 
   if (loading) return <div className="space-y-4"><Skeleton height="200px" /><Skeleton height="400px" /></div>;
   if (!job) return <div className="text-center py-16 text-gray-400">Job not found.</div>;
@@ -91,7 +110,14 @@ function JobDetailPage() {
 
         <div className="space-y-4">
           <Card className="sticky top-24">
-            <Button className="w-full mb-2" onClick={() => addToast("Application submitted!", "success")}>Apply Now</Button>
+            <Button
+              className="w-full mb-2"
+              loading={applying}
+              disabled={applying}
+              onClick={handleApply}
+            >
+              {applying ? "Applying..." : "Apply Now"}
+            </Button>
             <Button variant="outline" className="w-full mb-2" onClick={() => addToast("Job saved!", "success")}>
               <Bookmark size={16} /> Save Job
             </Button>
@@ -119,5 +145,6 @@ function JobDetailPage() {
     </div>
   );
 }
+
 
 export default JobDetailPage;

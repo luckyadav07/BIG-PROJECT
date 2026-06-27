@@ -1,31 +1,117 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { Link } from "react-router-dom";
 import Card from "../../components/common/Card.jsx";
-import ApplicationCard, { StatusBadge } from "../../components/application/ApplicationCard.jsx";
+import ApplicationCard, {
+  StatusBadge,
+} from "../../components/application/ApplicationCard.jsx";
 import useUIStore from "../../store/uiStore.js";
+import {
+  getApplications,
+  withdrawApplication,
+} from "../../services/applicationService.js";
 
 function ApplicationsPage() {
-  const [applications] = useState([]);
+  const [applications, setApplications] = useState([]);
+  const [loading, setLoading] = useState(true);
+
   const [statusFilter, setStatusFilter] = useState("all");
   const [sortBy, setSortBy] = useState("newest");
   const [search, setSearch] = useState("");
+
   const addToast = useUIStore((s) => s.addToast);
+
+  useEffect(() => {
+    loadApplications();
+  }, []);
+
+  const loadApplications = async () => {
+    try {
+      setLoading(true);
+
+      const data = await getApplications();
+
+      setApplications(data);
+    } catch (err) {
+      console.error(err);
+
+      if (err.response?.status !== 404) {
+        addToast("Failed to load applications", "error");
+      }
+
+      setApplications([]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleWithdraw = async (id) => {
+    try {
+      await withdrawApplication(id);
+
+      setApplications((prev) =>
+        prev.filter((app) => app._id !== id)
+      );
+
+      addToast("Application withdrawn", "success");
+    } catch (err) {
+      console.error(err);
+      addToast("Failed to withdraw application", "error");
+    }
+  };
 
   const filtered = useMemo(() => {
     let result = [...applications];
-    if (statusFilter !== "all") result = result.filter((a) => a.status === statusFilter);
+
+    if (statusFilter !== "all") {
+      result = result.filter(
+        (a) =>
+          a.status.toLowerCase() ===
+          statusFilter.toLowerCase()
+      );
+    }
+
     if (search) {
       const q = search.toLowerCase();
-      result = result.filter((a) => a.jobTitle.toLowerCase().includes(q) || a.company.toLowerCase().includes(q));
+
+      result = result.filter(
+        (a) =>
+          a.jobId?.title?.toLowerCase().includes(q) ||
+          a.jobId?.company?.toLowerCase().includes(q)
+      );
     }
-    if (sortBy === "newest") result.sort((a, b) => new Date(b.dateApplied) - new Date(a.dateApplied));
-    if (sortBy === "oldest") result.sort((a, b) => new Date(a.dateApplied) - new Date(b.dateApplied));
+
+    if (sortBy === "newest") {
+      result.sort(
+        (a, b) =>
+          new Date(b.createdAt) -
+          new Date(a.createdAt)
+      );
+    }
+
+    if (sortBy === "oldest") {
+      result.sort(
+        (a, b) =>
+          new Date(a.createdAt) -
+          new Date(b.createdAt)
+      );
+    }
+
     return result;
   }, [applications, statusFilter, sortBy, search]);
 
+  if (loading) {
+    return (
+      <div className="text-white text-center py-10">
+        Loading applications...
+      </div>
+    );
+  }
+
   return (
     <div>
-      <h1 className="text-2xl font-bold text-white mb-6">My Applications</h1>
+      <h1 className="text-2xl font-bold text-white mb-6">
+        My Applications
+      </h1>
 
       <div className="flex flex-wrap gap-3 mb-6">
         <input
@@ -33,64 +119,98 @@ function ApplicationsPage() {
           placeholder="Search by job or company..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          className="rounded-lg border border-white/20 bg-white/5 px-4 py-2 text-sm text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-accent flex-1 min-w-[200px]"
+          className="rounded-lg border border-white/20 bg-white/5 px-4 py-2 text-sm text-white flex-1"
         />
-        <select value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)} className="rounded-lg border border-white/20 bg-white/5 px-3 py-2 text-sm text-white">
-          <option value="all" className="bg-navy">All Status</option>
-          <option value="applied" className="bg-navy">Applied</option>
-          <option value="interview" className="bg-navy">Interview</option>
-          <option value="offer" className="bg-navy">Offer</option>
-          <option value="rejected" className="bg-navy">Rejected</option>
+
+        <select
+          value={statusFilter}
+          onChange={(e) => setStatusFilter(e.target.value)}
+          className="rounded-lg border border-white/20 bg-white/5 px-3 py-2 text-sm text-white"
+        >
+          <option value="all">All Status</option>
+          <option value="Applied">Applied</option>
+          <option value="Interview">Interview</option>
+          <option value="Offer">Offer</option>
+          <option value="Rejected">Rejected</option>
         </select>
-        <select value={sortBy} onChange={(e) => setSortBy(e.target.value)} className="rounded-lg border border-white/20 bg-white/5 px-3 py-2 text-sm text-white">
-          <option value="newest" className="bg-navy">Newest</option>
-          <option value="oldest" className="bg-navy">Oldest</option>
+
+        <select
+          value={sortBy}
+          onChange={(e) => setSortBy(e.target.value)}
+          className="rounded-lg border border-white/20 bg-white/5 px-3 py-2 text-sm text-white"
+        >
+          <option value="newest">Newest</option>
+          <option value="oldest">Oldest</option>
         </select>
       </div>
 
-      <div className="space-y-3 lg:hidden">
-        {filtered.length > 0 ? (
-          filtered.map((app) => (
-            <ApplicationCard key={app.id} application={app} onWithdraw={() => addToast("Application withdrawn", "warning")} />
-          ))
-        ) : (
-          <div className="rounded-xl border border-white/10 bg-white/5 p-8 text-center text-sm text-gray-400">
-            No applications are available yet.
+      <Card className="!p-0 overflow-hidden">
+        {filtered.length === 0 ? (
+          <div className="p-8 text-center text-gray-400">
+            No applications found.
           </div>
-        )}
-      </div>
-
-      <Card className="hidden lg:block !p-0 overflow-hidden">
-        {filtered.length > 0 ? (
+        ) : (
           <table className="w-full text-sm">
             <thead>
-              <tr className="text-left text-gray-400 bg-white/5">
-                <th className="px-4 py-3">Job Title</th>
+              <tr className="bg-white/5 text-left">
+                <th className="px-4 py-3">Job</th>
                 <th className="px-4 py-3">Company</th>
-                <th className="px-4 py-3">Date Applied</th>
+                <th className="px-4 py-3">Location</th>
                 <th className="px-4 py-3">Status</th>
-                <th className="px-4 py-3">Last Update</th>
-                <th className="px-4 py-3">Actions</th>
+                <th className="px-4 py-3">Applied</th>
+                <th className="px-4 py-3">Action</th>
               </tr>
             </thead>
+
             <tbody>
-              {filtered.map((app, i) => (
-                <tr key={app.id} className={`border-t border-white/5 hover:bg-white/5 ${i % 2 ? "bg-white/[0.02]" : ""}`}>
-                  <td className="px-4 py-3 text-white">{app.jobTitle}</td>
-                  <td className="px-4 py-3 text-gray-400">{app.company}</td>
-                  <td className="px-4 py-3 text-gray-400">{app.dateApplied}</td>
-                  <td className="px-4 py-3"><StatusBadge status={app.status} /></td>
-                  <td className="px-4 py-3 text-gray-400">{app.lastUpdate}</td>
+              {filtered.map((app) => (
+                <tr
+                  key={app._id}
+                  className="border-t border-white/10"
+                >
+                  <td className="px-4 py-3 text-white">
+                    {app.jobId?.title}
+                  </td>
+
                   <td className="px-4 py-3">
-                    <Link to={`/jobs/${app.id}`} className="text-accent hover:underline text-xs mr-3">View</Link>
-                    <button onClick={() => addToast("Application withdrawn", "warning")} className="text-danger hover:underline text-xs">Withdraw</button>
+                    {app.jobId?.company}
+                  </td>
+
+                  <td className="px-4 py-3">
+                    {app.jobId?.location}
+                  </td>
+
+                  <td className="px-4 py-3">
+                    <StatusBadge status={app.status} />
+                  </td>
+
+                  <td className="px-4 py-3">
+                    {new Date(
+                      app.createdAt
+                    ).toLocaleDateString()}
+                  </td>
+
+                  <td className="px-4 py-3">
+                    <Link
+                      to={`/jobs/${app.jobId?._id}`}
+                      className="text-accent mr-3"
+                    >
+                      View
+                    </Link>
+
+                    <button
+                      onClick={() =>
+                        handleWithdraw(app._id)
+                      }
+                      className="text-red-400"
+                    >
+                      Withdraw
+                    </button>
                   </td>
                 </tr>
               ))}
             </tbody>
           </table>
-        ) : (
-          <div className="p-8 text-center text-sm text-gray-400">No applications are available yet.</div>
         )}
       </Card>
     </div>

@@ -15,7 +15,7 @@ export const JOBS = {
 export const APPLICATIONS = {
   LIST: "/applications",
   CREATE: "/applications",
-  UPDATE: (id) => `/applications/${id}`,
+  DELETE: (id) => `/applications/${id}`,
 };
 
 export const NOTIFICATIONS = {

@@ -4,6 +4,7 @@ import FilterPanel from "../../components/job/FilterPanel.jsx";
 import Skeleton from "../../components/common/Skeleton.jsx";
 import useJobStore from "../../store/jobStore.js";
 import useUIStore from "../../store/uiStore.js";
+import { applyJob } from "../../services/applicationService.js";
 
 const defaultFilters = { search: "", jobType: "", experienceLevel: "", sortBy: "relevance" };
 
@@ -50,7 +51,24 @@ function JobsPage() {
             <>
               <div className="grid md:grid-cols-2 gap-4">
                 {paginated.map((job) => (
-                  <JobCard key={job.id || job._id} job={job} onApply={() => addToast("Application submitted!", "success")} onSave={() => addToast("Job saved!", "success")} />
+                  <JobCard key={job.id || job._id} job={job} 
+                  onApply={async () => {
+                    try {
+                      await applyJob(job._id);
+
+                      addToast("Application submitted!", "success");
+
+                      console.log("Applied Successfully");
+                    } catch (err) {
+                      console.error(err);
+
+                      addToast(
+                        err.response?.data?.message || "Failed to apply",
+                        "error"
+                      );
+                    }
+                  }}
+                   onSave={() => addToast("Job saved!", "success")} />
                 ))}
               </div>
               {totalPages > 1 && (
