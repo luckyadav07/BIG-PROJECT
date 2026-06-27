@@ -7,12 +7,19 @@ import Application from "../models/applications.models.js"
 import asyncHandler from "../utils/asyncHandler.js"
 import ApiError from "../utils/ApiError.js"
 import ApiResponse from "../utils/ApiResponse.js"
+import Job from "../models/job.models.js";
 
 
 // Apply to a job
 export const applyJob = asyncHandler(async (req, res) => {
 
     const { jobId } = req.body
+
+    const job = await Job.findById(jobId);
+
+    if (!job) {
+        throw new ApiError(404, "Job not found");
+    }
     const userId = req.user._id
 
     // Check if already applied
@@ -45,45 +52,33 @@ export const getUserApplications = asyncHandler(async (req, res) => {
     "title company location"
     ).sort({ createdAt: -1 });
     // .find() returns empty array [] not null — so check length not !applications
-    if (applications.length === 0) {
-        throw new ApiError(404, "No applications found")
-    }
+    
 
-    res.status(200).json(
+    return res.status(200).json(
         new ApiResponse(200, applications, "Applications fetched successfully")
     )
 
 })
 
 
-// Update application status
-export const updateApplicationStatus = asyncHandler(async (req, res) => {
+export const withdrawApplication = asyncHandler(async (req, res) => {
 
-    const { id } = req.params
-    const { status } = req.body
-    const allowedStatuses = ["Saved", "Applied", "Interview", "Offer", "Rejected"]
+    const { id } = req.params;
 
-    if (req.user.role !== "admin") {
-        throw new ApiError(403, "Only admins can update application status")
-    }
-
-    if (!allowedStatuses.includes(status)) {
-        throw new ApiError(400, "Invalid application status")
-    }
-
-    // findByIdAndUpdate returns null if not found
-    const application = await Application.findByIdAndUpdate(
-        id,
-        { status },
-        { new: true, runValidators: true }
-    )
+    const application = await Application.findOneAndDelete({
+        _id: id,
+        userId: req.user._id,
+    });
 
     if (!application) {
-        throw new ApiError(404, "Application not found")
+        throw new ApiError(404, "Application not found");
     }
 
-    res.status(200).json(
-        new ApiResponse(200, application, "Status updated successfully")
-    )
-
-})
+    return res.status(200).json(
+        new ApiResponse(
+            200,
+            null,
+            "Application withdrawn successfully"
+        )
+    );
+});
