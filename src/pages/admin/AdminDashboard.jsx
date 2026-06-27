@@ -1,15 +1,17 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import {
-  Users,
-  Briefcase,
-  FileCheck,
-  Activity,
-} from "lucide-react";
 
 import Card from "../../components/common/Card.jsx";
-import { getDashboardStats } from "../../services/adminDashboardService.js";
-import { getRecentActivities } from "../../services/activityService.js";
+
+import StatsCards from "../../components/admin/StatsCards.jsx";
+import ApplicationsPieChart from "../../components/admin/ApplicationsPieChart.jsx";
+import JobsBarChart from "../../components/admin/JobsBarChart.jsx";
+
+import {
+  getDashboardStats,
+  getAnalytics,
+  getRecentActivities,
+} from "../../services/adminAnalyticsService.js";
 
 function AdminDashboard() {
   const [stats, setStats] =useState({
@@ -19,29 +21,45 @@ function AdminDashboard() {
     activeUsers: 0,
   });
 
+  const [analytics, setAnalytics] = useState({
+  statusBreakdown: {},
+  totalApplications: 0,
+  });
+
   const [activities, setActivities] = useState([]);
 
   useEffect(() => {
-    fetchDashboard();
-    fetchActivities();
+  fetchDashboard();
+  fetchAnalytics();
+  fetchActivities();
 }, []);
 
-  const fetchDashboard = async () => {
-    try {
-      const data = await getDashboardStats();
-      setStats(data);
-    } catch (err) {
-      console.error(err);
-    }
-  };
 
-  const fetchActivities = async () => {
-    try {
-        const data = await getRecentActivities();
-        setActivities(data);
-    } catch (err) {
-        console.log(err);
-    }
+const fetchDashboard = async () => {
+  try {
+    const data = await getDashboardStats();
+    setStats(data);
+  } catch (err) {
+    console.error(err);
+  }
+};
+
+const fetchAnalytics = async () => {
+  try {
+    const data = await getAnalytics();
+    setAnalytics(data);
+  } catch (err) {
+    console.error(err);
+  }
+};
+
+const fetchActivities = async () => {
+  try {
+    const data = await getRecentActivities();
+    setActivities(data);
+  } catch (err) {
+    console.error(err);
+  }
 };
 
   
@@ -53,73 +71,19 @@ function AdminDashboard() {
       </h1>
 
       {/* Stats Cards */}
+      <StatsCards stats={stats} />
 
-      <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+      <div className="grid lg:grid-cols-2 gap-6 mb-6">
+        <ApplicationsPieChart
+          data={analytics.statusBreakdown}
+        />
 
-        <Card>
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-xs uppercase tracking-wider text-gray-400">
-                Total Users
-              </p>
-
-              <p className="text-3xl font-bold text-white mt-2">
-                {stats.totalUsers}
-              </p>
-            </div>
-
-            <Users className="text-blue-400" size={26} />
-          </div>
-        </Card>
-
-        <Card>
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-xs uppercase tracking-wider text-gray-400">
-                Total Jobs
-              </p>
-
-              <p className="text-3xl font-bold text-white mt-2">
-                {stats.totalJobs}
-              </p>
-            </div>
-
-            <Briefcase className="text-green-400" size={26} />
-          </div>
-        </Card>
-
-        <Card>
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-xs uppercase tracking-wider text-gray-400">
-                Total Admins
-              </p>
-
-              <p className="text-3xl font-bold text-white mt-2">
-                {stats.totalAdmins}
-              </p>
-            </div>
-
-            <FileCheck className="text-yellow-400" size={26} />
-          </div>
-        </Card>
-
-        <Card>
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-xs uppercase tracking-wider text-gray-400">
-                Active Users
-              </p>
-
-              <p className="text-3xl font-bold text-white mt-2">
-                {stats.activeUsers}
-              </p>
-            </div>
-
-            <Activity className="text-red-400" size={26} />
-          </div>
-        </Card>
-
+        <JobsBarChart
+          stats={{
+            ...stats,
+            totalApplications: analytics.totalApplications,
+          }}
+        />
       </div>
 
       {/* Bottom Section */}

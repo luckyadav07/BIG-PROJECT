@@ -5,6 +5,7 @@ import Card from "../../components/common/Card.jsx";
 import Input from "../../components/common/Input.jsx";
 import Button from "../../components/common/Button.jsx";
 import useUIStore from "../../store/uiStore.js";
+import { uploadResume } from "../../services/resumeService.js";
 
 function ProfilePage() {
   const { user } = useAuth();
@@ -12,6 +13,9 @@ function ProfilePage() {
   const [skills, setSkills] = useState(["React", "JavaScript", "CSS"]);
   const [skillInput, setSkillInput] = useState("");
   const [saving, setSaving] = useState(false);
+  const [resume, setResume] = useState(null);
+  const [uploading, setUploading] = useState(false);
+  const [resumeData, setResumeData] = useState(null);
 
   const handleSave = () => {
     setSaving(true);
@@ -27,6 +31,41 @@ function ProfilePage() {
       setSkillInput("");
     }
   };
+
+  const handleResumeUpload = async (e) => {
+  const file = e.target.files[0];
+
+  if (!file) return;
+
+  if (file.type !== "application/pdf") {
+  addToast("Please upload a PDF file.", "error");
+  return;
+}
+  if (file.size > 5 * 1024 * 1024) {
+  addToast("Resume must be smaller than 5 MB.", "error");
+  return;
+}
+
+  const formData = new FormData();
+  formData.append("resume", file);
+
+  try {
+    setUploading(true);
+    setResumeData(null);
+
+    const data = await uploadResume(formData);
+
+    setResume(file);
+    setResumeData(data);
+
+    addToast("Resume uploaded successfully!", "success");
+  } catch (err) {
+    console.error(err);
+    addToast("Resume upload failed", "error");
+  } finally {
+    setUploading(false);
+  }
+};
 
   return (
     <div>
@@ -88,11 +127,147 @@ function ProfilePage() {
 
           <Card>
             <h3 className="font-semibold text-white mb-4">Resume</h3>
-            <p className="text-sm text-gray-400 mb-3">Last uploaded: June 15, 2026</p>
-            <div className="flex gap-3">
-              <Button size="sm" variant="outline">Upload New Resume</Button>
-              <Button size="sm" variant="secondary">Download Current</Button>
+
+            <input
+              type="file"
+              accept=".pdf"
+              onChange={handleResumeUpload}
+              className="mb-4 block w-full text-sm text-gray-300
+                        file:mr-4 file:rounded-lg file:border-0
+                        file:bg-accent file:px-4 file:py-2
+                        file:text-white hover:file:bg-accent/80"
+            />
+            {resume && (
+              <p className="text-green-400 text-sm mb-4">
+                Uploaded: {resume.name}
+              </p>
+            )}
+
+            {uploading && (
+              <p className="text-yellow-400">
+                Uploading...
+              </p>
+            )}
+
+            {resumeData?.analysis && (
+            <div className="space-y-5">
+
+              <div className="rounded-xl bg-emerald-500/10 border border-emerald-500/30 p-4">
+                <p className="text-sm text-gray-400">
+                  ATS Score
+                </p>
+
+                <h2 className="text-5xl font-extrabold text-emerald-400">
+                  {resumeData.analysis.atsScore}%
+                </h2>
+
+                <p className="text-gray-400 mt-2">
+                    Excellent Resume
+                </p>
+              </div>
+
+              <div className="grid md:grid-cols-2 gap-4">
+
+                <div className="rounded-xl bg-white/5 p-4">
+                  <h3 className="font-semibold text-white mb-3">
+                    Personal Details
+                  </h3>
+
+                  <p className="text-gray-300">
+                    <strong>Name:</strong> {resumeData.analysis.name}
+                  </p>
+
+                  <p className="text-gray-300">
+                    <strong>Email:</strong> {resumeData.analysis.email}
+                  </p>
+
+                  <p className="text-gray-300">
+                    <strong>Phone:</strong> {resumeData.analysis.phone}
+                  </p>
+                </div>
+
+                <div className="rounded-xl bg-white/5 p-4">
+
+                  <h3 className="font-semibold text-white mb-3">
+                    Resume Summary
+                  </h3>
+
+                  <p className="text-gray-300">
+                    Projects : {resumeData.analysis.projects}
+                  </p>
+
+                  <p className="text-gray-300">
+                    Experience : {resumeData.analysis.experience}
+                  </p>
+
+                  <p className="text-gray-300">
+                    Education :
+                  </p>
+
+                  <ul className="list-disc list-inside text-gray-300">
+
+                    {resumeData.analysis.education?.map((edu) => (
+                      <li key={edu}>{edu}</li>
+                    ))}
+
+                  </ul>
+
+                </div>
+
+              </div>
+
+              <div className="grid md:grid-cols-2 gap-4">
+
+                <div className="rounded-xl bg-white/5 p-4">
+
+                  <h3 className="font-semibold text-white mb-3">
+                    Skills Found
+                  </h3>
+
+                  <div className="flex flex-wrap gap-2">
+
+                    {resumeData.analysis.skills?.map((skill) => (
+
+                      <span
+                        key={skill}
+                        className="px-3 py-1 rounded-full bg-green-500/20 text-green-300 text-sm"
+                      >
+                        {skill}
+                      </span>
+
+                    ))}
+
+                  </div>
+
+                </div>
+
+                <div className="rounded-xl bg-white/5 p-4">
+
+                  <h3 className="font-semibold text-white mb-3">
+                    Missing Skills
+                  </h3>
+
+                  <div className="flex flex-wrap gap-2">
+
+                    {resumeData.analysis.missingSkills?.map((skill) => (
+
+                      <span
+                        key={skill}
+                        className="px-3 py-1 rounded-full bg-red-500/20 text-red-300 text-sm"
+                      >
+                        {skill}
+                      </span>
+
+                    ))}
+
+                  </div>
+
+                </div>
+
+              </div>
+
             </div>
+          )}
           </Card>
 
           <Card>

@@ -2,14 +2,14 @@ import { useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import {
   LayoutDashboard, Briefcase, Sparkles, FileCheck, MessageCircle,
-  Bell, User, Users, LogOut, Menu, X, Shield,
+  Bell, User, Users, LogOut, Menu, X, Shield, BarChart3,
 } from "lucide-react";
 import { useAuth } from "../../context/AuthContext.jsx";
 import { DASHBOARD_NAV, APP_NAME } from "../../utils/constants.js";
 import { getInitials } from "../../utils/formatters.js";
 
 const iconMap = {
-  LayoutDashboard, Briefcase, Sparkles, FileCheck, MessageCircle, Bell, User, Users,
+  LayoutDashboard, Briefcase, Sparkles, FileCheck, MessageCircle, Bell, User, Users, BarChart3,
 };
 
 function DashboardLayout({ children }) {
@@ -29,6 +29,7 @@ function DashboardLayout({ children }) {
       { label: "Admin", path: "/admin", icon: "Shield" },
       { label: "Manage Jobs", path: "/admin/jobs", icon: "Briefcase" },
       { label: "Manage Users", path: "/admin/users", icon: "Users" },
+      { label: "Reports", path: "/admin/reports", icon: "BarChart3",}
     ]
     : DASHBOARD_NAV;
 
@@ -48,7 +49,13 @@ function DashboardLayout({ children }) {
 
         <nav className="p-4 space-y-1">
           {navItems.map((item) => {
-            const Icon = item.icon === "Shield" ? Shield : iconMap[item.icon];
+            const Icon =
+              item.icon === "Shield"
+                ? Shield
+                : typeof item.icon === "string"
+                  ? iconMap[item.icon]
+                  : item.icon;
+
             const active = location.pathname === item.path;
             return (
               <Link

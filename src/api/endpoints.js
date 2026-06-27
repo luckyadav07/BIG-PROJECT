@@ -37,4 +37,5 @@ export const ADMIN = {
   BASE: "/admin",
   USERS: "/admin/users",
   JOBS: "/admin/jobs",
+  REPORTS: "/admin/reports",
 };

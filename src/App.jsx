@@ -17,6 +17,7 @@ import AdminUsersManagement from "./pages/admin/AdminUsersManagement.jsx";
 import NotFoundPage from "./pages/NotFoundPage.jsx";
 import ProtectedRoute from "./components/ProtectedRoute.jsx";
 import GuestRoute from "./components/GuestRoute.jsx";
+import AdminReports from "./pages/admin/AdminReports.jsx";
 
 function App() {
   return (
@@ -44,6 +45,7 @@ function App() {
         <Route path="/admin" element={<AdminDashboard />} />
         <Route path="/admin/jobs" element={<AdminJobsManagement />} />
         <Route path="/admin/users" element={<AdminUsersManagement />} />
+        <Route path="/admin/reports" element={<AdminReports />}/>
       </Route>
 
       <Route path="*" element={<NotFoundPage />} />
