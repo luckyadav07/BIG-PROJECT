@@ -1,5 +1,7 @@
 import express from "express";
 
+import authMiddle from "../middleware/auth.middleware.js";
+import isAdmin from "../middleware/isAdmin.middleware.js";
 import {
   getAllUsers,
   getUserById,
@@ -14,12 +16,10 @@ import {
   getRecentActivities,
   getAllApplications,
   updateApplicationStatus,
-  getAnalytics,
   getStats,
+  getAnalytics,
+  getReports,
 } from "../controllers/admin.controller.js";
-
-import authMiddle from "../middleware/auth.middleware.js";
-import isAdmin from "../middleware/isAdmin.middleware.js";
 
 const router = express.Router();
 
@@ -48,5 +48,7 @@ router.delete("/jobs/:id", deleteJob);
 // Application Routes
 router.get("/applications", getAllApplications);
 router.put("/applications/:id/status", updateApplicationStatus);
+
+router.get("/reports", getReports);
 
 export default router;

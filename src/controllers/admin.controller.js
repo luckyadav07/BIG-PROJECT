@@ -6,6 +6,7 @@ import ApiError from "../utils/ApiError.js";
 import ApiResponse from "../utils/ApiResponse.js";
 import Activity from "../models/activity.models.js";
 
+
 // sab user nikal ke dega
 export const getAllUsers = asyncHandler(async (req, res) => {
     const users = await User.find().select("-password");
@@ -273,15 +274,23 @@ export const getStats = asyncHandler(async (req, res) => {
 
 // Analytics
 export const getAnalytics = asyncHandler(async (req, res) => {
+
     const [
         totalUsers,
         totalJobs,
         totalApplications,
         applicationsByStatus,
+        topSkills,
+        topCompanies,
     ] = await Promise.all([
+
         User.countDocuments(),
+
         Job.countDocuments(),
+
         Application.countDocuments(),
+
+        // Applications by Status
         Application.aggregate([
             {
                 $group: {
@@ -290,6 +299,46 @@ export const getAnalytics = asyncHandler(async (req, res) => {
                 },
             },
         ]),
+
+        // Top Skills
+        Job.aggregate([
+            {
+                $unwind: "$skills",
+            },
+            {
+                $group: {
+                    _id: "$skills",
+                    count: { $sum: 1 },
+                },
+            },
+            {
+                $sort: {
+                    count: -1,
+                },
+            },
+            {
+                $limit: 10,
+            },
+        ]),
+
+        // Top Companies
+        Job.aggregate([
+            {
+                $group: {
+                    _id: "$company",
+                    jobs: { $sum: 1 },
+                },
+            },
+            {
+                $sort: {
+                    jobs: -1,
+                },
+            },
+            {
+                $limit: 10,
+            },
+        ]),
+
     ]);
 
     const statusBreakdown = applicationsByStatus.reduce((acc, item) => {
@@ -305,8 +354,60 @@ export const getAnalytics = asyncHandler(async (req, res) => {
                 totalJobs,
                 totalApplications,
                 statusBreakdown,
+                topSkills,
+                topCompanies,
             },
             "Analytics fetched successfully"
         )
     );
+});
+
+export const getReports = asyncHandler(async (req, res) => {
+
+    // Total counts
+    const totalUsers = await User.countDocuments();
+    const totalJobs = await Job.countDocuments();
+    const totalApplications = await Application.countDocuments();
+    const totalAdmins = await User.countDocuments({ role: "admin" });
+
+    // Top Skills
+    const topSkills = await User.aggregate([
+        { $unwind: "$skills" },
+        {
+            $group: {
+                _id: "$skills",
+                count: { $sum: 1 }
+            }
+        },
+        { $sort: { count: -1 } },
+        { $limit: 10 }
+    ]);
+
+    // Top Companies
+    const topCompanies = await Job.aggregate([
+        {
+            $group: {
+                _id: "$company",
+                jobs: { $sum: 1 }
+            }
+        },
+        { $sort: { jobs: -1 } },
+        { $limit: 10 }
+    ]);
+
+    return res.status(200).json(
+        new ApiResponse(
+            200,
+            {
+                totalUsers,
+                totalJobs,
+                totalApplications,
+                totalAdmins,
+                topSkills,
+                topCompanies
+            },
+            "Reports fetched successfully"
+        )
+    );
+
 });
