@@ -13,8 +13,14 @@ const applicationSchema=new Schema({
     },
     status:{
         type:String,
-        enum:["Saved", "Applied", "Interview", "Offer", "Rejected"],
-        default:"Saved"
+        enum:[
+        "Applied",
+        "Shortlisted",
+        "Interview",
+        "Accepted",
+        "Rejected"
+        ],
+        default: "applied"
     }
 },{
     timestamps:true

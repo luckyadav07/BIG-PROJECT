@@ -1,10 +1,13 @@
 import express from "express";
+import authMiddle from "../middleware/auth.middleware.js";
 import {
     applyJob,
     getUserApplications,
     withdrawApplication,
+    getAllApplications,
+    updateApplicationStatus,
 } from "../controllers/application.controller.js";
-import authMiddle from "../middleware/auth.middleware.js";
+import isAdmin from "../middleware/isAdmin.middleware.js";
 
 const router = express.Router();
 
@@ -19,5 +22,17 @@ router.get("/", getUserApplications);
 
 // Withdraw an application
 router.delete("/:id", withdrawApplication);
+
+router.get(
+    "/admin",
+    isAdmin,
+    getAllApplications
+);
+
+router.patch(
+    "/:id/status",
+    isAdmin,
+    updateApplicationStatus
+);
 
 export default router;

@@ -35,10 +35,27 @@ const register = asyncHandler(async (req, res) => {
 
     const userWithoutPassword = await User.findById(user._id).select("-password")
 
-    // Step 6 - send success response
+    // Step 6 - generate JWT token
+    const token = jwt.sign(
+        {
+            id: user._id,
+            role: user.role,
+        },
+        process.env.JWT_SECRET,
+        { expiresIn: "1d" }
+    );
+
+    // Step 7 - send success response
     res.status(201).json(
-        new ApiResponse(201, userWithoutPassword, "User registered successfully")
-    )
+        new ApiResponse(
+            201,
+            {
+                token,
+                user: userWithoutPassword,
+            },
+            "User registered successfully"
+        )
+    );
 
 })
 

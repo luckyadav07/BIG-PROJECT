@@ -82,3 +82,56 @@ export const withdrawApplication = asyncHandler(async (req, res) => {
         )
     );
 });
+
+export const getAllApplications = asyncHandler(async (req, res) => {
+
+    const applications = await Application.find()
+        .populate("userId", "name email")
+        .populate("jobId", "title company location")
+        .sort({ createdAt: -1 });
+
+    return res.status(200).json(
+        new ApiResponse(
+            200,
+            applications,
+            "Applications fetched successfully"
+        )
+    );
+});
+
+
+export const updateApplicationStatus = asyncHandler(async (req, res) => {
+
+    const { id } = req.params;
+    const { status } = req.body;
+
+    const validStatuses = [
+        "Applied",
+        "Shortlisted",
+        "Interview",
+        "Accepted",
+        "Rejected",
+    ];
+
+    if (!validStatuses.includes(status)) {
+        throw new ApiError(400, "Invalid application status");
+    }
+
+    const application = await Application.findById(id);
+
+    if (!application) {
+        throw new ApiError(404, "Application not found");
+    }
+
+    application.status = status;
+
+    await application.save();
+
+    return res.status(200).json(
+        new ApiResponse(
+            200,
+            application,
+            "Application status updated successfully"
+        )
+    );
+});
