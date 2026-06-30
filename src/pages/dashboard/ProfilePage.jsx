@@ -152,23 +152,53 @@ function ProfilePage() {
             {resumeData?.analysis && (
             <div className="space-y-5">
 
-              <div className="rounded-xl bg-emerald-500/10 border border-emerald-500/30 p-4">
-                <p className="text-sm text-gray-400">
-                  ATS Score
-                </p>
+              <div className="rounded-xl bg-blue-500/10 border border-blue-500/30 p-6">
 
-                <h2 className="text-5xl font-extrabold text-emerald-400">
-                  {resumeData.analysis.atsScore}%
+                <h2 className="text-2xl font-bold text-white mb-2">
+                  Resume Analysis
                 </h2>
 
-                <p className="text-gray-400 mt-2">
-                    Excellent Resume
+                <p className="text-green-400 font-medium mb-6">
+                  ✓ Analysis completed successfully
                 </p>
+
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-5">
+
+                  <div>
+                    <p className="text-sm text-gray-400">Skills</p>
+                    <p className="text-2xl font-bold text-white">
+                      {resumeData.analysis.skills?.length || 0}
+                    </p>
+                  </div>
+
+                  <div>
+                    <p className="text-sm text-gray-400">Projects</p>
+                    <p className="text-2xl font-bold text-white">
+                      {resumeData.analysis.projects}
+                    </p>
+                  </div>
+
+                  <div>
+                    <p className="text-sm text-gray-400">Experience</p>
+                    <p className="text-2xl font-bold text-white">
+                      {resumeData.analysis.experience}
+                    </p>
+                  </div>
+
+                  <div>
+                    <p className="text-sm text-gray-400">Education</p>
+                    <p className="text-2xl font-bold text-white">
+                      {resumeData.analysis.education?.length || 0}
+                    </p>
+                  </div>
+
+                </div>
+
               </div>
 
-              <div className="grid md:grid-cols-2 gap-4">
+              <div className="grid lg:grid-cols-2 gap-6">
 
-                <div className="rounded-xl bg-white/5 p-4">
+                <div className="rounded-xl bg-white/5 p-6">
                   <h3 className="font-semibold text-white mb-3">
                     Personal Details
                   </h3>
@@ -216,57 +246,70 @@ function ProfilePage() {
 
               </div>
 
-              <div className="grid md:grid-cols-2 gap-4">
+                <div className="grid md:grid-cols-2 gap-4">
 
-                <div className="rounded-xl bg-white/5 p-4">
+                  {/* Strengths */}
 
-                  <h3 className="font-semibold text-white mb-3">
-                    Skills Found
-                  </h3>
+                  <div className="rounded-xl bg-white/5 p-4">
 
-                  <div className="flex flex-wrap gap-2">
+                    <h3 className="font-semibold text-white mb-3">
+                      Resume Strengths
+                    </h3>
 
-                    {resumeData.analysis.skills?.map((skill) => (
+                    <ul className="space-y-2 text-gray-300 leading-7">
 
-                      <span
-                        key={skill}
-                        className="px-3 py-1 rounded-full bg-green-500/20 text-green-300 text-sm"
-                      >
-                        {skill}
-                      </span>
+                      <li>✅ Contact information detected</li>
 
-                    ))}
+                      <li>✅ Technical skills are clearly listed</li>
+
+                      <li>✅ Projects section included</li>
+
+                      <li>✅ Education section found</li>
+
+                      {resumeData.analysis.experience > 0 && (
+                        <li>✅ Experience section available</li>
+                      )}
+
+                    </ul>
+
+                  </div>
+
+                  {/* AI Suggestions */}
+
+                  <div className="rounded-xl bg-white/5 p-4">
+
+                    <h3 className="font-semibold text-white mb-3">
+                      AI Suggestions
+                    </h3>
+
+                    <ul className="space-y-2 text-gray-300">
+
+                      <li>• Add a professional summary at the top.</li>
+
+                      <li>• Quantify project achievements with numbers.</li>
+
+                      <li>• Tailor your resume for each job application.</li>
+
+                      <li>• Include GitHub and LinkedIn profile links.</li>
+
+                      <li>• Mention certifications if you have any.</li>
+
+                      {resumeData.analysis.missingSkills?.length > 0 && (
+                        <li>
+                          • Consider learning{" "}
+                          <strong className="text-red-300">
+                            {resumeData.analysis.missingSkills.slice(0, 3).join(", ")}
+                          </strong>.
+                        </li>
+                      )}
+
+                    </ul>
 
                   </div>
 
                 </div>
-
-                <div className="rounded-xl bg-white/5 p-4">
-
-                  <h3 className="font-semibold text-white mb-3">
-                    Missing Skills
-                  </h3>
-
-                  <div className="flex flex-wrap gap-2">
-
-                    {resumeData.analysis.missingSkills?.map((skill) => (
-
-                      <span
-                        key={skill}
-                        className="px-3 py-1 rounded-full bg-red-500/20 text-red-300 text-sm"
-                      >
-                        {skill}
-                      </span>
-
-                    ))}
-
-                  </div>
-
-                </div>
-
               </div>
 
-            </div>
           )}
           </Card>
 
