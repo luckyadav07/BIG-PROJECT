@@ -216,7 +216,7 @@ function ProfilePage() {
                   </p>
                 </div>
 
-                <div className="rounded-xl bg-white/5 p-4">
+                <div className="rounded-xl bg-white/5 p-6">
 
                   <h3 className="font-semibold text-white mb-3">
                     Resume Summary
@@ -250,7 +250,7 @@ function ProfilePage() {
 
                   {/* Strengths */}
 
-                  <div className="rounded-xl bg-white/5 p-4">
+                  <div className="rounded-xl bg-white/5 p-6">
 
                     <h3 className="font-semibold text-white mb-3">
                       Resume Strengths
@@ -276,7 +276,7 @@ function ProfilePage() {
 
                   {/* AI Suggestions */}
 
-                  <div className="rounded-xl bg-white/5 p-4">
+                  <div className="rounded-xl bg-white/5 p-6">
 
                     <h3 className="font-semibold text-white mb-3">
                       AI Suggestions
