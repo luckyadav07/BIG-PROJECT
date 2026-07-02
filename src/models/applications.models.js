@@ -20,7 +20,7 @@ const applicationSchema=new Schema({
         "Accepted",
         "Rejected"
         ],
-        default: "applied"
+        default: "Applied"
     }
 },{
     timestamps:true
