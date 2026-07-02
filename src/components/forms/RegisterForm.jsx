@@ -5,6 +5,7 @@ import { useAuth } from "../../context/AuthContext.jsx";
 import { registerUser } from "../../services/authService.js";
 import Input from "../common/Input.jsx";
 import Button from "../common/Button.jsx";
+import useUIStore from "../../store/uiStore.js";
 import { getPasswordStrength } from "../../utils/validators.js";
 import { getErrorMessage } from "../../utils/errorHandler.js";
 
@@ -29,27 +30,27 @@ function RegisterForm() {
   const [loading, setLoading] = useState(false);
 
   const onSubmit = async (data) => {
-  setLoading(true);
+    setLoading(true);
 
-  try {
-    const res = await registerUser({
-      name: data.name,
-      email: data.email,
-      password: data.password,
-      role: data.role,
-    });
+    try {
+      const res = await registerUser({
+        name: data.name,
+        email: data.email,
+        password: data.password,
+        role: data.role,
+      });
 
-    login(res.data.user, res.data.token);
+      login(res.data.user, res.data.token);
 
-    success("🎉 Account created successfully!");
+      success("🎉 Account created successfully!");
 
-    navigate(data.role === "admin" ? "/admin" : "/dashboard");
-  } catch (err) {
-    errorToast(getErrorMessage(err));
-  } finally {
-    setLoading(false);
-  }
-};
+      navigate(data.role === "admin" ? "/admin" : "/dashboard");
+    } catch (err) {
+      errorToast(getErrorMessage(err));
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
