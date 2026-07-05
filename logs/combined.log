@@ -61,7 +61,3 @@
 2026-06-20T07:58:40.130Z [INFO]: {"campaignId":"6a36483065733130cb17c2fa","template":"Hello HR Team,\n\nI am applying for the Software Development Engineer role. I have strong experience building full-stack applications using React, Node.js, Express, and MongoDB. Please find my application attached.\n\nBest Regards,\nLucky","recruiterEmails":["luckyyadav61715@gmail.com"]}
 2026-06-20T07:58:40.130Z [INFO]: Sending email to luckyyadav61715@gmail.com
 2026-06-20T07:58:44.881Z [INFO]: Job 2 completed
-2026-06-25T08:19:45.253Z [INFO]: OHHH YEAHHHH Database connected
-2026-06-25T08:19:45.272Z [INFO]: server RUNNING ka liye iss PORT par aaye 8000
-2026-06-25T08:36:01.924Z [INFO]: OHHH YEAHHHH Database connected
-2026-06-25T08:36:01.946Z [INFO]: server RUNNING ka liye iss PORT par aaye 8000

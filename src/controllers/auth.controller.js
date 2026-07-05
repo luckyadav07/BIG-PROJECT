@@ -4,6 +4,7 @@ import jwt from "jsonwebtoken"
 import asyncHandler from "../utils/asyncHandler.js"
 import ApiError from "../utils/ApiError.js"
 import ApiResponse from "../utils/ApiResponse.js"
+import Activity from "../models/activity.models.js";
 
 const register = asyncHandler(async (req, res) => {
 
@@ -27,12 +28,34 @@ const register = asyncHandler(async (req, res) => {
     // Step 5 - create new user in MongoDB
     const user = await User.create({ name, email, password: hashedpassword })
 
+    await Activity.create({
+    type: "USER_REGISTERED",
+    description: `${user.name} registered`
+});
+
     const userWithoutPassword = await User.findById(user._id).select("-password")
 
-    // Step 6 - send success response
+    // Step 6 - generate JWT token
+    const token = jwt.sign(
+        {
+            id: user._id,
+            role: user.role,
+        },
+        process.env.JWT_SECRET,
+        { expiresIn: "1d" }
+    );
+
+    // Step 7 - send success response
     res.status(201).json(
-        new ApiResponse(201, userWithoutPassword, "User registered successfully")
-    )
+        new ApiResponse(
+            201,
+            {
+                token,
+                user: userWithoutPassword,
+            },
+            "User registered successfully"
+        )
+    );
 
 })
 
@@ -78,5 +101,20 @@ const login = asyncHandler(async (req, res) => {
     )
 
 })
+const getCurrentUser = asyncHandler(async (req, res) => {
+    const user = await User.findById(req.user._id).select("-password");
 
-export { register, login }
+    if (!user) {
+        throw new ApiError(404, "User not found");
+    }
+
+    res.status(200).json(
+        new ApiResponse(
+            200,
+            { user },
+            "Current user fetched successfully"
+        )
+    );
+});
+
+export { register, login, getCurrentUser }

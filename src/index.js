@@ -3,22 +3,27 @@ import cors from "cors";
 import dotenv from "dotenv";
 import helmet from "helmet";
 import morgan from "morgan";
+import path from "path";
+import { fileURLToPath } from "url";
+
 import connectdb from "./config/db.js";
 import jobRoutes from "./routes/job.routes.js";
-import authRouter from "./routes/auth.routes.js"
-import adminRouter from "./routes/admin.routes.js"
+import authRouter from "./routes/auth.routes.js";
+import adminRouter from "./routes/admin.routes.js";
 import notificationRouter from "./routes/notification.routes.js";
 import campaignRoutes from "./routes/campaign.routes.js";
 import resumeRouter from "./routes/resume.routes.js";
-import jobQueue from "./queues/jobQueue.js";
 import applicationRouter from "./routes/application.routes.js";
-import logger from "./utils/logger.js";
-import chatbotRouter from "./routes/chatbot.routes.js"
+import userRouter from "./routes/user.routes.js";
+import chatbotRouter from "./routes/chatbot.routes.js"; // <-- ADD THIS
 
+import logger from "./utils/logger.js";
 import "./workers/jobWorker.js";
 
 dotenv.config();
 
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const app = express();
 const PORT = process.env.PORT || 8000;
@@ -30,6 +35,7 @@ app.use(cors());                                // allows frontend to talk to ba
 app.use(morgan("dev"));                         // logs every request in terminal
 app.use(express.json());                        // reads JSON data from requests
 app.use(express.urlencoded({ extended: true })); // reads form data from requests
+app.use(express.static(path.join(__dirname, "../public")));
 
 // routes after
 app.use("/api/jobs", jobRoutes);
@@ -39,18 +45,12 @@ app.use("/api/notifications", notificationRouter);
 app.use("/api/resume", resumeRouter);
 app.use("/api/campaigns", campaignRoutes);
 app.use("/api/applications", applicationRouter);
+app.use("/api/users", userRouter);
 app.use("/api/chatbot", chatbotRouter);
 
 
-app.get("/", async (req, res) => {
-    await jobQueue.add("test-job", {
-        name: "Narendar Damodardas Modi",
-        message: "BullMQ Working"
-    });
-    res.json({
-        message: "Job Added To Queue"
-    });
-
+app.get("/", (req, res) => {
+    res.sendFile(path.join(__dirname, "../public/index.html"));
 });
 
 // global errror handler

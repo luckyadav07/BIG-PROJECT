@@ -14,6 +14,65 @@ export const getAllJobs = asyncHandler(async (req, res) => {
     );
 });
 
+
+export const getRecommendedJobs = asyncHandler(async (req, res) => {
+
+    const jobs = await Job.find();
+
+    const resumeSkills = [
+        "React",
+        "Node.js",
+        "MongoDB",
+        "JavaScript"
+    ];
+
+    const recommendations = jobs.map(job => {
+
+        const jobSkills = job.skills || [];
+
+        const matchedSkills = jobSkills.filter(skill =>
+            resumeSkills.some(
+                resumeSkill =>
+                    resumeSkill.toLowerCase() === skill.toLowerCase()
+            )
+        );
+
+        const missingSkills = jobSkills.filter(skill =>
+            !resumeSkills.some(
+                resumeSkill =>
+                    resumeSkill.toLowerCase() === skill.toLowerCase()
+            )
+        );
+
+        const matchScore =
+            jobSkills.length === 0
+                ? 0
+                : Math.round(
+                      (matchedSkills.length / jobSkills.length) * 100
+                  );
+
+        return {
+            ...job.toObject(),
+            matchScore,
+            matchedSkills,
+            missingSkills,
+        };
+    });
+
+    recommendations.sort(
+        (a, b) => b.matchScore - a.matchScore
+    );
+
+    return res.status(200).json(
+        new ApiResponse(
+            200,
+            recommendations,
+            "Recommended jobs fetched successfully"
+        )
+    );
+});
+
+
 // single job nikal ke dega jab frontend request karega
 
 export const getJobById = asyncHandler(async (req, res) => {
@@ -34,30 +93,3 @@ export const getJobById = asyncHandler(async (req, res) => {
     );
 });
 
-// recommended jobs nikal ke dega jab frontend request karega 
-
-export const getRecommendedJobs = asyncHandler(async (req, res) => {
-
-    const user = await User.findById(req.user.id);
-    if (!user) {
-        throw new ApiError(404, "User not found");
-    }
-    const jobs = await Job.find();
-    const recommendedJobs = jobs
-        .map((job) => {
-            const score = job.skills.filter((skill) =>
-                user.skills.includes(skill)
-            ).length;
-
-            return {
-                ...job.toObject(),
-                score,
-            };
-        })
-        .sort((a, b) => b.score - a.score);
-
-    res.status(200).json(
-        new ApiResponse(200, recommendedJobs, "Recommended jobs fetched successfully")
-    );
-
-});

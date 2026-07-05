@@ -13,8 +13,22 @@ const applicationSchema=new Schema({
     },
     status:{
         type:String,
-        default:"Saved"
+        enum:[
+        "Applied",
+        "Shortlisted",
+        "Interview",
+        "Accepted",
+        "Rejected"
+        ],
+        default: "Applied"
     }
+},{
+    timestamps:true
 })
+
+applicationSchema.index(
+    { userId: 1, jobId: 1 },
+    { unique: true }
+);
 
 export default mongoose.model("Application",applicationSchema)

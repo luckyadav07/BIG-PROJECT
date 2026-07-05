@@ -7,12 +7,19 @@ import Application from "../models/applications.models.js"
 import asyncHandler from "../utils/asyncHandler.js"
 import ApiError from "../utils/ApiError.js"
 import ApiResponse from "../utils/ApiResponse.js"
+import Job from "../models/job.models.js";
 
 
 // Apply to a job
 export const applyJob = asyncHandler(async (req, res) => {
 
     const { jobId } = req.body
+
+    const job = await Job.findById(jobId);
+
+    if (!job) {
+        throw new ApiError(404, "Job not found");
+    }
     const userId = req.user._id
 
     // Check if already applied
@@ -38,39 +45,93 @@ export const applyJob = asyncHandler(async (req, res) => {
 // Get all applications of logged in user
 export const getUserApplications = asyncHandler(async (req, res) => {
 
-    const applications = await Application.find({ userId: req.user._id })
-
+    const applications = await Application.find({
+    userId: req.user._id
+    }).populate(
+    "jobId",
+    "title company location"
+    ).sort({ createdAt: -1 });
     // .find() returns empty array [] not null — so check length not !applications
-    if (applications.length === 0) {
-        throw new ApiError(404, "No applications found")
-    }
+    
 
-    res.status(200).json(
+    return res.status(200).json(
         new ApiResponse(200, applications, "Applications fetched successfully")
     )
 
 })
 
 
-// Update application status
-export const updateApplicationStatus = asyncHandler(async (req, res) => {
+export const withdrawApplication = asyncHandler(async (req, res) => {
 
-    const { id } = req.params
-    const { status } = req.body
+    const { id } = req.params;
 
-    // findByIdAndUpdate returns null if not found
-    const application = await Application.findByIdAndUpdate(
-        id,
-        { status },
-        { new: true }
-    )
+    const application = await Application.findOneAndDelete({
+        _id: id,
+        userId: req.user._id,
+    });
 
     if (!application) {
-        throw new ApiError(404, "Application not found")
+        throw new ApiError(404, "Application not found");
     }
 
-    res.status(200).json(
-        new ApiResponse(200, application, "Status updated successfully")
-    )
+    return res.status(200).json(
+        new ApiResponse(
+            200,
+            null,
+            "Application withdrawn successfully"
+        )
+    );
+});
 
-})
+export const getAllApplications = asyncHandler(async (req, res) => {
+
+    const applications = await Application.find()
+        .populate("userId", "name email")
+        .populate("jobId", "title company location")
+        .sort({ createdAt: -1 });
+
+    return res.status(200).json(
+        new ApiResponse(
+            200,
+            applications,
+            "Applications fetched successfully"
+        )
+    );
+});
+
+
+export const updateApplicationStatus = asyncHandler(async (req, res) => {
+
+    const { id } = req.params;
+    const { status } = req.body;
+
+    const validStatuses = [
+        "Applied",
+        "Shortlisted",
+        "Interview",
+        "Accepted",
+        "Rejected",
+    ];
+
+    if (!validStatuses.includes(status)) {
+        throw new ApiError(400, "Invalid application status");
+    }
+
+    const application = await Application.findById(id);
+
+    if (!application) {
+        throw new ApiError(404, "Application not found");
+    }
+
+    application.status = status;
+
+    await application.save();
+
+    return res.status(200).json(
+        new ApiResponse(
+            200,
+            application,
+            "Application status updated successfully"
+        )
+    );
+});
