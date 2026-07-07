@@ -11,7 +11,7 @@ function RecommendedJobsPage() {
 
   useEffect(() => {
     fetchRecommended();
-  }, [fetchRecommended]);
+  }, []);
 
   const sorted = [...recommendedJobs].sort((a, b) => {
     if (sortBy === "match") return (b.matchScore || 0) - (a.matchScore || 0);
