@@ -1,25 +1,26 @@
 import express from "express"
 import {
-    uploadResume,
+    analyzeResume,
     getLatestAnalysis,
     getAllAnalyses,
     deleteAnalysis,
 } from "../controllers/resume.controller.js"
-import { upload } from "../middleware/multer.middleware.js"
 import authMiddle from "../middleware/auth.middleware.js"
 
 const router = express.Router()
 
-// Upload and analyze resume (protected route)
-router.post("/upload", authMiddle, upload.single("resume"), uploadResume)
+// Main endpoint — Analyze parsed resume JSON
+// POST /api/resume/analyze
+// Body: { resumeData: { name, email, skills, experience, ... } }
+router.post("/analyze", authMiddle, analyzeResume)
 
-// Get latest analysis (protected route)
+// Get latest analysis
 router.get("/latest", authMiddle, getLatestAnalysis)
 
-// Get all analyses (protected route)
+// Get all analyses
 router.get("/all", authMiddle, getAllAnalyses)
 
-// Delete analysis (protected route)
+// Delete analysis
 router.delete("/:id", authMiddle, deleteAnalysis)
 
 export default router

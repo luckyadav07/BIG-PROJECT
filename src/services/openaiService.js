@@ -1,25 +1,32 @@
-import OpenAI from "openai"
+import Groq from "groq-sdk"
 
-// OpenAI client को initialize करेंगे
-// API key .env से लेंगे
-const openai = new OpenAI({
-    apiKey: process.env.OPENAI_API_KEY,
-})
+// Initialize Groq client
+let groq = null
 
-// Resume को analyze करने का function
+const getGroqClient = () => {
+    if (!groq) {
+        groq = new Groq({
+            apiKey: process.env.GROQ_API_KEY,
+        })
+    }
+    return groq
+}
+
+// Function to analyze resume using Groq
 export const analyzeResumeWithAI = async (resumeData) => {
     try {
-        // Prompt बनाएंगे जो OpenAI को भेजेंगे
+        const client = getGroqClient()
+
         const prompt = createAnalysisPrompt(resumeData)
 
-        // OpenAI API को call करेंगे
-        const response = await openai.chat.completions.create({
-            model: "gpt-3.5-turbo",
+        // Call Groq API (same format as OpenAI)
+        const response = await client.chat.completions.create({
+             model: "llama-3.1-8b-instant", 
+            // Groq's fast model
             messages: [
                 {
                     role: "system",
-                    content:
-                        "आप एक expert career coach हो। Resume को analyze करके JSON format में feedback दो।",
+                    content: "You are an expert career coach and resume analyst. Analyze the resume and provide comprehensive feedback in JSON format only.",
                 },
                 {
                     role: "user",
@@ -30,19 +37,16 @@ export const analyzeResumeWithAI = async (resumeData) => {
             max_tokens: 2000,
         })
 
-        // OpenAI से response लेंगे
         const analysisText = response.choices[0].message.content
 
-        // Response को parse करके JSON बनाएंगे
         const analysis = parseAnalysisResponse(analysisText)
 
         return analysis
     } catch (error) {
-        console.error("OpenAI API Error:", error.message)
+        console.error("Groq API Error:", error.message)
         throw new Error(`Resume analysis failed: ${error.message}`)
     }
 }
-
 
 const createAnalysisPrompt = (resumeData) => {
     return `
@@ -85,13 +89,8 @@ Rules:
 `
 }
 
-
-// OpenAI के response को parse करने का function
-// Response को JSON में convert करेंगे
 const parseAnalysisResponse = (responseText) => {
     try {
-        // JSON को extract करेंगे response से
-        // क्योंकि OpenAI extra text भी दे सकता है
         const jsonMatch = responseText.match(/\{[\s\S]*\}/)
 
         if (!jsonMatch) {
@@ -100,7 +99,6 @@ const parseAnalysisResponse = (responseText) => {
 
         const analysis = JSON.parse(jsonMatch[0])
 
-        // Default values दे सकते हैं अगर कुछ field missing हो
         return {
             strengths: analysis.strengths || [],
             weaknesses: analysis.weaknesses || [],
@@ -116,7 +114,6 @@ const parseAnalysisResponse = (responseText) => {
     } catch (error) {
         console.error("Parse Error:", error.message)
 
-        // अगर parse fail हो तो empty analysis return करेंगे
         return {
             strengths: [],
             weaknesses: [],
