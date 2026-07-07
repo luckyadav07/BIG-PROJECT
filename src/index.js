@@ -19,6 +19,7 @@ import chatbotRouter from "./routes/chatbot.routes.js"; // <-- ADD THIS
 
 import logger from "./utils/logger.js";
 import "./workers/jobWorker.js";
+import resumeRoutes from "./routes/resume.routes.js"
 
 dotenv.config();
 
@@ -47,7 +48,7 @@ app.use("/api/campaigns", campaignRoutes);
 app.use("/api/applications", applicationRouter);
 app.use("/api/users", userRouter);
 app.use("/api/chatbot", chatbotRouter);
-
+app.use("/api/resume", resumeRoutes)
 
 app.get("/", (req, res) => {
     res.sendFile(path.join(__dirname, "../public/index.html"));
