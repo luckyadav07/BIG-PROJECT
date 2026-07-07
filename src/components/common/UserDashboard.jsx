@@ -11,6 +11,7 @@ import {
   LogOut,
   Menu,
   X,
+  FileSearch,
 } from "lucide-react";
 
 import { useAuth } from "../../context/AuthContext.jsx";
@@ -25,6 +26,7 @@ const iconMap = {
   MessageCircle,
   Bell,
   User,
+  FileSearch,
 };
 
 function UserDashboard({ children }) {

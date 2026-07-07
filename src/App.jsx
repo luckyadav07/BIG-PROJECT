@@ -28,6 +28,8 @@ import NotFoundPage from "./pages/NotFoundPage.jsx";
 
 import ToastContainer from "./components/common/ToastContainer.jsx";
 
+import ResumeAnalyzerPage from "./pages/dashboard/ResumeAnalyzerPage.jsx";
+
 function App() {
   return (
     <>
@@ -62,6 +64,11 @@ function App() {
           }
         />
 
+        <Route
+          path="/resume-analyzer"
+          element={<ResumeAnalyzerPage />}
+        />
+
         {/* User */}
         <Route element={<ProtectedRoute />}>
           <Route path="/dashboard" element={<DashboardPage />} />
@@ -72,6 +79,8 @@ function App() {
           <Route path="/profile" element={<ProfilePage />} />
           <Route path="/career-coach" element={<CareerCoachPage />} />
           <Route path="/notifications" element={<NotificationsPage />} />
+          <Route path="/resume-analyzer" element={<ResumeAnalyzerPage />} />
+          
         </Route>
 
         {/* Admin */}

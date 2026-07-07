@@ -23,6 +23,13 @@ export const DASHBOARD_NAV = [
   { label: "Jobs", path: "/jobs", icon: "Briefcase" },
   { label: "Recommended", path: "/recommended", icon: "Sparkles" },
   { label: "Applications", path: "/applications", icon: "FileCheck" },
+
+  {
+    label: "Resume Analyzer",
+    path: "/resume-analyzer",
+    icon: "FileSearch",
+  },
+
   { label: "Career Coach", path: "/career-coach", icon: "MessageCircle" },
   { label: "Notifications", path: "/notifications", icon: "Bell" },
   { label: "Profile", path: "/profile", icon: "User" },
