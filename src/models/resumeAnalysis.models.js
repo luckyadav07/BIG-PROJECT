@@ -38,12 +38,6 @@ const resumeAnalysisSchema = new Schema(
             type: String,
             default: "gpt-3.5-turbo",     // OpenAI model used
         },
-
-        analysisScore: {
-            type: Number,
-            min: 0,
-            max: 100,
-        },
     },
     {
         timestamps: true,  // createdAt, updatedAt automatically

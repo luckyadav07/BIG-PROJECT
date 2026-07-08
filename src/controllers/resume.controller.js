@@ -19,6 +19,14 @@ export const analyzeResume = asyncHandler(async (req, res) => {
         throw new ApiError(400, "Resume data must be a JSON object")
     }
 
+    if (Object.keys(resumeData).length === 0) {
+        throw new ApiError(400, "Resume data cannot be empty")
+    }
+
+    if (!resumeData.skills || !Array.isArray(resumeData.skills)) {
+        throw new ApiError(400, "Skills array is required")
+    }
+
     try {
         // Call OpenAI to analyze resume
         const analysis = await analyzeResumeWithAI(resumeData)
@@ -28,8 +36,7 @@ export const analyzeResume = asyncHandler(async (req, res) => {
             userId,
             resumeData,
             analysis,
-            aiModel: "gpt-3.5-turbo",
-            analysisScore: analysis.analysisScore,
+            aiModel: process.env.GROQ_MODEL
         })
 
         res.status(201).json(

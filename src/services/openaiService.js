@@ -77,7 +77,6 @@ Please provide detailed feedback in the following JSON format:
   "professionalSummary": "One or two sentence professional summary based on resume",
   "certificationsToConsider": ["certification 1", "certification 2"],
   "technicalSkillsToLearn": ["skill 1", "skill 2", "skill 3"],
-  "analysisScore": 75
 }
 
 Rules:
@@ -91,13 +90,13 @@ Rules:
 
 const parseAnalysisResponse = (responseText) => {
     try {
-        const jsonMatch = responseText.match(/\{[\s\S]*\}/)
+        // Remove markdown code fences if the AI returns ```json ... ```
+        const cleanedResponse = responseText
+            .replace(/```json/gi, "")
+            .replace(/```/g, "")
+            .trim()
 
-        if (!jsonMatch) {
-            throw new Error("No JSON found in response")
-        }
-
-        const analysis = JSON.parse(jsonMatch[0])
+        const analysis = JSON.parse(cleanedResponse)
 
         return {
             strengths: analysis.strengths || [],
@@ -109,7 +108,6 @@ const parseAnalysisResponse = (responseText) => {
             professionalSummary: analysis.professionalSummary || "",
             certificationsToConsider: analysis.certificationsToConsider || [],
             technicalSkillsToLearn: analysis.technicalSkillsToLearn || [],
-            analysisScore: analysis.analysisScore || 0,
         }
     } catch (error) {
         console.error("Parse Error:", error.message)
