@@ -27,15 +27,19 @@ import multer from "multer"
 const storage = multer.memoryStorage()
 
 // Debug: Log and accept all files temporarily
-const fileFilter = (req, file, cb) => {
-    console.log("=== FILE UPLOAD DEBUG ===")
-    console.log("File name:", file.originalname)
-    console.log("File MIME type:", file.mimetype)
-    console.log("File size:", file.size)
+const allowedTypes = [
+  "application/pdf",
+  "application/msword",
+  "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+];
 
-    // Temporarily accept all files to see what's happening
-    cb(null, true)
-}
+const fileFilter = (req, file, cb) => {
+  if (allowedTypes.includes(file.mimetype)) {
+    cb(null, true);
+  } else {
+    cb(new Error("Only PDF, DOC and DOCX files are allowed."), false);
+  }
+};
 
 export const upload = multer({
     storage: storage,

@@ -12,7 +12,6 @@ import authRouter from "./routes/auth.routes.js";
 import adminRouter from "./routes/admin.routes.js";
 import notificationRouter from "./routes/notification.routes.js";
 import campaignRoutes from "./routes/campaign.routes.js";
-import resumeRouter from "./routes/resume.routes.js";
 import applicationRouter from "./routes/application.routes.js";
 import userRouter from "./routes/user.routes.js";
 import chatbotRouter from "./routes/chatbot.routes.js"; // <-- ADD THIS
@@ -43,7 +42,6 @@ app.use("/api/jobs", jobRoutes);
 app.use("/api/auth", authRouter)
 app.use("/api/admin", adminRouter)
 app.use("/api/notifications", notificationRouter);
-app.use("/api/resume", resumeRouter);
 app.use("/api/campaigns", campaignRoutes);
 app.use("/api/applications", applicationRouter);
 app.use("/api/users", userRouter);
