@@ -20,13 +20,14 @@ function ChatBubble({ message, isUser, timestamp }) {
             : "bg-white/10 text-gray-200 rounded-bl-sm"
         }`}
       >
-        <ReactMarkdown
-          remarkPlugins={[remarkGfm]}
-          rehypePlugins={[rehypeHighlight]}
-          className="prose prose-invert max-w-none prose-p:my-2 prose-pre:rounded-lg prose-code:text-blue-300"
-        >
-          {message}
-        </ReactMarkdown>
+        <div className="prose prose-invert max-w-none prose-p:my-2 prose-pre:rounded-lg prose-code:text-blue-300">
+          <ReactMarkdown
+            remarkPlugins={[remarkGfm]}
+            rehypePlugins={[rehypeHighlight]}
+          >
+            {message}
+          </ReactMarkdown>
+        </div>
 
         {timestamp && (
           <p
