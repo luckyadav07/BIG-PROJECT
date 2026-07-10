@@ -13,7 +13,8 @@ import Job from "../models/job.models.js";
 // Apply to a job
 export const applyJob = asyncHandler(async (req, res) => {
 
-    const { jobId } = req.body
+    const { jobId } = req.body;
+    console.log("Received jobId:", jobId);
 
     const job = await Job.findById(jobId);
 
@@ -21,6 +22,8 @@ export const applyJob = asyncHandler(async (req, res) => {
         throw new ApiError(404, "Job not found");
     }
     const userId = req.user._id
+    console.log("User:", userId);
+
 
     // Check if already applied
     const existingApplication = await Application.findOne({ userId, jobId })

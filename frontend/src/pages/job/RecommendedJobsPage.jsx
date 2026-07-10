@@ -3,21 +3,45 @@ import JobCard from "../../components/job/JobCard.jsx";
 import Skeleton from "../../components/common/Skeleton.jsx";
 import useJobStore from "../../store/jobStore.js";
 import useUIStore from "../../store/uiStore.js";
+import { applyJob } from "../../services/applicationService.js";
 
 function RecommendedJobsPage() {
-  const { recommendedJobs, loading, fetchRecommended } = useJobStore();
+  const { recommendedJobs, loading, applications, fetchRecommended, fetchApplications } = useJobStore();
   const showToast = useUIStore((s) => s.showToast);
   const [sortBy, setSortBy] = useState("match");
 
   useEffect(() => {
     fetchRecommended();
+    fetchApplications();
   }, []);
+
+  const appliedJobs = new Set(
+    (applications || [])
+      .filter(app => app.jobId)
+      .map(app => app.jobId._id)
+  );
 
   const sorted = [...recommendedJobs].sort((a, b) => {
     if (sortBy === "match") return (b.matchScore || 0) - (a.matchScore || 0);
     if (sortBy === "newest") return new Date(b.postedAt) - new Date(a.postedAt);
     return 0;
   });
+
+const handleApply = async (job) => {
+    try {
+        await applyJob(job._id);
+
+        showToast("Application submitted!", "success");
+
+        await fetchApplications();
+        await fetchRecommended();
+    } catch (err) {
+        showToast(
+            err.response?.data?.message || "Failed to apply",
+            "error"
+        );
+    }
+};
 
   return (
     <div>
@@ -41,7 +65,13 @@ function RecommendedJobsPage() {
       ) : (
         <div className="grid md:grid-cols-2 gap-4">
           {sorted.map((job) => (
-            <JobCard key={job.id || job._id} job={job} showMatchReason onApply={() => showToast("Application submitted!", "success")} />
+            <JobCard
+            key={job.id || job._id}
+            job={job}
+            applied={appliedJobs.has(job._id)}
+            showMatchReason
+            onApply={handleApply}
+          />
           ))}
         </div>
       )}

@@ -1,3 +1,4 @@
+import { getApplications } from "../services/applicationService.js"
 import { create } from "zustand";
 import {
   getAllJobs,
@@ -14,6 +15,7 @@ const useJobStore = create((set) => ({
   recommendedJobs: [],
   loading: false,
   error: null,
+  applications: [],
 
   clearError: () => set({ error: null }),
 
@@ -44,6 +46,8 @@ const useJobStore = create((set) => ({
       loading: true,
       error: null,
     });
+  
+  
 
     try {
       const res = await getRecommendedJobs();
@@ -60,6 +64,22 @@ const useJobStore = create((set) => ({
       });
     }
   },
+  fetchApplications: async () => {
+    try {
+        const applications = await getApplications();
+
+        set({
+            applications,
+        });
+    } catch (err) {
+        set({
+            applications: [],
+            error: getErrorMessage(err),
+        });
+    }
+  },
 }));
+
+
 
 export default useJobStore;
