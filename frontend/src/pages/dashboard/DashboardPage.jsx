@@ -12,7 +12,12 @@ import { getApplications, applyJob } from "../../services/applicationService.js"
 
 function DashboardPage() {
   const { user } = useAuth();
-  const { recommendedJobs, loading, error, fetchRecommended } = useJobStore();
+  const recommendedJobs =
+  useJobStore((s) => s.recommendedJobs) || [];
+
+  const loading = useJobStore((s) => s.loading);
+  const error = useJobStore((s) => s.error);
+  const fetchRecommended = useJobStore((s) => s.fetchRecommended);
   const showToast = useUIStore((s) => s.showToast);
   const [applications, setApplications] = useState([]);
 

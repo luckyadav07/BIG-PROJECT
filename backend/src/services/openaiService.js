@@ -48,6 +48,24 @@ export const analyzeResumeWithAI = async (resumeData) => {
     }
 }
 
+export const chatWithAI = async (messages) => {
+    try {
+        const client = getGroqClient();
+
+        const response = await client.chat.completions.create({
+            model: "llama-3.1-8b-instant",
+            messages,
+            temperature: 0.7,
+            max_tokens: 1000,
+        });
+
+        return response.choices[0].message.content;
+    } catch (error) {
+        console.error("Groq Chat Error:", error.message);
+        throw new Error(error.message);
+    }
+};
+
 const createAnalysisPrompt = (resumeData) => {
     return `
 Analyze the following resume and provide detailed feedback in JSON format:

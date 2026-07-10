@@ -89,36 +89,35 @@ const useResumeStore = create((set, get) => ({
   },
 
   analyzeResumeFile: async () => {
-    const { resumeData, analyzing } = get();
+  const { resumeData, analyzing } = get();
 
-    if (!resumeData || analyzing) return null;
+  if (!resumeData || analyzing) return null;
+
+  set({
+    analyzing: true,
+    error: null,
+  });
+
+  try {
+    const response = await analyzeResume(resumeData);
+
+    const analysis = response.analysis || response;
 
     set({
-      analyzing: true,
-      error: null,
+      analysis,
+      analyzing: false,
     });
 
-    try {
-      const response = await analyzeResume(resumeData);
+    return analysis;
+  } catch (err) {
+    set({
+      analyzing: false,
+      error: getErrorMessage(err),
+    });
 
-      const analysis =
-        response.analysis || response;
-
-      set({
-        analysis,
-        analyzing: false,
-      });
-
-      return analysis;
-    } catch (err) {
-      set({
-        analyzing: false,
-        error: getErrorMessage(err),
-      });
-
-      throw err;
-    }
-  },
+    throw err;
+  }
+},
 
   fetchLatestAnalysis: async () => {
     try {

@@ -1,3 +1,5 @@
+import { chatWithAI } from "../services/openaiService.js";
+
 const chatWithCoach = async (req, res) => {
     try {
         const { messages } = req.body;
@@ -30,9 +32,12 @@ const chatWithCoach = async (req, res) => {
             ...messages
         ];
 
+        const reply = await chatWithAI(finalMessages);
+
         return res.status(200).json({
-            finalMessages
+            reply,
         });
+
 
     } catch(error) {
         return res.status(500).json({

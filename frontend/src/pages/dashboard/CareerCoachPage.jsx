@@ -4,6 +4,7 @@ import Card from "../../components/common/Card.jsx";
 import ChatBubble from "../../components/coach/ChatBubble.jsx";
 import ChatInput from "../../components/coach/ChatInput.jsx";
 import { MOCK_CHAT_MESSAGES } from "../../utils/mockData.js";
+import { sendMessage as sendMessageToAI } from "../../services/careerCoachService.js";
 
 const SUGGESTED_PROMPTS = [
   "How do I prepare for interviews?",
@@ -22,25 +23,55 @@ function CareerCoachPage() {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, typing]);
 
-  const sendMessage = (text) => {
-    const userMsg = { id: Date.now(), text, isUser: true, timestamp: new Date().toISOString() };
-    setMessages((prev) => [...prev, userMsg]);
-    setInput("");
-    setTyping(true);
+  const sendMessage = async (text) => {
+  if (!text.trim()) return;
 
-    setTimeout(() => {
-      setMessages((prev) => [
-        ...prev,
-        {
-          id: Date.now() + 1,
-          text: "That's a great question! Based on your profile and current market trends, I'd recommend focusing on building strong fundamentals and practicing regularly. Would you like specific resources?",
-          isUser: false,
-          timestamp: new Date().toISOString(),
-        },
-      ]);
-      setTyping(false);
-    }, 1500);
+  const userMsg = {
+    id: Date.now(),
+    text,
+    isUser: true,
+    timestamp: new Date().toISOString(),
   };
+
+  const updatedMessages = [...messages, userMsg];
+
+  setMessages(updatedMessages);
+  setInput("");
+  setTyping(true);
+
+  try {
+    const aiReply = await sendMessageToAI(
+      updatedMessages.map((msg) => ({
+        role: msg.isUser ? "user" : "assistant",
+        content: msg.text,
+      }))
+    );
+
+    setMessages((prev) => [
+      ...prev,
+      {
+        id: Date.now() + 1,
+        text: aiReply,
+        isUser: false,
+        timestamp: new Date().toISOString(),
+      },
+    ]);
+  } catch (error) {
+    setMessages((prev) => [
+      ...prev,
+      {
+        id: Date.now() + 1,
+        text: "Sorry, something went wrong. Please try again.",
+        isUser: false,
+        timestamp: new Date().toISOString(),
+      },
+    ]);
+
+    console.error(error);
+  } finally {
+    setTyping(false);
+  }
+};
 
   return (
     <div>

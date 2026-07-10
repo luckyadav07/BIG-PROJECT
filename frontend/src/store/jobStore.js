@@ -1,128 +1,65 @@
 import { create } from "zustand";
 import {
-  uploadResume,
-  analyzeResume,
-  getLatestAnalysis,
-  deleteAnalysis,
-} from "../services/resumeService.js";
+  getAllJobs,
+  getRecommendedJobs,
+} from "../services/jobService.js";
 
 const getErrorMessage = (err) =>
   err.response?.data?.message ||
   err.message ||
   "Something went wrong.";
 
-const useResumeStore = create((set) => ({
-  resume: null,
-  analysis: null,
-
-  uploading: false,
-  analyzing: false,
-
-  uploadProgress: 0,
-
+const useJobStore = create((set) => ({
+  jobs: [],
+  recommendedJobs: [],
+  loading: false,
   error: null,
 
   clearError: () => set({ error: null }),
 
-  uploadResumeFile: async (formData) => {
+  fetchJobs: async () => {
     set({
-      uploading: true,
-      uploadProgress: 0,
+      loading: true,
       error: null,
     });
 
     try {
-      const resume = await uploadResume(
-        formData,
-        (event) => {
-          if (!event.total) return;
-
-          set({
-            uploadProgress: Math.round(
-              (event.loaded * 100) / event.total
-            ),
-          });
-        }
-      );
+      const res = await getAllJobs();
 
       set({
-        resume,
-        uploading: false,
-        uploadProgress: 100,
-      });
-
-      return resume;
-    } catch (err) {
-      set({
-        uploading: false,
-        uploadProgress: 0,
-        error: getErrorMessage(err),
-      });
-
-      throw err;
-    }
-  },
-
-  analyzeResumeFile: async (resumeData) => {
-    set({
-      analyzing: true,
-      error: null,
-    });
-
-    try {
-      const analysis = await analyzeResume(resumeData);
-
-      set({
-        analysis,
-        analyzing: false,
-      });
-
-      return analysis;
-    } catch (err) {
-      set({
-        analyzing: false,
-        error: getErrorMessage(err),
-      });
-
-      throw err;
-    }
-  },
-
-  fetchLatestAnalysis: async () => {
-    set({
-      analyzing: true,
-      error: null,
-    });
-
-    try {
-      const analysis = await getLatestAnalysis();
-
-      set({
-        analysis,
-        analyzing: false,
+        jobs: res.data || res,
+        loading: false,
       });
     } catch (err) {
       set({
-        analysis: null,
-        analyzing: false,
+        jobs: [],
+        loading: false,
         error: getErrorMessage(err),
       });
     }
   },
 
-  removeAnalysis: async (id) => {
+  fetchRecommended: async () => {
+    set({
+      loading: true,
+      error: null,
+    });
+
     try {
-      await deleteAnalysis(id);
+      const res = await getRecommendedJobs();
 
       set({
-        analysis: null,
+        recommendedJobs: res.data || res,
+        loading: false,
       });
     } catch (err) {
       set({
+        recommendedJobs: [],
+        loading: false,
         error: getErrorMessage(err),
       });
     }
   },
 }));
 
-export default useResumeStore;
+export default useJobStore;

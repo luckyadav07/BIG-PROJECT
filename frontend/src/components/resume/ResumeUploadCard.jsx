@@ -15,6 +15,7 @@ function ResumeUploadCard({ onAnalyze }) {
     analyzing,
     uploadProgress,
   } = useResumeStore();
+  console.log("📄 Current file in store:", file);
 
   const validTypes = [
     "application/pdf",
@@ -47,9 +48,15 @@ function ResumeUploadCard({ onAnalyze }) {
   };
 
   const handleFileChange = (e) => {
+    console.log("INPUT FIRED");
+
     const selected = e.target.files[0];
 
+    console.log(selected);
+
     if (!validateFile(selected)) return;
+
+    console.log("Calling setFile");
 
     setFile(selected);
   };
@@ -109,20 +116,23 @@ function ResumeUploadCard({ onAnalyze }) {
           Upload your resume for AI-powered analysis.
         </p>
 
-        <label className="cursor-pointer">
-          <input
-            hidden
-            type="file"
-            accept=".pdf,.doc,.docx"
-            onChange={handleFileChange}
-          />
+        <input
+  id="resume-upload"
+  type="file"
+  accept=".pdf,.doc,.docx"
+  onChange={handleFileChange}
+  style={{ display: "none" }}
+/>
 
-          <Button disabled={uploading || analyzing}>
-            <UploadCloud size={18} />
-
-            {file ? "Replace Resume" : "Choose Resume"}
-          </Button>
-        </label>
+<Button
+  onClick={() =>
+    document.getElementById("resume-upload").click()
+  }
+  disabled={uploading || analyzing}
+>
+  <UploadCloud size={18} />
+  {file ? "Replace Resume" : "Choose Resume"}
+</Button>
 
         {file && (
           <div
