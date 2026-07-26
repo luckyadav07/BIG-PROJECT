@@ -1,15 +1,43 @@
-function Card({ children, className = "", hover = false, ...props }) {
+function Card({
+  children,
+  className = "",
+  hover = false,
+  variant = "default",
+  ...props
+}) {
+  const variants = {
+    default: {
+      background: "var(--bg-card)",
+      border: "1px solid var(--border-color)",
+      boxShadow: "var(--shadow-sm)",
+    },
+    elevated: {
+      background: "var(--bg-card)",
+      border: "1px solid var(--border-color)",
+      boxShadow: "var(--shadow-md)",
+    },
+    interactive: {
+      background: "var(--bg-card)",
+      border: "1px solid var(--border-color)",
+      boxShadow: "var(--shadow-sm)",
+    },
+    ai: {
+      background: "var(--bg-card)",
+      border: "1px solid var(--border-color)",
+      boxShadow: "var(--shadow-sm)",
+    },
+  };
+
+  const style = variants[variant] || variants.default;
+
   return (
     <div
-      className={`glass-card p-6 ${
-        hover
-          ? "transition-all duration-300 hover:scale-[1.02] hover:border-accent/50 hover:shadow-lg hover:shadow-accent/10"
+      className={`rounded-xl p-6 transition-all duration-300 ${
+        hover || variant === "interactive"
+          ? "hover:shadow-md hover:-translate-y-0.5 cursor-pointer"
           : ""
-      } ${className}`}
-      style={{
-        background: "var(--glass-bg)",
-        border: "1px solid var(--glass-border)",
-      }}
+      } ${variant === "ai" ? "ai-gradient-border" : ""} ${className}`}
+      style={style}
       {...props}
     >
       {children}

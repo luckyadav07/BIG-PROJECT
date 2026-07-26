@@ -15,10 +15,15 @@ function ProtectedRoute({ adminOnly = false }) {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-navy">
+      <div
+        className="min-h-screen flex items-center justify-center"
+        style={{ background: "var(--bg-main)" }}
+      >
         <div className="flex flex-col items-center gap-3">
           <div className="h-10 w-10 animate-spin rounded-full border-4 border-accent/20 border-t-accent" />
-          <p className="text-sm text-gray-400">Loading...</p>
+          <p className="text-sm" style={{ color: "var(--text-secondary)" }}>
+            Loading...
+          </p>
         </div>
       </div>
     );

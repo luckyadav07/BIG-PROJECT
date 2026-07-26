@@ -27,12 +27,14 @@ import GuestRoute from "./components/GuestRoute.jsx";
 import NotFoundPage from "./pages/NotFoundPage.jsx";
 
 import ToastContainer from "./components/common/ToastContainer.jsx";
+import ThemeInit from "./components/layout/ThemeInit.jsx";
 
 import ResumeAnalyzerPage from "./pages/dashboard/ResumeAnalyzerPage.jsx";
 
 function App() {
   return (
     <>
+      <ThemeInit />
       <Routes>
         {/* Public */}
         <Route path="/" element={<LandingPage />} />

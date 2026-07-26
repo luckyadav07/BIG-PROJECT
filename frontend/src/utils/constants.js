@@ -23,14 +23,61 @@ export const DASHBOARD_NAV = [
   { label: "Jobs", path: "/jobs", icon: "Briefcase" },
   { label: "Recommended", path: "/recommended", icon: "Sparkles" },
   { label: "Applications", path: "/applications", icon: "FileCheck" },
-
-  {
-    label: "Resume Analyzer",
-    path: "/resume-analyzer",
-    icon: "FileSearch",
-  },
-
+  { label: "Resume Analyzer", path: "/resume-analyzer", icon: "FileSearch" },
   { label: "Career Coach", path: "/career-coach", icon: "MessageCircle" },
   { label: "Notifications", path: "/notifications", icon: "Bell" },
   { label: "Profile", path: "/profile", icon: "User" },
+];
+
+export const USER_NAV_SECTIONS = [
+  {
+    title: "Main",
+    items: [
+      { label: "Dashboard", path: "/dashboard", icon: "LayoutDashboard" },
+      { label: "Jobs", path: "/jobs", icon: "Briefcase" },
+      { label: "Recommended", path: "/recommended", icon: "Sparkles" },
+      { label: "Applications", path: "/applications", icon: "FileCheck" },
+    ],
+  },
+  {
+    title: "AI Tools",
+    items: [
+      {
+        label: "Resume Analyzer",
+        path: "/resume-analyzer",
+        icon: "FileSearch",
+        ai: true,
+      },
+      {
+        label: "Career Coach",
+        path: "/career-coach",
+        icon: "MessageCircle",
+        ai: true,
+      },
+    ],
+  },
+  {
+    title: "Account",
+    items: [
+      { label: "Notifications", path: "/notifications", icon: "Bell" },
+      { label: "Profile", path: "/profile", icon: "User" },
+    ],
+  },
+];
+
+export const ADMIN_NAV_SECTIONS = [
+  {
+    title: "Administration",
+    items: [
+      { label: "Dashboard", path: "/admin", icon: "LayoutDashboard" },
+      { label: "Manage Jobs", path: "/admin/jobs", icon: "Briefcase" },
+      { label: "Manage Users", path: "/admin/users", icon: "Users" },
+      {
+        label: "Applications",
+        path: "/admin/applications",
+        icon: "FileText",
+      },
+      { label: "Reports", path: "/admin/reports", icon: "BarChart3" },
+    ],
+  },
 ];

@@ -1,4 +1,5 @@
 import { useEffect, useState, useMemo } from "react";
+import { useSearchParams } from "react-router-dom";
 import JobCard from "../../components/job/JobCard.jsx";
 import FilterPanel from "../../components/job/FilterPanel.jsx";
 import Skeleton from "../../components/common/Skeleton.jsx";
@@ -17,6 +18,7 @@ const defaultFilters = {
 
 function JobsPage() {
   const { jobs, loading, fetchJobs } = useJobStore();
+  const [searchParams] = useSearchParams();
 
   const success = useUIStore((s) => s.success);
   const errorToast = useUIStore((s) => s.error);
@@ -29,6 +31,14 @@ function JobsPage() {
   useEffect(() => {
     fetchJobs();
   }, [fetchJobs]);
+
+  useEffect(() => {
+    const q = searchParams.get("search");
+    if (q) {
+      setFilters((prev) => ({ ...prev, search: q }));
+      setPage(1);
+    }
+  }, [searchParams]);
 
   const filtered = useMemo(() => {
     let result = [...jobs];

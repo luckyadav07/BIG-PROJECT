@@ -8,11 +8,23 @@ const icons = {
   info: Info,
 };
 
-const colors = {
-  success: "border-success/50 bg-success/10 text-success",
-  error: "border-danger/50 bg-danger/10 text-danger",
-  warning: "border-warning/50 bg-warning/10 text-warning",
-  info: "border-accent/50 bg-accent/10 text-accent"
+const variantStyles = {
+  success: {
+    accent: "var(--color-success)",
+    bg: "rgba(16, 185, 129, 0.1)",
+  },
+  error: {
+    accent: "var(--color-danger)",
+    bg: "rgba(239, 68, 68, 0.1)",
+  },
+  warning: {
+    accent: "var(--color-warning)",
+    bg: "rgba(245, 158, 11, 0.1)",
+  },
+  info: {
+    accent: "var(--color-info)",
+    bg: "rgba(59, 130, 246, 0.1)",
+  },
 };
 
 function ToastContainer() {
@@ -22,64 +34,36 @@ function ToastContainer() {
   if (!toasts.length) return null;
 
   return (
-    <div
-      className="fixed bottom-6 right-6 z-[9999] flex flex-col gap-3"
-    >
+    <div className="fixed bottom-6 right-6 z-[9999] flex flex-col gap-3">
       {toasts.map((toast) => {
         const Icon = icons[toast.type] || CheckCircle;
-
-        const styles = {
-          success: {
-            background: "#1f2937",
-            border: "1px solid #22c55e",
-            icon: "#22c55e",
-          },
-          error: {
-            background: "#1f2937",
-            border: "1px solid #ef4444",
-            icon: "#ef4444",
-          },
-          warning: {
-            background: "#1f2937",
-            border: "1px solid #f59e0b",
-            icon: "#f59e0b",
-          },
-          info: {
-            background: "#1f2937",
-            border: "1px solid #3b82f6",
-            icon: "#3b82f6",
-          },
-        };
-
-        const style = styles[toast.type] || styles.success;
+        const style = variantStyles[toast.type] || variantStyles.success;
 
         return (
           <div
             key={toast.id}
             onClick={() => removeToast(toast.id)}
-            className="flex items-center gap-3 px-5 py-4 rounded-xl cursor-pointer shadow-2xl transition-all duration-300 hover:scale-105"
+            className="flex items-center gap-3 px-4 py-3.5 rounded-xl cursor-pointer transition-all duration-300 hover:scale-[1.02] animate-fade-in min-w-[300px] max-w-[400px]"
             style={{
-              background: style.background,
-              border: style.border,
-              minWidth: "320px",
+              background: "var(--bg-card)",
+              border: `1px solid ${style.accent}`,
+              boxShadow: "var(--shadow-lg)",
             }}
+            role="alert"
           >
-            <Icon
-              size={22}
-              color={style.icon}
-            />
-
-            <div className="flex-1">
-              <p
-                style={{
-                  color: "#ffffff",
-                  fontWeight: 600,
-                  fontSize: "14px",
-                }}
-              >
-                {toast.message}
-              </p>
+            <div
+              className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg"
+              style={{ background: style.bg }}
+            >
+              <Icon size={18} style={{ color: style.accent }} />
             </div>
+
+            <p
+              className="flex-1 text-sm font-medium"
+              style={{ color: "var(--text-primary)" }}
+            >
+              {toast.message}
+            </p>
           </div>
         );
       })}

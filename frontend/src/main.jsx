@@ -4,14 +4,25 @@ import { BrowserRouter } from "react-router-dom";
 import "./index.css";
 import App from "./App.jsx";
 import { AuthProvider } from "./context/AuthContext.jsx";
-import ToastContainer from "./components/common/ToastContainer.jsx";
+
+(function initThemeEarly() {
+  const stored = localStorage.getItem("jobreach-theme");
+  const root = document.documentElement;
+  root.classList.remove("light", "dark");
+
+  if (stored === "light" || stored === "dark") {
+    root.classList.add(stored);
+  } else {
+    const prefersLight = window.matchMedia("(prefers-color-scheme: light)").matches;
+    root.classList.add(prefersLight ? "light" : "dark");
+  }
+})();
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
     <BrowserRouter>
       <AuthProvider>
         <App />
-        <ToastContainer />
       </AuthProvider>
     </BrowserRouter>
   </StrictMode>
