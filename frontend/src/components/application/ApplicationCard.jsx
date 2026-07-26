@@ -10,9 +10,12 @@ const statusVariant = {
 };
 
 function StatusBadge({ status }) {
+  const key = status?.toLowerCase();
+  const label = status || "Unknown";
+
   return (
-    <Badge variant={statusVariant[status] || "neutral"}>
-      {status?.charAt(0).toUpperCase() + status?.slice(1)}
+    <Badge variant={statusVariant[key] || "neutral"}>
+      {label.charAt(0).toUpperCase() + label.slice(1)}
     </Badge>
   );
 }
