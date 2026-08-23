@@ -41,7 +41,9 @@ function AdminReports() {
     return (
       <div className="h-[calc(100vh-12rem)] flex flex-col justify-center items-center gap-4 text-center">
         <Loader2 size={36} className="text-accent animate-spin" />
-        <p className="text-sm font-semibold text-gray-400">Loading system demand reports...</p>
+        <p className="text-sm font-semibold animate-pulse" style={{ color: "var(--text-secondary)" }}>
+          Loading system demand reports...
+        </p>
       </div>
     );
   }
@@ -50,11 +52,14 @@ function AdminReports() {
     <div className="max-w-6xl mx-auto space-y-6 pb-12">
       {/* Page Header */}
       <div>
-        <h1 className="text-2xl md:text-3xl font-extrabold text-white flex items-center gap-2.5 tracking-tight">
+        <h1 
+          className="text-2xl md:text-3xl font-extrabold flex items-center gap-2.5 tracking-tight"
+          style={{ color: "var(--text-primary)" }}
+        >
           <LayoutDashboard className="text-accent" />
           System Reports & Demands
         </h1>
-        <p className="text-sm text-gray-400 mt-1 leading-relaxed">
+        <p className="text-sm mt-1 leading-relaxed" style={{ color: "var(--text-secondary)" }}>
           Aggregated details on vacancy distributions, candidate skill concentrations, and active hiring partners.
         </p>
       </div>

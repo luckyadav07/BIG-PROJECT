@@ -79,11 +79,14 @@ function AdminDashboard() {
     <div className="max-w-6xl mx-auto space-y-6 pb-12">
       {/* Page Header */}
       <div>
-        <h1 className="text-2xl md:text-3xl font-extrabold text-white flex items-center gap-2.5 tracking-tight">
+        <h1 
+          className="text-2xl md:text-3xl font-extrabold flex items-center gap-2.5 tracking-tight"
+          style={{ color: "var(--text-primary)" }}
+        >
           <LayoutDashboard className="text-accent" />
           Admin Control Center
         </h1>
-        <p className="text-sm text-gray-400 mt-1 leading-relaxed">
+        <p className="text-sm mt-1 leading-relaxed" style={{ color: "var(--text-secondary)" }}>
           Monitor system metrics, review candidate applications pipeline, and manage active directories.
         </p>
       </div>
@@ -114,9 +117,9 @@ function AdminDashboard() {
         <motion.div variants={itemVariants} className="grid lg:grid-cols-2 gap-6">
           
           {/* Activities list */}
-          <Card className="border border-white/5 p-6 relative overflow-hidden flex flex-col">
+          <Card className="border p-6 relative overflow-hidden flex flex-col" style={{ background: "var(--bg-card)", borderColor: "var(--border-color)" }}>
             <div className="absolute top-0 right-0 w-32 h-32 bg-accent/5 rounded-full blur-2xl pointer-events-none" />
-            <h2 className="text-sm font-bold text-white mb-5 pb-2 border-b border-white/5 flex items-center gap-2">
+            <h2 className="text-sm font-bold mb-5 pb-2 border-b flex items-center gap-2" style={{ color: "var(--text-primary)", borderColor: "var(--border-color)" }}>
               <Activity size={16} className="text-accent" />
               Recent System Log
             </h2>
@@ -125,23 +128,24 @@ function AdminDashboard() {
               {activities.map((activity) => (
                 <div
                   key={activity._id}
-                  className="flex justify-between items-start gap-4 text-xs border-b border-white/5 pb-2.5 last:border-b-0 last:pb-0"
+                  className="flex justify-between items-start gap-4 text-xs border-b pb-2.5 last:border-b-0 last:pb-0"
+                  style={{ borderColor: "var(--border-color)" }}
                 >
                   <div className="flex items-start gap-2.5 min-w-0">
                     <span className="h-1.5 w-1.5 rounded-full bg-accent shrink-0 mt-1.5" />
-                    <span className="text-gray-300 font-semibold leading-relaxed break-words">
+                    <span className="font-semibold leading-relaxed break-words" style={{ color: "var(--text-primary)" }}>
                       {activity.description}
                     </span>
                   </div>
 
-                  <span className="text-[10px] font-bold text-gray-500 shrink-0 mt-0.5">
+                  <span className="text-[10px] font-bold shrink-0 mt-0.5" style={{ color: "var(--text-muted)" }}>
                     {new Date(activity.createdAt).toLocaleDateString()}
                   </span>
                 </div>
               ))}
 
               {activities.length === 0 && (
-                <span className="text-xs text-gray-500 font-semibold italic">
+                <span className="text-xs font-semibold italic" style={{ color: "var(--text-muted)" }}>
                   No recent activities recorded.
                 </span>
               )}
@@ -149,9 +153,9 @@ function AdminDashboard() {
           </Card>
 
           {/* Quick shortcuts */}
-          <Card className="border border-white/5 p-6 relative overflow-hidden">
+          <Card className="border p-6 relative overflow-hidden" style={{ background: "var(--bg-card)", borderColor: "var(--border-color)" }}>
             <div className="absolute top-0 right-0 w-32 h-32 bg-accent/5 rounded-full blur-2xl pointer-events-none" />
-            <h2 className="text-sm font-bold text-white mb-5 pb-2 border-b border-white/5 flex items-center gap-2">
+            <h2 className="text-sm font-bold mb-5 pb-2 border-b flex items-center gap-2" style={{ color: "var(--text-primary)", borderColor: "var(--border-color)" }}>
               <ArrowRight size={16} className="text-accent" />
               Quick Shortcuts
             </h2>
@@ -161,24 +165,25 @@ function AdminDashboard() {
                 { label: "Manage Jobs", path: "/admin/jobs", desc: "List, modify, or delete vacancies.", icon: Briefcase, color: "text-emerald-400 bg-emerald-500/10 border-emerald-500/20" },
                 { label: "Manage Users", path: "/admin/users", desc: "Audit users directory.", icon: Users, color: "text-blue-400 bg-blue-500/10 border-blue-500/20" },
                 { label: "Applications", path: "/admin/applications", desc: "Verify active applications.", icon: FileSpreadsheet, color: "text-purple-400 bg-purple-500/10 border-purple-500/20" },
-                { label: "System Reports", path: "/admin/reports", desc: "Check demand analyses.", icon: LayoutDashboard, color: "text-amber-400 bg-amber-500/10 border-amber-500/20" },
+                { label: "System Reports", path: "/admin/reports", desc: "Check demand analyses.", icon: LayoutDashboard, color: "text-accent bg-accent/10 border-accent/20" },
               ].map((shortcut) => {
                 const Icon = shortcut.icon;
                 return (
                   <Link
                     key={shortcut.label}
                     to={shortcut.path}
-                    className="p-4 rounded-xl border border-white/5 bg-white/5 hover:border-accent/20 transition-all duration-200 text-left flex gap-3 group relative cursor-pointer"
+                    className="p-4 rounded-xl border transition-all duration-200 text-left flex gap-3 group relative cursor-pointer hover:bg-black/[0.02] dark:hover:bg-white/[0.02]"
+                    style={{ background: "var(--bg-elevated)", borderColor: "var(--border-color)" }}
                   >
                     <div className={`h-9 w-9 shrink-0 rounded-lg flex items-center justify-center border ${shortcut.color}`}>
                       <Icon size={16} />
                     </div>
                     <div>
-                      <h3 className="text-xs font-bold text-white group-hover:text-accent-light transition-colors flex items-center gap-1">
+                      <h3 className="text-xs font-bold group-hover:text-accent-light transition-colors flex items-center gap-1" style={{ color: "var(--text-primary)" }}>
                         {shortcut.label}
                         <ArrowRight size={10} className="opacity-0 group-hover:opacity-100 transition-opacity" />
                       </h3>
-                      <p className="text-[10px] text-gray-500 mt-1 leading-normal">
+                      <p className="text-[10px] mt-1 leading-normal" style={{ color: "var(--text-muted)" }}>
                         {shortcut.desc}
                       </p>
                     </div>

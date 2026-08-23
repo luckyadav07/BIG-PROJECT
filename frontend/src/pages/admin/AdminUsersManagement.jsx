@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { Users, User, ShieldCheck, Trash2, Edit, Search, X } from "lucide-react";
+import { Users as UsersIcon, User as UserIcon, ShieldCheck, Trash2, Edit, Search, X } from "lucide-react";
 import Card from "../../components/common/Card.jsx";
 import Badge from "../../components/common/Badge.jsx";
 import Button from "../../components/common/Button.jsx";
@@ -105,7 +105,7 @@ function AdminUsersManagement() {
             } else {
                 await fetchUsers();
             }
-            showToast("User role updated successfully");
+            showToast({ message: "User role updated successfully", type: "success" });
             closeRoleModal();
         } catch (err) {
             setModalError(getErrorMessage(err, "Unable to update user role."));
@@ -122,7 +122,7 @@ function AdminUsersManagement() {
         try {
             await deleteUser(getUserId(deleteUserTarget));
             setUsers((prev) => prev.filter((item) => getUserId(item) !== getUserId(deleteUserTarget)));
-            showToast("User deleted successfully");
+            showToast({ message: "User deleted successfully", type: "success" });
             closeDeleteModal();
         } catch (err) {
             setModalError(getErrorMessage(err, "Unable to delete user."));
@@ -185,18 +185,21 @@ function AdminUsersManagement() {
     }, []);
 
     return (
-        <div>
-            <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between mb-6">
+        <div className="space-y-6">
+            <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between border-b pb-4" style={{ borderColor: "var(--border-color)" }}>
                 <div>
-                    <h1 className="text-2xl font-bold text-white">Manage Users</h1>
-                    <p className="text-gray-400">Review users, update roles, and remove accounts safely.</p>
+                    <h1 className="text-2xl md:text-3xl font-extrabold flex items-center gap-2.5 tracking-tight" style={{ color: "var(--text-primary)" }}>
+                        <UsersIcon className="text-accent" />
+                        Manage Users
+                    </h1>
+                    <p className="text-sm mt-1" style={{ color: "var(--text-secondary)" }}>Review users, update roles, and remove accounts safely.</p>
                 </div>
                 <div className="max-w-md w-full">
                     <div className="relative">
                         <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500" size={18} />
                         <Input
                             className="pl-11"
-                            placeholder="Search by name, email, or phone"
+                            placeholder="Search by name, email, or phone..."
                             value={searchTerm}
                             onChange={(e) => {
                                 setSearchTerm(e.target.value);
@@ -208,63 +211,69 @@ function AdminUsersManagement() {
             </div>
 
             <div className="grid gap-4 mb-6 sm:grid-cols-3">
-                <Card>
+                <Card className="border" style={{ background: "var(--bg-card)", borderColor: "var(--border-color)" }}>
                     <div className="flex items-center justify-between gap-4">
                         <div>
-                            <p className="text-xs text-gray-400 uppercase tracking-wider">Total Users</p>
-                            <p className="text-3xl font-bold text-white mt-2">{stats.totalUsers}</p>
+                            <p className="text-xs uppercase tracking-wider font-extrabold" style={{ color: "var(--text-secondary)" }}>Total Users</p>
+                            <p className="text-3xl font-black mt-2" style={{ color: "var(--text-primary)" }}>{stats.totalUsers}</p>
                         </div>
-                        <Users size={28} className="text-accent" />
+                        <div className="h-11 w-11 rounded-xl flex items-center justify-center border text-blue-400 bg-blue-500/10 border-blue-500/20">
+                            <UsersIcon size={20} />
+                        </div>
                     </div>
                 </Card>
-                <Card>
+                <Card className="border" style={{ background: "var(--bg-card)", borderColor: "var(--border-color)" }}>
                     <div className="flex items-center justify-between gap-4">
                         <div>
-                            <p className="text-xs text-gray-400 uppercase tracking-wider">Total Admins</p>
-                            <p className="text-3xl font-bold text-white mt-2">{stats.totalAdmins}</p>
+                            <p className="text-xs uppercase tracking-wider font-extrabold" style={{ color: "var(--text-secondary)" }}>Total Admins</p>
+                            <p className="text-3xl font-black mt-2" style={{ color: "var(--text-primary)" }}>{stats.totalAdmins}</p>
                         </div>
-                        <ShieldCheck size={28} className="text-success" />
+                        <div className="h-11 w-11 rounded-xl flex items-center justify-center border text-emerald-400 bg-emerald-500/10 border-emerald-500/20">
+                            <ShieldCheck size={20} />
+                        </div>
                     </div>
                 </Card>
-                <Card>
+                <Card className="border" style={{ background: "var(--bg-card)", borderColor: "var(--border-color)" }}>
                     <div className="flex items-center justify-between gap-4">
                         <div>
-                            <p className="text-xs text-gray-400 uppercase tracking-wider">Normal Users</p>
-                            <p className="text-3xl font-bold text-white mt-2">{stats.normalUsers}</p>
+                            <p className="text-xs uppercase tracking-wider font-extrabold" style={{ color: "var(--text-secondary)" }}>Normal Users</p>
+                            <p className="text-3xl font-black mt-2" style={{ color: "var(--text-primary)" }}>{stats.normalUsers}</p>
                         </div>
-                        <User size={28} className="text-warning" />
+                        <div className="h-11 w-11 rounded-xl flex items-center justify-center border text-amber-400 bg-amber-500/10 border-amber-500/20">
+                            <UserIcon size={20} />
+                        </div>
                     </div>
                 </Card>
             </div>
 
             {error && (
-                <div className="mb-4 rounded-lg border border-danger/20 bg-danger/10 px-4 py-3 text-sm text-red-200">
+                <div className="mb-4 rounded-xl border border-danger/20 bg-danger/10 px-4 py-3 text-sm text-red-200">
                     {error}
                 </div>
             )}
 
-            <Card className="!p-0 overflow-hidden">
+            <Card className="!p-0 overflow-hidden border" style={{ borderColor: "var(--border-color)", background: "var(--bg-card)" }}>
                 <div className="overflow-x-auto">
                     <table className="w-full min-w-[980px] text-sm">
                         <thead>
-                            <tr className="text-left text-gray-400 bg-white/5 sticky top-0 backdrop-blur-sm">
-                                <th className="px-4 py-3">#</th>
-                                <th className="px-4 py-3">Name</th>
-                                <th className="px-4 py-3">Email</th>
-                                <th className="px-4 py-3">Phone</th>
-                                <th className="px-4 py-3">Role</th>
-                                <th className="px-4 py-3">Status</th>
-                                <th className="px-4 py-3">Skills</th>
-                                <th className="px-4 py-3">Joined</th>
-                                <th className="px-4 py-3">Actions</th>
+                            <tr className="text-left text-xs uppercase font-extrabold sticky top-0 backdrop-blur-sm" style={{ color: "var(--text-secondary)", background: "var(--bg-elevated)" }}>
+                                <th className="px-5 py-4">#</th>
+                                <th className="px-5 py-4">Name</th>
+                                <th className="px-5 py-4">Email</th>
+                                <th className="px-5 py-4">Phone</th>
+                                <th className="px-5 py-4">Role</th>
+                                <th className="px-5 py-4">Status</th>
+                                <th className="px-5 py-4">Skills</th>
+                                <th className="px-5 py-4">Joined</th>
+                                <th className="px-5 py-4">Actions</th>
                             </tr>
                         </thead>
                         <tbody>
                             {loading ? (
                                 Array.from({ length: 6 }).map((_, rowIndex) => (
-                                    <tr key={rowIndex} className="border-t border-white/5">
+                                    <tr key={rowIndex} className="border-t" style={{ borderColor: "var(--border-color)" }}>
                                         {Array.from({ length: 9 }).map((__, cellIndex) => (
-                                            <td key={cellIndex} className="px-4 py-4">
+                                            <td key={cellIndex} className="px-5 py-4.5">
                                                 <div className="h-4 w-full rounded-full bg-white/5 animate-pulse" />
                                             </td>
                                         ))}
@@ -272,11 +281,11 @@ function AdminUsersManagement() {
                                 ))
                             ) : !Array.isArray(filteredUsers) || filteredUsers.length === 0 ? (
                                 <tr>
-                                    <td colSpan="9" className="px-4 py-16 text-center text-gray-400">
+                                    <td colSpan="9" className="px-5 py-16 text-center">
                                         <div className="flex flex-col items-center gap-3">
                                             <span className="text-4xl">👥</span>
-                                            <p className="text-lg text-white font-semibold">No users found.</p>
-                                            <p className="max-w-md text-sm text-gray-400">Try changing your search or create a new user.</p>
+                                            <p className="text-lg font-bold" style={{ color: "var(--text-primary)" }}>No users found.</p>
+                                            <p className="max-w-md text-xs" style={{ color: "var(--text-secondary)" }}>Try changing your search query or verify network filters.</p>
                                         </div>
                                     </td>
                                 </tr>
@@ -290,41 +299,41 @@ function AdminUsersManagement() {
                                     const skills = getSkills(user);
 
                                     return (
-                                        <tr key={getUserId(user) || rowNumber} className="border-t border-white/5 hover:bg-white/5 transition-colors duration-200">
-                                            <td className="px-4 py-3 text-gray-400">{rowNumber}</td>
-                                            <td className="px-4 py-3 text-white">{user?.name || "—"}</td>
-                                            <td className="px-4 py-3 text-gray-400 break-all">{user?.email || "—"}</td>
-                                            <td className="px-4 py-3 text-gray-400">{phone}</td>
-                                            <td className="px-4 py-3">
+                                        <tr key={getUserId(user) || rowNumber} className="border-t hover:bg-black/[0.01] dark:hover:bg-white/[0.01] transition-colors" style={{ borderColor: "var(--border-color)" }}>
+                                            <td className="px-5 py-4 font-semibold" style={{ color: "var(--text-secondary)" }}>{rowNumber}</td>
+                                            <td className="px-5 py-4 font-bold" style={{ color: "var(--text-primary)" }}>{user?.name || "—"}</td>
+                                            <td className="px-5 py-4 font-medium break-all" style={{ color: "var(--text-secondary)" }}>{user?.email || "—"}</td>
+                                            <td className="px-5 py-4" style={{ color: "var(--text-secondary)" }}>{phone}</td>
+                                            <td className="px-5 py-4">
                                                 <Badge variant={roleVariant}>{user?.role === "admin" ? "Admin" : "User"}</Badge>
                                             </td>
-                                            <td className="px-4 py-3">
+                                            <td className="px-5 py-4">
                                                 <Badge variant={statusVariant}>{status === "active" ? "Active" : "Inactive"}</Badge>
                                             </td>
-                                            <td className="px-4 py-3">
+                                            <td className="px-5 py-4">
                                                 {skills.length === 0 ? (
-                                                    <span className="text-gray-400 text-xs">No Skills</span>
+                                                    <span className="text-xs" style={{ color: "var(--text-muted)" }}>No Skills</span>
                                                 ) : (
                                                     <div className="flex flex-wrap gap-2">
                                                         {skills.slice(0, 3).map((skill) => (
-                                                            <Badge key={skill} variant="info" className="text-[11px] py-1 px-2">
+                                                            <Badge key={skill} variant="info" className="text-[11px] py-1 px-2 font-semibold">
                                                                 {skill}
                                                             </Badge>
                                                         ))}
                                                         {skills.length > 3 && (
-                                                            <span className="text-gray-300 text-xs self-center">+{skills.length - 3} more</span>
+                                                            <span className="text-xs self-center" style={{ color: "var(--text-secondary)" }}>+{skills.length - 3} more</span>
                                                         )}
                                                     </div>
                                                 )}
                                             </td>
-                                            <td className="px-4 py-3 text-gray-400">{getJoinedDate(user)}</td>
-                                            <td className="px-4 py-3">
-                                                <div className="flex flex-wrap gap-2">
-                                                    <Button size="sm" variant="outline" onClick={() => openEditModal(user)}>
-                                                        <Edit size={14} /> Role
+                                            <td className="px-5 py-4" style={{ color: "var(--text-secondary)" }}>{getJoinedDate(user)}</td>
+                                            <td className="px-5 py-4">
+                                                <div className="flex gap-2">
+                                                    <Button size="sm" variant="outline" onClick={() => openEditModal(user)} className="!text-xs font-bold py-1.5 px-3 rounded-lg flex items-center gap-1.5">
+                                                        <Edit size={13} /> Role
                                                     </Button>
-                                                    <Button size="sm" variant="ghost" onClick={() => openDeleteModal(user)} disabled={saving}>
-                                                        <Trash2 size={14} /> Delete
+                                                    <Button size="sm" variant="ghost" onClick={() => openDeleteModal(user)} disabled={saving} className="!text-xs font-bold py-1.5 px-3 rounded-lg flex items-center gap-1.5">
+                                                        <Trash2 size={13} /> Delete
                                                     </Button>
                                                 </div>
                                             </td>
@@ -338,14 +347,18 @@ function AdminUsersManagement() {
             </Card>
 
             {filteredUsers.length > PAGE_SIZE && (
-                <div className="mt-4 flex flex-wrap items-center justify-between gap-3 text-sm text-gray-300">
-                    <p className="text-xs text-gray-500">Showing {Math.min(filteredUsers.length, PAGE_SIZE)} of {filteredUsers.length} users</p>
+                <div className="mt-4 flex flex-wrap items-center justify-between gap-3 text-sm">
+                    <p className="text-xs font-medium" style={{ color: "var(--text-muted)" }}>Showing {Math.min(filteredUsers.length, PAGE_SIZE)} of {filteredUsers.length} users</p>
                     <div className="inline-flex flex-wrap items-center gap-2">
                         {Array.from({ length: pageCount }, (_, index) => (
                             <button
                                 key={index}
                                 type="button"
-                                className={`rounded-2xl border px-3 py-2 transition ${currentPage === index + 1 ? "border-accent bg-accent/10 text-white" : "border-white/10 text-gray-400 hover:border-white/20 hover:text-white"}`}
+                                className={`rounded-xl border px-3 py-2 transition text-xs font-bold ${currentPage === index + 1 ? "border-accent bg-accent/10" : "hover:bg-black/5 dark:hover:bg-white/5"}`}
+                                style={{ 
+                                    borderColor: currentPage === index + 1 ? "var(--color-accent)" : "var(--border-color)",
+                                    color: currentPage === index + 1 ? "var(--text-primary)" : "var(--text-secondary)"
+                                }}
                                 onClick={() => setCurrentPage(index + 1)}
                             >
                                 {index + 1}
@@ -357,21 +370,22 @@ function AdminUsersManagement() {
 
             <Modal isOpen={isRoleModalOpen} onClose={closeRoleModal} title="Edit User Role">
                 <div className="space-y-4">
-                    <p className="text-sm text-gray-400">Update the role for {selectedUser?.name || selectedUser?.email}.</p>
+                    <p className="text-xs" style={{ color: "var(--text-secondary)" }}>Update the role for {selectedUser?.name || selectedUser?.email}.</p>
                     <div>
-                        <label className="block text-sm font-medium text-gray-300 mb-2">Role</label>
+                        <label className="block text-xs font-extrabold mb-2" style={{ color: "var(--text-secondary)" }}>Role</label>
                         <select
                             value={selectedRole}
                             onChange={(e) => setSelectedRole(e.target.value)}
-                            className="w-full rounded-2xl border border-white/20 bg-white/5 px-4 py-3 text-sm text-white focus:outline-none focus:ring-2 focus:ring-accent"
+                            className="w-full rounded-xl border px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-accent cursor-pointer"
+                            style={{ background: "var(--bg-card)", borderColor: "var(--border-color)", color: "var(--text-primary)" }}
                         >
-                            <option value="user" className="bg-navy">User</option>
-                            <option value="admin" className="bg-navy">Admin</option>
+                            <option value="user">User</option>
+                            <option value="admin">Admin</option>
                         </select>
                     </div>
 
                     {modalError && (
-                        <div className="rounded-lg border border-danger/20 bg-danger/10 px-4 py-3 text-sm text-red-200">
+                        <div className="rounded-xl border border-danger/20 bg-danger/10 px-4 py-3 text-sm text-red-200">
                             {modalError}
                         </div>
                     )}
@@ -385,9 +399,9 @@ function AdminUsersManagement() {
 
             <Modal isOpen={isDeleteModalOpen} onClose={closeDeleteModal} title="Delete User?">
                 <div className="space-y-4">
-                    <p className="text-sm text-gray-400">Are you sure you want to permanently delete this user? This action cannot be undone.</p>
+                    <p className="text-xs" style={{ color: "var(--text-secondary)" }}>Are you sure you want to permanently delete this user? This action cannot be undone.</p>
                     {modalError && (
-                        <div className="rounded-lg border border-danger/20 bg-danger/10 px-4 py-3 text-sm text-red-200">
+                        <div className="rounded-xl border border-danger/20 bg-danger/10 px-4 py-3 text-sm text-red-200">
                             {modalError}
                         </div>
                     )}

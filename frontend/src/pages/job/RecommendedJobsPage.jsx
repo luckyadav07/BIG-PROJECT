@@ -1,7 +1,7 @@
 import { useEffect, useState, useMemo } from "react";
 import { Link } from "react-router-dom";
-import { Sparkles, ArrowRight } from "lucide-react";
-import { motion } from "framer-motion";
+import { Sparkles, ArrowRight, Clock, ChevronDown } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 import JobCard from "../../components/job/JobCard.jsx";
 import JobCardSkeleton from "../../components/job/JobCardSkeleton.jsx";
 import EmptyState from "../../components/common/EmptyState.jsx";
@@ -37,6 +37,7 @@ function RecommendedJobsPage() {
   const { recommendedJobs, loading, applications, fetchRecommended, fetchApplications } = useJobStore();
   const showToast = useUIStore((s) => s.showToast);
   const [sortBy, setSortBy] = useState("match");
+  const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
     fetchRecommended();
@@ -80,37 +81,104 @@ function RecommendedJobsPage() {
         initial={{ opacity: 0, y: -15 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4 }}
-        className="relative rounded-2xl p-6 md:p-8 mb-8 overflow-hidden ai-gradient-border border border-white/5 shadow-md flex flex-col md:flex-row md:items-center justify-between gap-6"
+        className="relative rounded-2xl p-6 md:p-8 mb-8 overflow-hidden border shadow-md flex flex-col md:flex-row md:items-center justify-between gap-6"
         style={{
-          background: "linear-gradient(135deg, rgba(26, 31, 43, 0.95) 0%, rgba(20, 24, 32, 0.98) 100%)",
+          background: "var(--bg-card)",
+          borderColor: "var(--border-color)",
         }}
       >
-        <div className="absolute top-0 right-0 w-80 h-80 bg-accent/15 rounded-full blur-3xl pointer-events-none -z-10" />
+        <div className="absolute top-0 right-0 w-80 h-80 bg-accent/5 rounded-full blur-3xl pointer-events-none -z-10" />
 
         <div className="flex-1 max-w-xl">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-accent/15 border border-accent/25 text-accent-light text-xs font-semibold mb-3">
             <Sparkles size={12} />
             AI Curation Engine Active
           </div>
-          <h1 className="text-2xl md:text-3xl font-extrabold text-white tracking-tight">
+          <h1 className="text-2xl md:text-3xl font-extrabold tracking-tight" style={{ color: "var(--text-primary)" }}>
             Personalized Recommendations
           </h1>
-          <p className="text-gray-400 text-sm mt-1.5 leading-relaxed">
+          <p className="text-sm mt-1.5 leading-relaxed" style={{ color: "var(--text-secondary)" }}>
             These jobs are matched dynamically based on your uploaded resume, professional skills, and historical preference analytics.
           </p>
         </div>
 
         <div className="flex items-center gap-3 shrink-0 self-start md:self-center">
-          <span className="text-xs font-semibold text-gray-400">Sort matches by:</span>
-          <select
-            value={sortBy}
-            onChange={(e) => setSortBy(e.target.value)}
-            className="rounded-xl border border-white/10 bg-white/5 px-3 py-2.5 text-xs font-semibold text-white focus:outline-none focus:ring-2 focus:ring-accent cursor-pointer"
-            style={{ background: "var(--bg-elevated)" }}
-          >
-            <option value="match" className="bg-navy">Match Score</option>
-            <option value="newest" className="bg-navy">Date Posted</option>
-          </select>
+          <span className="text-xs font-semibold" style={{ color: "var(--text-secondary)" }}>Sort matches by:</span>
+          
+          <div className="relative">
+            <button
+              onClick={() => setIsOpen(!isOpen)}
+              className="rounded-xl border px-3.5 py-2.5 text-xs font-bold focus:outline-none focus:ring-2 focus:ring-accent cursor-pointer flex items-center gap-2 select-none"
+              style={{ background: "var(--bg-elevated)", borderColor: "var(--border-color)", color: "var(--text-primary)" }}
+            >
+              {sortBy === "match" ? (
+                <span className="flex items-center gap-1.5 text-accent-light">
+                  <Sparkles size={12} />
+                  Match Score
+                </span>
+              ) : (
+                <span className="flex items-center gap-1.5 text-emerald-400">
+                  <Clock size={12} />
+                  Date Posted
+                </span>
+              )}
+              <ChevronDown size={14} style={{ color: "var(--text-secondary)" }} className={`transition-transform duration-200 ${isOpen ? "rotate-180" : ""}`} />
+            </button>
+
+            <AnimatePresence>
+              {isOpen && (
+                <>
+                  <div className="fixed inset-0 z-40" onClick={() => setIsOpen(false)} />
+                  <motion.div
+                    initial={{ opacity: 0, y: 8, scale: 0.95 }}
+                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                    exit={{ opacity: 0, y: 8, scale: 0.95 }}
+                    transition={{ duration: 0.12 }}
+                    className="absolute right-0 mt-2 w-48 rounded-2xl border p-1.5 shadow-2xl z-50 overflow-hidden flex flex-col gap-1 backdrop-blur-md"
+                    style={{ background: "var(--bg-card)", borderColor: "var(--border-color)" }}
+                  >
+                    <button
+                      onClick={() => {
+                        setSortBy("match");
+                        setIsOpen(false);
+                      }}
+                      className={`w-full text-left px-3 py-2 rounded-xl text-xs font-bold flex items-center justify-between transition-colors cursor-pointer select-none ${
+                        sortBy === "match" 
+                          ? "bg-accent/10 text-accent-light" 
+                          : "hover:bg-black/5 dark:hover:bg-white/5"
+                      }`}
+                      style={{ color: sortBy === "match" ? "var(--color-accent-light)" : "var(--text-primary)" }}
+                    >
+                      <span className="flex items-center gap-2">
+                        <Sparkles size={12} className={sortBy === "match" ? "text-accent-light" : "text-gray-400"} />
+                        Match Score
+                      </span>
+                      {sortBy === "match" && <span className="h-1.5 w-1.5 rounded-full bg-accent animate-pulse" />}
+                    </button>
+
+                    <button
+                      onClick={() => {
+                        setSortBy("newest");
+                        setIsOpen(false);
+                      }}
+                      className={`w-full text-left px-3 py-2 rounded-xl text-xs font-bold flex items-center justify-between transition-colors cursor-pointer select-none ${
+                        sortBy === "newest" 
+                          ? "bg-accent/10 text-accent-light" 
+                          : "hover:bg-black/5 dark:hover:bg-white/5"
+                      }`}
+                      style={{ color: sortBy === "newest" ? "var(--color-accent-light)" : "var(--text-primary)" }}
+                    >
+                      <span className="flex items-center gap-2">
+                        <Clock size={12} className={sortBy === "newest" ? "text-accent-light" : "text-gray-400"} />
+                        Date Posted
+                      </span>
+                      {sortBy === "newest" && <span className="h-1.5 w-1.5 rounded-full bg-accent animate-pulse" />}
+                    </button>
+                  </motion.div>
+                </>
+              )}
+            </AnimatePresence>
+          </div>
         </div>
       </motion.div>
 

@@ -34,46 +34,53 @@ function ChatBubble({ message, isUser, timestamp }) {
       };
 
       return !inline && match ? (
-        <div className="border border-white/5 rounded-xl overflow-hidden my-4 shadow-sm">
-          <div className="flex items-center justify-between px-4 py-2 bg-white/5 border-b border-white/5 text-[10px] text-gray-400 font-mono tracking-wide">
+        <div className="border rounded-xl overflow-hidden my-4 shadow-sm" style={{ borderColor: "var(--border-color)" }}>
+          <div 
+            className="flex items-center justify-between px-4 py-2 border-b text-[10px] font-mono tracking-wide"
+            style={{ background: "var(--bg-elevated)", borderColor: "var(--border-color)", color: "var(--text-secondary)" }}
+          >
             <span>{match[1].toUpperCase()}</span>
             <button
               onClick={handleCopyCode}
-              className="hover:text-white flex items-center gap-1.5 transition font-semibold"
+              className="hover:text-accent flex items-center gap-1.5 transition font-semibold cursor-pointer"
             >
               {codeCopied ? <Check size={12} className="text-success" /> : <Copy size={12} />}
               {codeCopied ? "Copied" : "Copy"}
             </button>
           </div>
-          <pre className="!m-0 !p-4 overflow-x-auto text-xs font-mono leading-relaxed" style={{ background: "rgba(10, 15, 25, 0.5)" }}>
+          <pre className="!m-0 !p-4 overflow-x-auto text-xs font-mono leading-relaxed" style={{ background: "var(--bg-main)" }}>
             <code className={className} {...props}>
               {children}
             </code>
           </pre>
         </div>
       ) : (
-        <code className="px-1.5 py-0.5 rounded-md bg-white/10 text-accent-light text-xs font-mono font-semibold" {...props}>
+        <code 
+          className="px-1.5 py-0.5 rounded-md text-accent-light text-xs font-mono font-semibold" 
+          style={{ background: "var(--bg-input)" }}
+          {...props}
+        >
           {children}
         </code>
       );
     },
     p({ children }) {
-      return <p className="mb-3 last:mb-0 leading-relaxed text-sm text-gray-200">{children}</p>;
+      return <p className="mb-3 last:mb-0 leading-relaxed text-sm">{children}</p>;
     },
     ul({ children }) {
-      return <ul className="list-disc pl-5 mb-3 space-y-1 text-sm text-gray-200">{children}</ul>;
+      return <ul className="list-disc pl-5 mb-3 space-y-1 text-sm">{children}</ul>;
     },
     ol({ children }) {
-      return <ol className="list-decimal pl-5 mb-3 space-y-1 text-sm text-gray-200">{children}</ol>;
+      return <ol className="list-decimal pl-5 mb-3 space-y-1 text-sm">{children}</ol>;
     },
     li({ children }) {
       return <li className="leading-relaxed">{children}</li>;
     },
     h1({ children }) {
-      return <h1 className="text-lg font-black text-white mt-4 mb-2 first:mt-0">{children}</h1>;
+      return <h1 className="text-lg font-black mt-4 mb-2 first:mt-0" style={{ color: "var(--text-primary)" }}>{children}</h1>;
     },
     h2({ children }) {
-      return <h2 className="text-base font-bold text-white mt-3 mb-1.5 first:mt-0">{children}</h2>;
+      return <h2 className="text-base font-bold mt-3 mb-1.5 first:mt-0" style={{ color: "var(--text-primary)" }}>{children}</h2>;
     },
     a({ href, children }) {
       return (
@@ -95,8 +102,9 @@ function ChatBubble({ message, isUser, timestamp }) {
         className={`h-9 w-9 rounded-xl shrink-0 flex items-center justify-center border shadow-sm ${
           isUser
             ? "bg-accent/15 border-accent/20 text-accent-light"
-            : "bg-white/5 border-white/10 text-gray-400"
+            : ""
         }`}
+        style={!isUser ? { background: "var(--bg-elevated)", borderColor: "var(--border-color)", color: "var(--text-secondary)" } : undefined}
       >
         {isUser ? <User size={16} /> : <Bot size={16} />}
       </div>
@@ -107,8 +115,9 @@ function ChatBubble({ message, isUser, timestamp }) {
           className={`rounded-2xl px-4 py-3.5 relative overflow-hidden transition-all duration-200 border ${
             isUser
               ? "bg-accent text-white border-accent-dark rounded-tr-sm shadow-sm"
-              : "bg-white/5 text-gray-200 border-white/5 rounded-tl-sm hover:border-white/10"
+              : "rounded-tl-sm"
           }`}
+          style={!isUser ? { background: "var(--bg-elevated)", borderColor: "var(--border-color)", color: "var(--text-primary)" } : undefined}
         >
           {/* Subtle light effect for AI bubble */}
           {!isUser && (
@@ -133,7 +142,7 @@ function ChatBubble({ message, isUser, timestamp }) {
           {!isUser && (
             <button
               onClick={handleCopyMessage}
-              className="opacity-0 group-hover:opacity-100 hover:text-white transition-opacity duration-200 flex items-center gap-1 cursor-pointer"
+              className="opacity-0 group-hover:opacity-100 hover:text-accent transition-opacity duration-200 flex items-center gap-1 cursor-pointer"
             >
               {copied ? (
                 <>

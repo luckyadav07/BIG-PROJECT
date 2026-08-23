@@ -41,13 +41,13 @@ export default function StatsCards({ stats }) {
             whileTap={{ scale: 0.995 }}
             className="h-full"
           >
-            <Card className="border border-white/5 h-full !p-5 hover:border-white/10 transition-all duration-200">
+            <Card className="border border-white/5 h-full !p-5 hover:border-white/10 transition-all duration-200" style={{ background: "var(--bg-card)", borderColor: "var(--border-color)" }}>
               <div className="flex items-center justify-between gap-3">
                 <div>
-                  <p className="text-[10px] uppercase font-bold text-gray-500 tracking-wider">
+                  <p className="text-[10px] uppercase font-bold tracking-wider" style={{ color: "var(--text-secondary)" }}>
                     {card.title}
                   </p>
-                  <p className="text-2xl font-black text-white mt-2 leading-none">
+                  <p className="text-2xl font-black mt-2 leading-none" style={{ color: "var(--text-primary)" }}>
                     {card.value}
                   </p>
                 </div>

@@ -37,6 +37,7 @@ html {
 /* ─── Design Tokens (Dark – default) ─── */
 :root,
 html.dark {
+  color-scheme: dark;
   --bg-main: #0c0e12;
   --bg-sidebar: #141820;
   --bg-card: #1a1f2b;
@@ -70,6 +71,7 @@ html.dark {
 
 /* ─── Light Theme ─── */
 html.light {
+  color-scheme: light;
   --bg-main: #f8fafc;
   --bg-sidebar: #ffffff;
   --bg-card: #ffffff;
@@ -314,4 +316,12 @@ html.light .hero-gradient {
 
 ::-webkit-scrollbar-thumb:hover {
   background: var(--text-muted);
+}
+
+/* ─── Recharts Theme Adjustments ─── */
+.recharts-text, 
+.recharts-legend-item-text,
+.recharts-cartesian-axis-tick text {
+  fill: var(--text-secondary) !important;
+  color: var(--text-secondary) !important;
 }

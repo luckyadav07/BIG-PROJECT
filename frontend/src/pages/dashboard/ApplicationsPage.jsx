@@ -1,5 +1,6 @@
 import { useState, useMemo, useEffect } from "react";
 import { Link } from "react-router-dom";
+import { FileSpreadsheet, Loader2 } from "lucide-react";
 import Card from "../../components/common/Card.jsx";
 import ApplicationCard, {
   StatusBadge,
@@ -35,7 +36,7 @@ function ApplicationsPage() {
       console.error(err);
 
       if (err.response?.status !== 404) {
-        showToast("Failed to load applications", "error");
+        showToast({ message: "Failed to load applications", type: "error" });
       }
 
       setApplications([]);
@@ -53,12 +54,12 @@ function ApplicationsPage() {
       );
 
       showToast({
-  message: "Application withdrawn!",
-  type: "success",
-});
+        message: "Application withdrawn!",
+        type: "success",
+      });
     } catch (err) {
       console.error(err);
-      showToast("Failed to withdraw application", "error");
+      showToast({ message: "Failed to withdraw application", type: "error" });
     }
   };
 
@@ -104,31 +105,44 @@ function ApplicationsPage() {
 
   if (loading) {
     return (
-      <div className="text-white text-center py-10">
-        Loading applications...
+      <div className="h-[250px] flex flex-col justify-center items-center gap-3 text-center">
+        <Loader2 size={32} className="text-accent animate-spin" />
+        <p className="text-sm font-semibold" style={{ color: "var(--text-secondary)" }}>
+          Loading applications...
+        </p>
       </div>
     );
   }
 
   return (
-    <div>
-      <h1 className="text-2xl font-bold text-white mb-6">
-        My Applications
-      </h1>
+    <div className="space-y-6">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b pb-4" style={{ borderColor: "var(--border-color)" }}>
+        <div>
+          <h1 className="text-2xl md:text-3xl font-extrabold flex items-center gap-2.5 tracking-tight" style={{ color: "var(--text-primary)" }}>
+            <FileSpreadsheet className="text-accent" />
+            My Applications
+          </h1>
+          <p className="text-sm mt-1" style={{ color: "var(--text-secondary)" }}>
+            Keep track of your active job applications and submission status.
+          </p>
+        </div>
+      </div>
 
-      <div className="flex flex-wrap gap-3 mb-6">
+      <div className="flex flex-col md:flex-row gap-4">
         <input
           type="text"
-          placeholder="Search by job or company..."
+          placeholder="Search by job title or company..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          className="rounded-lg border border-white/20 bg-white/5 px-4 py-2 text-sm text-white flex-1"
+          className="rounded-xl border px-4 py-2.5 text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-accent flex-1 transition-all duration-200"
+          style={{ background: "var(--bg-card)", borderColor: "var(--border-color)", color: "var(--text-primary)" }}
         />
 
         <select
           value={statusFilter}
           onChange={(e) => setStatusFilter(e.target.value)}
-          className="rounded-lg border border-white/20 bg-white/5 px-3 py-2 text-sm text-white"
+          className="rounded-xl border px-4 py-2.5 text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-accent cursor-pointer"
+          style={{ background: "var(--bg-card)", borderColor: "var(--border-color)", color: "var(--text-primary)" }}
         >
           <option value="all">All Status</option>
           <option value="Applied">Applied</option>
@@ -140,80 +154,80 @@ function ApplicationsPage() {
         <select
           value={sortBy}
           onChange={(e) => setSortBy(e.target.value)}
-          className="rounded-lg border border-white/20 bg-white/5 px-3 py-2 text-sm text-white"
+          className="rounded-xl border px-4 py-2.5 text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-accent cursor-pointer"
+          style={{ background: "var(--bg-card)", borderColor: "var(--border-color)", color: "var(--text-primary)" }}
         >
-          <option value="newest">Newest</option>
-          <option value="oldest">Oldest</option>
+          <option value="newest">Newest First</option>
+          <option value="oldest">Oldest First</option>
         </select>
       </div>
 
-      <Card className="!p-0 overflow-hidden">
+      <Card className="!p-0 overflow-hidden border" style={{ borderColor: "var(--border-color)", background: "var(--bg-card)" }}>
         {filtered.length === 0 ? (
-          <div className="p-8 text-center text-gray-400">
-            No applications found.
+          <div className="p-8 text-center text-xs font-semibold" style={{ color: "var(--text-secondary)" }}>
+            No applications found matching the criteria.
           </div>
         ) : (
-          <table className="w-full text-sm">
-            <thead>
-              <tr className="bg-white/5 text-left">
-                <th className="px-4 py-3">Job</th>
-                <th className="px-4 py-3">Company</th>
-                <th className="px-4 py-3">Location</th>
-                <th className="px-4 py-3">Status</th>
-                <th className="px-4 py-3">Applied</th>
-                <th className="px-4 py-3">Action</th>
-              </tr>
-            </thead>
-
-            <tbody>
-              {filtered.map((app) => (
-                <tr
-                  key={app._id}
-                  className="border-t border-white/10"
-                >
-                  <td className="px-4 py-3 text-white">
-                    {app.jobId?.title}
-                  </td>
-
-                  <td className="px-4 py-3">
-                    {app.jobId?.company}
-                  </td>
-
-                  <td className="px-4 py-3">
-                    {app.jobId?.location}
-                  </td>
-
-                  <td className="px-4 py-3">
-                    <StatusBadge status={app.status} />
-                  </td>
-
-                  <td className="px-4 py-3">
-                    {new Date(
-                      app.createdAt
-                    ).toLocaleDateString()}
-                  </td>
-
-                  <td className="px-4 py-3">
-                    <Link
-                      to={`/jobs/${app.jobId?._id}`}
-                      className="text-accent mr-3"
-                    >
-                      View
-                    </Link>
-
-                    <button
-                      onClick={() =>
-                        handleWithdraw(app._id)
-                      }
-                      className="text-red-400"
-                    >
-                      Withdraw
-                    </button>
-                  </td>
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="text-left text-xs uppercase font-extrabold" style={{ color: "var(--text-secondary)", background: "var(--bg-elevated)" }}>
+                  <th className="px-5 py-4">Job</th>
+                  <th className="px-5 py-4">Company</th>
+                  <th className="px-5 py-4">Location</th>
+                  <th className="px-5 py-4">Status</th>
+                  <th className="px-5 py-4">Applied</th>
+                  <th className="px-5 py-4">Action</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+
+              <tbody>
+                {filtered.map((app) => (
+                  <tr
+                    key={app._id}
+                    className="border-t hover:bg-black/[0.01] dark:hover:bg-white/[0.01] transition-colors"
+                    style={{ borderColor: "var(--border-color)" }}
+                  >
+                    <td className="px-5 py-4 font-bold" style={{ color: "var(--text-primary)" }}>
+                      {app.jobId?.title}
+                    </td>
+
+                    <td className="px-5 py-4 font-medium" style={{ color: "var(--text-secondary)" }}>
+                      {app.jobId?.company}
+                    </td>
+
+                    <td className="px-5 py-4" style={{ color: "var(--text-secondary)" }}>
+                      {app.jobId?.location || "—"}
+                    </td>
+
+                    <td className="px-5 py-4">
+                      <StatusBadge status={app.status} />
+                    </td>
+
+                    <td className="px-5 py-4 font-medium" style={{ color: "var(--text-secondary)" }}>
+                      {new Date(app.createdAt).toLocaleDateString()}
+                    </td>
+
+                    <td className="px-5 py-4">
+                      <Link
+                        to={`/jobs/${app.jobId?._id}`}
+                        className="text-accent hover:underline mr-4 font-bold text-xs"
+                      >
+                        View
+                      </Link>
+
+                      <button
+                        onClick={() => handleWithdraw(app._id)}
+                        className="text-danger hover:underline font-bold text-xs cursor-pointer"
+                      >
+                        Withdraw
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         )}
       </Card>
     </div>

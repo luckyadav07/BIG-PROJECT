@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { FileSpreadsheet } from "lucide-react";
 import {
   getAllApplications,
   updateApplicationStatus,
@@ -8,6 +9,7 @@ import { getErrorMessage } from "../../utils/errorHandler.js";
 import LoadingState from "../../components/common/LoadingState.jsx";
 import EmptyState from "../../components/common/EmptyState.jsx";
 import Button from "../../components/common/Button.jsx";
+import Badge from "../../components/common/Badge.jsx";
 
 const STATUS_OPTIONS = [
   "Applied",
@@ -18,20 +20,28 @@ const STATUS_OPTIONS = [
 ];
 
 const statusColor = {
-  Applied: "text-yellow-400",
-  Shortlisted: "text-blue-400",
-  Interview: "text-orange-400",
-  Accepted: "text-green-400",
-  Rejected: "text-red-400",
+  Applied: "text-amber-500",
+  Shortlisted: "text-blue-500",
+  Interview: "text-purple-500",
+  Accepted: "text-emerald-500",
+  Rejected: "text-rose-500",
+};
+
+const badgeVariants = {
+  Applied: "warning",
+  Shortlisted: "blue",
+  Interview: "purple",
+  Accepted: "success",
+  Rejected: "danger",
 };
 
 function AdminApplicationsManagement() {
   const [applications, setApplications] = useState([]);
   const [selectedStatus, setSelectedStatus] = useState({});
   const [loading, setLoading] = useState(true);
+  const [editingId, setEditingId] = useState(null);
 
-  const success = useUIStore((s) => s.success);
-  const errorToast = useUIStore((s) => s.error);
+  const showToast = useUIStore((s) => s.showToast);
 
   useEffect(() => {
     fetchApplications();
@@ -50,7 +60,7 @@ function AdminApplicationsManagement() {
 
       setSelectedStatus(statusMap);
     } catch (err) {
-      errorToast(getErrorMessage(err));
+      showToast({ message: getErrorMessage(err), type: "danger" });
     } finally {
       setLoading(false);
     }
@@ -68,9 +78,10 @@ function AdminApplicationsManagement() {
         )
       );
 
-      success("Application status updated successfully!");
+      showToast({ message: "Application status updated successfully!", type: "success" });
+      setEditingId(null);
     } catch (err) {
-      errorToast(getErrorMessage(err));
+      showToast({ message: getErrorMessage(err), type: "danger" });
     }
   };
 
@@ -88,21 +99,29 @@ function AdminApplicationsManagement() {
   }
 
   return (
-    <div>
-      <h1 className="text-2xl font-bold text-white mb-6">
-        Manage Applications
-      </h1>
+    <div className="space-y-6">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b pb-4" style={{ borderColor: "var(--border-color)" }}>
+        <div>
+          <h1 className="text-2xl md:text-3xl font-extrabold flex items-center gap-2.5 tracking-tight" style={{ color: "var(--text-primary)" }}>
+            <FileSpreadsheet className="text-accent" />
+            Manage Applications
+          </h1>
+          <p className="text-sm mt-1" style={{ color: "var(--text-secondary)" }}>
+            Review candidate job applications, track states, and update decisions.
+          </p>
+        </div>
+      </div>
 
-      <div className="overflow-x-auto rounded-xl border border-white/10 bg-white/5">
-        <table className="w-full">
-          <thead className="bg-white/10">
-            <tr>
-              <th className="p-4 text-left text-gray-300">Applicant</th>
-              <th className="p-4 text-left text-gray-300">Email</th>
-              <th className="p-4 text-left text-gray-300">Job</th>
-              <th className="p-4 text-left text-gray-300">Company</th>
-              <th className="p-4 text-left text-gray-300">Status</th>
-              <th className="p-4 text-center text-gray-300">Action</th>
+      <div className="overflow-x-auto rounded-2xl border" style={{ borderColor: "var(--border-color)", background: "var(--bg-card)" }}>
+        <table className="w-full text-sm">
+          <thead>
+            <tr className="text-left text-xs uppercase font-extrabold" style={{ color: "var(--text-secondary)", background: "var(--bg-elevated)" }}>
+              <th className="px-5 py-4">Applicant</th>
+              <th className="px-5 py-4">Email</th>
+              <th className="px-5 py-4">Job</th>
+              <th className="px-5 py-4">Company</th>
+              <th className="px-5 py-4">Status</th>
+              <th className="px-5 py-4 text-center">Action</th>
             </tr>
           </thead>
 
@@ -110,51 +129,91 @@ function AdminApplicationsManagement() {
             {applications.map((app) => (
               <tr
                 key={app._id}
-                className="border-t border-white/10 hover:bg-white/5 transition"
+                className="border-t hover:bg-black/[0.01] dark:hover:bg-white/[0.01] transition-colors"
+                style={{ borderColor: "var(--border-color)" }}
               >
-                <td className="p-4 text-white">
+                <td className="px-5 py-4 font-bold" style={{ color: "var(--text-primary)" }}>
                   {app.userId?.name}
                 </td>
 
-                <td className="p-4 text-gray-300">
+                <td className="px-5 py-4 font-medium" style={{ color: "var(--text-secondary)" }}>
                   {app.userId?.email}
                 </td>
 
-                <td className="p-4 text-white">
+                <td className="px-5 py-4 font-bold" style={{ color: "var(--text-primary)" }}>
                   {app.jobId?.title}
                 </td>
 
-                <td className="p-4 text-gray-300">
+                <td className="px-5 py-4 font-medium" style={{ color: "var(--text-secondary)" }}>
                   {app.jobId?.company}
                 </td>
 
-                <td className="p-4">
-                  <select
-                    value={selectedStatus[app._id]}
-                    onChange={(e) =>
-                      setSelectedStatus((prev) => ({
-                        ...prev,
-                        [app._id]: e.target.value,
-                      }))
-                    }
-                    className={`rounded-lg border border-white/10 bg-navy px-3 py-2 ${statusColor[selectedStatus[app._id]]}`}
-                  >
-                    {STATUS_OPTIONS.map((status) => (
-                      <option key={status} value={status}>
-                        {status}
-                      </option>
-                    ))}
-                  </select>
+                 <td className="px-5 py-4">
+                  {editingId === app._id ? (
+                    <select
+                      value={selectedStatus[app._id] || app.status}
+                      onChange={(e) =>
+                        setSelectedStatus((prev) => ({
+                          ...prev,
+                          [app._id]: e.target.value,
+                        }))
+                      }
+                      className={`rounded-xl border px-3 py-2 text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-accent cursor-pointer ${statusColor[selectedStatus[app._id] || app.status]}`}
+                      style={{ background: "var(--bg-card)", borderColor: "var(--border-color)" }}
+                    >
+                      {STATUS_OPTIONS.map((status) => (
+                        <option key={status} value={status}>
+                          {status}
+                        </option>
+                      ))}
+                    </select>
+                  ) : (
+                    <Badge
+                      variant={badgeVariants[app.status] || "neutral"}
+                      className="cursor-pointer hover:opacity-85 transition-opacity"
+                      onClick={() => {
+                        setSelectedStatus((prev) => ({ ...prev, [app._id]: app.status }));
+                        setEditingId(app._id);
+                      }}
+                    >
+                      {app.status}
+                    </Badge>
+                  )}
                 </td>
 
-                <td className="p-4 text-center">
-                  <Button
-                    size="sm"
-                    onClick={() => handleSave(app._id)}
-                    disabled={selectedStatus[app._id] === app.status}
-                  >
-                    Save
-                  </Button>
+                <td className="px-5 py-4 text-center">
+                  {editingId === app._id ? (
+                    <div className="flex items-center justify-center gap-2">
+                      <Button
+                        size="sm"
+                        onClick={() => handleSave(app._id)}
+                        disabled={selectedStatus[app._id] === app.status}
+                        className="!text-xs font-bold py-1.5 px-3 rounded-lg"
+                      >
+                        Save
+                      </Button>
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() => setEditingId(null)}
+                        className="!text-xs font-bold py-1.5 px-3 rounded-lg"
+                      >
+                        Cancel
+                      </Button>
+                    </div>
+                  ) : (
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      onClick={() => {
+                        setSelectedStatus((prev) => ({ ...prev, [app._id]: app.status }));
+                        setEditingId(app._id);
+                      }}
+                      className="!text-xs font-bold py-1.5 px-3 rounded-lg"
+                    >
+                      Edit
+                    </Button>
+                  )}
                 </td>
               </tr>
             ))}
