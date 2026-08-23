@@ -3,31 +3,39 @@ import Skeleton from "../common/Skeleton.jsx";
 
 function JobCardSkeleton() {
   return (
-    <Card className="!p-5">
-      <div className="mb-4 flex items-start gap-3">
-        <Skeleton width="44px" height="44px" className="!rounded-xl shrink-0" />
-        <div className="min-w-0 flex-1 space-y-2">
-          <Skeleton height="18px" width="75%" />
-          <Skeleton height="14px" width="45%" />
+    <Card className="flex flex-col h-full !p-5 border border-white/5 relative">
+      {/* Top Section: Logo & Details */}
+      <div className="flex items-start gap-4 mb-4">
+        <Skeleton width="48px" height="48px" className="!rounded-xl shrink-0" />
+        <div className="flex-1 min-w-0 space-y-2 mt-1">
+          <Skeleton height="16px" width="70%" />
+          <Skeleton height="12px" width="40%" />
         </div>
-        <Skeleton width="64px" height="24px" className="!rounded-full shrink-0" />
+        <div className="flex items-center gap-2 shrink-0">
+          <Skeleton width="60px" height="22px" className="!rounded-full" />
+          <Skeleton width="32px" height="32px" className="!rounded-xl" />
+        </div>
       </div>
 
-      <div className="mb-4 flex flex-wrap gap-2">
+      {/* Middle Section: Meta Badges */}
+      <div className="flex flex-wrap items-center gap-2 mb-4">
+        <Skeleton width="75px" height="22px" className="!rounded-full" />
+        <Skeleton width="85px" height="22px" className="!rounded-full" />
+        <Skeleton width="65px" height="22px" className="!rounded-full" />
         <Skeleton width="80px" height="22px" className="!rounded-full" />
-        <Skeleton width="96px" height="22px" className="!rounded-full" />
-        <Skeleton width="72px" height="22px" className="!rounded-full" />
       </div>
 
-      <div className="mb-4 flex gap-1.5">
-        <Skeleton width="56px" height="24px" className="!rounded-md" />
-        <Skeleton width="64px" height="24px" className="!rounded-md" />
-        <Skeleton width="48px" height="24px" className="!rounded-md" />
+      {/* Skills Tags */}
+      <div className="flex flex-wrap gap-1.5 mb-5 mt-auto">
+        <Skeleton width="60px" height="24px" className="!rounded-lg" />
+        <Skeleton width="75px" height="24px" className="!rounded-lg" />
+        <Skeleton width="55px" height="24px" className="!rounded-lg" />
       </div>
 
-      <div className="flex gap-2">
-        <Skeleton height="36px" className="flex-1" />
-        <Skeleton width="36px" height="36px" className="!rounded-xl shrink-0" />
+      {/* Bottom Section: Footer Actions */}
+      <div className="flex items-center justify-between gap-3 pt-3 border-t" style={{ borderColor: "var(--border-color)" }}>
+        <Skeleton width="90px" height="12px" />
+        <Skeleton width="110px" height="32px" className="!rounded-lg" />
       </div>
     </Card>
   );
