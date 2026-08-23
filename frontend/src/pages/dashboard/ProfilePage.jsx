@@ -106,11 +106,11 @@ function ProfilePage() {
     <div className="max-w-6xl mx-auto space-y-6 pb-12">
       {/* Page Header */}
       <div>
-        <h1 className="text-2xl md:text-3xl font-extrabold text-white flex items-center gap-2.5 tracking-tight">
+        <h1 className="text-2xl md:text-3xl font-extrabold flex items-center gap-2.5 tracking-tight" style={{ color: "var(--text-primary)" }}>
           <User className="text-accent" />
           My Profile Dashboard
         </h1>
-        <p className="text-sm text-gray-400 mt-1 leading-relaxed">
+        <p className="text-sm mt-1 leading-relaxed" style={{ color: "var(--text-secondary)" }}>
           Manage your professional details, skills, social profiles, and parsed resume analyses.
         </p>
       </div>
@@ -126,7 +126,7 @@ function ProfilePage() {
           
           {/* Avatar Banner Card */}
           <motion.div variants={itemVariants}>
-            <Card className="text-center border border-white/5 relative overflow-hidden p-6">
+            <Card className="text-center border relative overflow-hidden p-6" style={{ background: "var(--bg-card)", borderColor: "var(--border-color)" }}>
               <div className="absolute top-0 right-0 w-32 h-32 bg-accent/5 rounded-full blur-2xl pointer-events-none" />
               
               <div className="mx-auto h-24 w-24 rounded-full bg-accent/15 border-2 border-accent/30 flex items-center justify-center text-3xl font-extrabold text-accent-light mb-4 shadow-sm relative group overflow-hidden">
@@ -136,18 +136,18 @@ function ProfilePage() {
                 </div>
               </div>
 
-              <h2 className="text-xl font-bold text-white tracking-tight">{user?.name}</h2>
-              <p className="text-gray-400 text-sm font-semibold mt-1 flex items-center justify-center gap-1.5">
+              <h2 className="text-xl font-bold tracking-tight" style={{ color: "var(--text-primary)" }}>{user?.name}</h2>
+              <p className="text-sm font-semibold mt-1 flex items-center justify-center gap-1.5" style={{ color: "var(--text-secondary)" }}>
                 <Briefcase size={13} className="text-accent-light" />
                 {role}
               </p>
               
-              <div className="mt-6 border-t border-white/5 pt-5 text-left">
-                <div className="flex justify-between items-center text-xs font-bold text-gray-400 mb-2">
+              <div className="mt-6 border-t pt-5 text-left" style={{ borderColor: "var(--border-color)" }}>
+                <div className="flex justify-between items-center text-xs font-bold mb-2" style={{ color: "var(--text-secondary)" }}>
                   <span>Profile Completion</span>
                   <span className="text-accent-light font-extrabold">95%</span>
                 </div>
-                <div className="h-2 rounded-full bg-white/5 overflow-hidden">
+                <div className="h-2 rounded-full overflow-hidden" style={{ background: "var(--bg-elevated)" }}>
                   <motion.div 
                     initial={{ width: 0 }}
                     animate={{ width: "95%" }}
@@ -161,26 +161,26 @@ function ProfilePage() {
 
           {/* Quick Stats Panel */}
           <motion.div variants={itemVariants}>
-            <Card className="border border-white/5 p-5">
-              <h3 className="font-bold text-sm text-white mb-4 flex items-center gap-1.5">
+            <Card className="border p-5" style={{ background: "var(--bg-card)", borderColor: "var(--border-color)" }}>
+              <h3 className="font-bold text-sm mb-4 flex items-center gap-1.5" style={{ color: "var(--text-primary)" }}>
                 <Activity size={15} className="text-accent-light" />
                 Application Statistics
               </h3>
               <div className="grid grid-cols-2 gap-3.5">
-                <div className="p-3.5 rounded-xl border border-white/5 bg-white/[0.01]">
-                  <span className="text-[10px] uppercase font-extrabold text-gray-500 tracking-wider">Applied</span>
-                  <p className="text-xl font-black text-white mt-1">12</p>
+                <div className="p-3.5 rounded-xl border" style={{ background: "var(--bg-elevated)", borderColor: "var(--border-color)" }}>
+                  <span className="text-[10px] uppercase font-extrabold tracking-wider" style={{ color: "var(--text-secondary)" }}>Applied</span>
+                  <p className="text-xl font-black mt-1" style={{ color: "var(--text-primary)" }}>12</p>
                 </div>
-                <div className="p-3.5 rounded-xl border border-white/5 bg-white/[0.01]">
-                  <span className="text-[10px] uppercase font-extrabold text-gray-500 tracking-wider">Interviews</span>
+                <div className="p-3.5 rounded-xl border" style={{ background: "var(--bg-elevated)", borderColor: "var(--border-color)" }}>
+                  <span className="text-[10px] uppercase font-extrabold tracking-wider" style={{ color: "var(--text-secondary)" }}>Interviews</span>
                   <p className="text-xl font-black text-emerald-400 mt-1">3</p>
                 </div>
-                <div className="p-3.5 rounded-xl border border-white/5 bg-white/[0.01]">
-                  <span className="text-[10px] uppercase font-extrabold text-gray-500 tracking-wider">Saved Jobs</span>
-                  <p className="text-xl font-black text-white mt-1">8</p>
+                <div className="p-3.5 rounded-xl border" style={{ background: "var(--bg-elevated)", borderColor: "var(--border-color)" }}>
+                  <span className="text-[10px] uppercase font-extrabold tracking-wider" style={{ color: "var(--text-secondary)" }}>Saved Jobs</span>
+                  <p className="text-xl font-black mt-1" style={{ color: "var(--text-primary)" }}>8</p>
                 </div>
-                <div className="p-3.5 rounded-xl border border-white/5 bg-white/[0.01]">
-                  <span className="text-[10px] uppercase font-extrabold text-gray-500 tracking-wider">Audit Score</span>
+                <div className="p-3.5 rounded-xl border" style={{ background: "var(--bg-elevated)", borderColor: "var(--border-color)" }}>
+                  <span className="text-[10px] uppercase font-extrabold tracking-wider" style={{ color: "var(--text-secondary)" }}>Audit Score</span>
                   <p className="text-xl font-black text-accent-light mt-1">84</p>
                 </div>
               </div>
@@ -189,8 +189,8 @@ function ProfilePage() {
 
           {/* Recent Activity Log */}
           <motion.div variants={itemVariants}>
-            <Card className="border border-white/5 p-5">
-              <h3 className="font-bold text-sm text-white mb-4 flex items-center gap-1.5">
+            <Card className="border p-5" style={{ background: "var(--bg-card)", borderColor: "var(--border-color)" }}>
+              <h3 className="font-bold text-sm mb-4 flex items-center gap-1.5" style={{ color: "var(--text-primary)" }}>
                 <Activity size={15} className="text-accent-light" />
                 Profile Timeline
               </h3>
@@ -202,12 +202,12 @@ function ProfilePage() {
                 ].map((act, idx) => (
                   <div key={idx} className="flex gap-3 text-xs text-left relative">
                     {idx < 2 && (
-                      <div className="absolute left-[5px] top-3.5 bottom-0 w-[1px] bg-white/5" />
+                      <div className="absolute left-[5px] top-3.5 bottom-0 w-[1px]" style={{ background: "var(--border-color)" }} />
                     )}
                     <span className={`h-2.5 w-2.5 rounded-full shrink-0 mt-1 ${act.accent}`} />
                     <div>
-                      <p className="font-bold text-white">{act.title}</p>
-                      <p className="text-[10px] text-gray-500 mt-0.5">{act.desc}</p>
+                      <p className="font-bold" style={{ color: "var(--text-primary)" }}>{act.title}</p>
+                      <p className="text-[10px] mt-0.5" style={{ color: "var(--text-secondary)" }}>{act.desc}</p>
                     </div>
                   </div>
                 ))}
@@ -222,8 +222,8 @@ function ProfilePage() {
           
           {/* Personal Information */}
           <motion.div variants={itemVariants}>
-            <Card className="border border-white/5 p-6">
-              <h3 className="font-bold text-base text-white mb-5 pb-2 border-b border-white/5 flex items-center gap-2">
+            <Card className="border p-6" style={{ background: "var(--bg-card)", borderColor: "var(--border-color)" }}>
+              <h3 className="font-bold text-base mb-5 pb-2 border-b flex items-center gap-2" style={{ color: "var(--text-primary)", borderColor: "var(--border-color)" }}>
                 <User size={16} className="text-accent" />
                 Personal Information
               </h3>
@@ -251,8 +251,8 @@ function ProfilePage() {
 
           {/* Professional Information */}
           <motion.div variants={itemVariants}>
-            <Card className="border border-white/5 p-6">
-              <h3 className="font-bold text-base text-white mb-5 pb-2 border-b border-white/5 flex items-center gap-2">
+            <Card className="border p-6" style={{ background: "var(--bg-card)", borderColor: "var(--border-color)" }}>
+              <h3 className="font-bold text-base mb-5 pb-2 border-b flex items-center gap-2" style={{ color: "var(--text-primary)", borderColor: "var(--border-color)" }}>
                 <Briefcase size={16} className="text-accent" />
                 Professional Credentials
               </h3>
@@ -281,8 +281,8 @@ function ProfilePage() {
 
           {/* Skills Checklist Card */}
           <motion.div variants={itemVariants}>
-            <Card className="border border-white/5 p-6">
-              <h3 className="font-bold text-base text-white mb-4 pb-2 border-b border-white/5 flex items-center gap-2">
+            <Card className="border p-6" style={{ background: "var(--bg-card)", borderColor: "var(--border-color)" }}>
+              <h3 className="font-bold text-base mb-4 pb-2 border-b flex items-center gap-2" style={{ color: "var(--text-primary)", borderColor: "var(--border-color)" }}>
                 <Sparkles size={16} className="text-accent" />
                 Technical Capabilities
               </h3>
@@ -292,8 +292,8 @@ function ProfilePage() {
                   onChange={(e) => setSkillInput(e.target.value)} 
                   onKeyDown={(e) => e.key === "Enter" && (e.preventDefault(), addSkill())} 
                   placeholder="Type new skill tag..." 
-                  className="flex-1 rounded-xl border border-white/5 bg-white/5 px-4 py-2.5 text-sm text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-accent transition-all duration-200" 
-                  style={{ background: "rgba(255, 255, 255, 0.01)" }}
+                  className="flex-1 rounded-xl border px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-accent transition-all duration-200" 
+                  style={{ background: "var(--bg-elevated)", borderColor: "var(--border-color)", color: "var(--text-primary)" }}
                 />
                 <Button size="sm" variant="outline" onClick={addSkill} className="font-bold px-4 flex items-center gap-1">
                   <Plus size={14} /> Add
@@ -308,7 +308,8 @@ function ProfilePage() {
                       initial={{ scale: 0.9, opacity: 0 }}
                       animate={{ scale: 1, opacity: 1 }}
                       exit={{ scale: 0.9, opacity: 0 }}
-                      className="inline-flex items-center gap-1.5 rounded-lg border border-white/5 bg-white/5 px-3 py-1.5 text-xs font-semibold text-accent-light hover:bg-white/10 transition-colors"
+                      className="inline-flex items-center gap-1.5 rounded-lg border px-3 py-1.5 text-xs font-semibold hover:bg-black/5 dark:hover:bg-white/5 transition-colors"
+                      style={{ background: "var(--bg-elevated)", borderColor: "var(--border-color)", color: "var(--text-secondary)" }}
                     >
                       {s}
                       <button 
@@ -330,15 +331,18 @@ function ProfilePage() {
 
           {/* Resume Upload Card */}
           <motion.div variants={itemVariants}>
-            <Card className="border border-white/5 p-6 relative overflow-hidden">
+            <Card className="border p-6 relative overflow-hidden" style={{ background: "var(--bg-card)", borderColor: "var(--border-color)" }}>
               <div className="absolute top-0 right-0 w-36 h-36 bg-blue-500/5 rounded-full blur-3xl pointer-events-none" />
               
-              <h3 className="font-bold text-base text-white mb-4 pb-2 border-b border-white/5 flex items-center gap-2">
+              <h3 className="font-bold text-base mb-4 pb-2 border-b flex items-center gap-2" style={{ color: "var(--text-primary)", borderColor: "var(--border-color)" }}>
                 <FileText size={16} className="text-accent" />
                 Resume Document
               </h3>
 
-              <div className="flex flex-col items-center justify-center p-6 border-2 border-dashed border-white/10 rounded-2xl bg-white/[0.005] hover:border-accent/20 transition-all duration-200 relative mb-5">
+              <div 
+                className="flex flex-col items-center justify-center p-6 border-2 border-dashed rounded-2xl transition-all duration-200 relative mb-5 hover:border-accent/30"
+                style={{ background: "var(--bg-elevated)", borderColor: "var(--border-color)" }}
+              >
                 <input
                   type="file"
                   id="profile-resume-upload"
@@ -357,13 +361,13 @@ function ProfilePage() {
                   Choose PDF Resume
                 </button>
                 
-                <span className="text-[10px] text-gray-500">PDF formats up to 5 MB.</span>
+                <span className="text-[10px]" style={{ color: "var(--text-secondary)" }}>PDF formats up to 5 MB.</span>
               </div>
 
               {resume && (
                 <div className="rounded-xl bg-emerald-500/10 border border-emerald-500/20 p-3 flex items-center gap-2 text-xs font-semibold text-emerald-400 mb-4">
                   <CheckCircle2 size={14} className="shrink-0" />
-                  <span>Uploaded document: <strong className="text-white">{resume.name}</strong></span>
+                  <span>Uploaded document: <strong style={{ color: "var(--text-primary)" }}>{resume.name}</strong></span>
                 </div>
               )}
 
@@ -386,34 +390,34 @@ function ProfilePage() {
                     animate={{ opacity: 1, height: "auto" }}
                     className="space-y-5 pt-3 overflow-hidden"
                   >
-                    <div className="rounded-2xl bg-blue-500/5 border border-blue-500/15 p-5 relative overflow-hidden">
+                    <div className="rounded-2xl border p-5 relative overflow-hidden" style={{ background: "var(--bg-card)", borderColor: "var(--border-color)" }}>
                       <div className="absolute top-0 right-0 w-24 h-24 bg-blue-500/5 rounded-full blur-2xl pointer-events-none" />
-                      <h4 className="text-sm font-bold text-white mb-4 flex items-center gap-1.5">
+                      <h4 className="text-sm font-bold mb-4 flex items-center gap-1.5" style={{ color: "var(--text-primary)" }}>
                         <Sparkles size={14} className="text-blue-400" />
                         Extracted Metrics
                       </h4>
                       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                        <div className="p-3 bg-white/5 rounded-xl border border-white/5">
-                          <p className="text-[10px] uppercase font-bold text-gray-500">Skills</p>
-                          <p className="text-xl font-black text-white mt-1">
+                        <div className="p-3 rounded-xl border" style={{ background: "var(--bg-elevated)", borderColor: "var(--border-color)" }}>
+                          <p className="text-[10px] uppercase font-bold" style={{ color: "var(--text-secondary)" }}>Skills</p>
+                          <p className="text-xl font-black mt-1" style={{ color: "var(--text-primary)" }}>
                             {resumeData.analysis.skills?.length || 0}
                           </p>
                         </div>
-                        <div className="p-3 bg-white/5 rounded-xl border border-white/5">
-                          <p className="text-[10px] uppercase font-bold text-gray-500">Projects</p>
-                          <p className="text-xl font-black text-white mt-1">
+                        <div className="p-3 rounded-xl border" style={{ background: "var(--bg-elevated)", borderColor: "var(--border-color)" }}>
+                          <p className="text-[10px] uppercase font-bold" style={{ color: "var(--text-secondary)" }}>Projects</p>
+                          <p className="text-xl font-black mt-1" style={{ color: "var(--text-primary)" }}>
                             {resumeData.analysis.projects || 0}
                           </p>
                         </div>
-                        <div className="p-3 bg-white/5 rounded-xl border border-white/5">
-                          <p className="text-[10px] uppercase font-bold text-gray-500">Exp (Yrs)</p>
-                          <p className="text-xl font-black text-white mt-1">
+                        <div className="p-3 rounded-xl border" style={{ background: "var(--bg-elevated)", borderColor: "var(--border-color)" }}>
+                          <p className="text-[10px] uppercase font-bold" style={{ color: "var(--text-secondary)" }}>Exp (Yrs)</p>
+                          <p className="text-xl font-black mt-1" style={{ color: "var(--text-primary)" }}>
                             {resumeData.analysis.experience || 0}
                           </p>
                         </div>
-                        <div className="p-3 bg-white/5 rounded-xl border border-white/5">
-                          <p className="text-[10px] uppercase font-bold text-gray-500">Education</p>
-                          <p className="text-xl font-black text-white mt-1">
+                        <div className="p-3 rounded-xl border" style={{ background: "var(--bg-elevated)", borderColor: "var(--border-color)" }}>
+                          <p className="text-[10px] uppercase font-bold" style={{ color: "var(--text-secondary)" }}>Education</p>
+                          <p className="text-xl font-black mt-1" style={{ color: "var(--text-primary)" }}>
                             {resumeData.analysis.education?.length || 0}
                           </p>
                         </div>
@@ -422,19 +426,19 @@ function ProfilePage() {
 
                     <div className="grid md:grid-cols-2 gap-4">
                       {/* Personal Info Details */}
-                      <div className="p-4 rounded-xl border border-white/5 bg-white/[0.01]">
-                        <h4 className="font-bold text-xs text-white mb-2.5">Personal Details</h4>
-                        <div className="space-y-1.5 text-xs text-gray-300">
-                          <p><strong className="text-gray-500 font-semibold">Name:</strong> {resumeData.analysis.name || "N/A"}</p>
-                          <p><strong className="text-gray-500 font-semibold">Email:</strong> {resumeData.analysis.email || "N/A"}</p>
-                          <p><strong className="text-gray-500 font-semibold">Phone:</strong> {resumeData.analysis.phone || "N/A"}</p>
+                      <div className="p-4 rounded-xl border" style={{ background: "var(--bg-elevated)", borderColor: "var(--border-color)" }}>
+                        <h4 className="font-bold text-xs mb-2.5" style={{ color: "var(--text-primary)" }}>Personal Details</h4>
+                        <div className="space-y-1.5 text-xs font-semibold" style={{ color: "var(--text-secondary)" }}>
+                          <p><strong className="font-semibold" style={{ color: "var(--text-primary)" }}>Name:</strong> {resumeData.analysis.name || "N/A"}</p>
+                          <p><strong className="font-semibold" style={{ color: "var(--text-primary)" }}>Email:</strong> {resumeData.analysis.email || "N/A"}</p>
+                          <p><strong className="font-semibold" style={{ color: "var(--text-primary)" }}>Phone:</strong> {resumeData.analysis.phone || "N/A"}</p>
                         </div>
                       </div>
 
                       {/* Education Summary */}
-                      <div className="p-4 rounded-xl border border-white/5 bg-white/[0.01]">
-                        <h4 className="font-bold text-xs text-white mb-2.5">Education summary</h4>
-                        <ul className="list-disc pl-4 text-xs text-gray-300 space-y-1">
+                      <div className="p-4 rounded-xl border" style={{ background: "var(--bg-elevated)", borderColor: "var(--border-color)" }}>
+                        <h4 className="font-bold text-xs mb-2.5" style={{ color: "var(--text-primary)" }}>Education summary</h4>
+                        <ul className="list-disc pl-4 text-xs font-semibold space-y-1" style={{ color: "var(--text-secondary)" }}>
                           {(resumeData.analysis.education || []).map((edu, index) => (
                             <li key={index} className="leading-relaxed">{edu}</li>
                           ))}
@@ -451,7 +455,7 @@ function ProfilePage() {
                         <h4 className="font-bold text-xs text-emerald-400 mb-3 flex items-center gap-1.5">
                           <CheckCircle2 size={13} /> Resume Strengths
                         </h4>
-                        <ul className="space-y-2 text-xs text-gray-300 leading-normal">
+                        <ul className="space-y-2 text-xs font-semibold leading-normal" style={{ color: "var(--text-secondary)" }}>
                           <li className="flex items-start gap-1.5">✅ <span className="mt-0.5">Contact information detected</span></li>
                           <li className="flex items-start gap-1.5">✅ <span className="mt-0.5">Technical skills are clearly listed</span></li>
                           <li className="flex items-start gap-1.5">✅ <span className="mt-0.5">Projects section included</span></li>
@@ -467,7 +471,7 @@ function ProfilePage() {
                         <h4 className="font-bold text-xs text-amber-400 mb-3 flex items-center gap-1.5">
                           <AlertTriangle size={13} /> AI Suggestions
                         </h4>
-                        <ul className="space-y-2 text-xs text-gray-300">
+                        <ul className="space-y-2 text-xs font-semibold" style={{ color: "var(--text-secondary)" }}>
                           <li className="flex items-start gap-2"><span>•</span> <span>Add a professional summary at the top.</span></li>
                           <li className="flex items-start gap-2"><span>•</span> <span>Quantify project achievements with numbers.</span></li>
                           <li className="flex items-start gap-2"><span>•</span> <span>Tailor resume for each job application.</span></li>
@@ -490,14 +494,14 @@ function ProfilePage() {
 
           {/* Social Profiles */}
           <motion.div variants={itemVariants}>
-            <Card className="border border-white/5 p-6">
-              <h3 className="font-bold text-base text-white mb-5 pb-2 border-b border-white/5 flex items-center gap-2">
+            <Card className="border p-6" style={{ background: "var(--bg-card)", borderColor: "var(--border-color)" }}>
+              <h3 className="font-bold text-base mb-5 pb-2 border-b flex items-center gap-2" style={{ color: "var(--text-primary)", borderColor: "var(--border-color)" }}>
                 <Globe size={16} className="text-accent" />
                 Social Profiles
               </h3>
               <div className="space-y-4">
                 <div className="flex items-center gap-3 relative">
-                  <div className="h-10 w-10 shrink-0 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-gray-400">
+                  <div className="h-10 w-10 shrink-0 rounded-xl border flex items-center justify-center text-gray-400" style={{ background: "var(--bg-elevated)", borderColor: "var(--border-color)" }}>
                     <LinkIcon size={16} />
                   </div>
                   <Input 
@@ -510,7 +514,7 @@ function ProfilePage() {
                 </div>
 
                 <div className="flex items-center gap-3 relative">
-                  <div className="h-10 w-10 shrink-0 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-gray-400">
+                  <div className="h-10 w-10 shrink-0 rounded-xl border flex items-center justify-center text-gray-400" style={{ background: "var(--bg-elevated)", borderColor: "var(--border-color)" }}>
                     <LinkIcon size={16} />
                   </div>
                   <Input 
@@ -523,7 +527,7 @@ function ProfilePage() {
                 </div>
 
                 <div className="flex items-center gap-3 relative">
-                  <div className="h-10 w-10 shrink-0 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-gray-400">
+                  <div className="h-10 w-10 shrink-0 rounded-xl border flex items-center justify-center text-gray-400" style={{ background: "var(--bg-elevated)", borderColor: "var(--border-color)" }}>
                     <Globe size={16} />
                   </div>
                   <Input 

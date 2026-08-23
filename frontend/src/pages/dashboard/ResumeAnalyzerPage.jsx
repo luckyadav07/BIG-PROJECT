@@ -93,13 +93,15 @@ ${(analysis.improvements || []).map((i) => `- ${i}`).join("\n")}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b pb-4" style={{ borderColor: "var(--border-color)" }}>
         <div>
           <h1
-            className="text-2xl md:text-3xl font-extrabold text-white flex items-center gap-2.5 tracking-tight"
+            className="text-2xl md:text-3xl font-extrabold flex items-center gap-2.5 tracking-tight"
+            style={{ color: "var(--text-primary)" }}
           >
             <Sparkles className="text-accent" />
             Resume Analyzer
           </h1>
           <p
-            className="text-sm text-gray-400 mt-1.5 leading-relaxed"
+            className="text-sm mt-1.5 leading-relaxed"
+            style={{ color: "var(--text-secondary)" }}
           >
             Instant ATS compatibility audit, automated skill gap mapping, and project recommendations.
           </p>
@@ -128,13 +130,13 @@ ${(analysis.improvements || []).map((i) => `- ${i}`).join("\n")}
           {/* AI Summary Highlight */}
           {analysis.professionalSummary && (
             <motion.div variants={itemVariants}>
-              <Card className="border border-white/5 bg-accent/5 p-5 relative overflow-hidden">
+              <Card className="border p-5 relative overflow-hidden" style={{ background: "var(--bg-card)", borderColor: "var(--border-color)" }}>
                 <div className="absolute top-0 right-0 w-24 h-24 bg-accent/5 rounded-full blur-2xl pointer-events-none" />
                 <h3 className="text-xs font-bold uppercase tracking-wider text-accent mb-2.5 flex items-center gap-1.5">
                   <Sparkles size={14} />
                   AI Summary Assessment
                 </h3>
-                <p className="text-sm text-gray-300 leading-relaxed font-semibold italic">
+                <p className="text-sm leading-relaxed font-semibold italic" style={{ color: "var(--text-primary)" }}>
                   "{analysis.professionalSummary}"
                 </p>
               </Card>
@@ -164,12 +166,12 @@ ${(analysis.improvements || []).map((i) => `- ${i}`).join("\n")}
 
           {/* Section 5: Export / Actions */}
           <motion.div variants={itemVariants}>
-            <Card className="border border-white/5 flex flex-col sm:flex-row items-center justify-between gap-4 p-5">
+            <Card className="border flex flex-col sm:flex-row items-center justify-between gap-4 p-5" style={{ background: "var(--bg-card)", borderColor: "var(--border-color)" }}>
               <div className="text-center sm:text-left">
-                <h3 className="text-sm font-bold text-white leading-tight">
+                <h3 className="text-sm font-bold leading-tight" style={{ color: "var(--text-primary)" }}>
                   Export Feedback Report
                 </h3>
-                <p className="text-xs text-gray-400 mt-1 leading-relaxed">
+                <p className="text-xs mt-1 leading-relaxed" style={{ color: "var(--text-secondary)" }}>
                   Share, copy, or print this audit dashboard for reference or career coach reviews.
                 </p>
               </div>

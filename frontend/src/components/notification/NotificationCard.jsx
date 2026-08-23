@@ -40,8 +40,9 @@ function NotificationCard({ notification, onMarkRead }) {
       className={`glass-card !p-4.5 cursor-pointer border transition-all duration-200 rounded-xl relative overflow-hidden flex items-start gap-4 ${
         !notification.read 
           ? "bg-accent/[0.04] border-accent/25 shadow-sm" 
-          : "border-white/5 bg-white/[0.01] hover:border-white/10 hover:bg-white/[0.02]"
+          : "hover:bg-black/[0.01] dark:hover:bg-white/[0.01]"
       }`}
+      style={{ background: notification.read ? "var(--bg-card)" : undefined, borderColor: "var(--border-color)" }}
     >
       {/* Visual left bar for unread notifications */}
       {!notification.read && (
@@ -57,7 +58,7 @@ function NotificationCard({ notification, onMarkRead }) {
       <div className="flex-1 min-w-0">
         <div className="flex items-start justify-between gap-3">
           <div className="flex items-center gap-2 min-w-0">
-            <h4 className="text-sm font-bold text-white truncate">{notification.title}</h4>
+            <h4 className="text-sm font-bold truncate" style={{ color: "var(--text-primary)" }}>{notification.title}</h4>
             {!notification.read && (
               <span className="h-2 w-2 shrink-0 rounded-full bg-accent animate-pulse shadow-[0_0_8px_var(--color-accent)]" />
             )}
@@ -68,7 +69,7 @@ function NotificationCard({ notification, onMarkRead }) {
           </span>
         </div>
 
-        <p className="text-xs md:text-sm text-gray-400 mt-1 leading-relaxed">
+        <p className="text-xs md:text-sm mt-1 leading-relaxed" style={{ color: "var(--text-secondary)" }}>
           {notification.description}
         </p>
       </div>

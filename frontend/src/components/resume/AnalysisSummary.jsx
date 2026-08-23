@@ -73,7 +73,10 @@ function AnalysisSummary({ resume, analysis }) {
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
       {/* ATS Score Visualization Card */}
-      <Card className="lg:col-span-1 border border-white/5 flex flex-col md:flex-row items-center justify-center p-6 gap-6 relative overflow-hidden">
+      <Card 
+        className="lg:col-span-1 border flex flex-col md:flex-row items-center justify-center p-6 gap-6 relative overflow-hidden"
+        style={{ background: "var(--bg-card)", borderColor: "var(--border-color)" }}
+      >
         <div className="absolute top-0 right-0 w-44 h-44 bg-accent/5 rounded-full blur-3xl pointer-events-none" />
 
         {/* Circular Progress Gauge */}
@@ -84,7 +87,7 @@ function AnalysisSummary({ resume, analysis }) {
               cx="64"
               cy="64"
               r={radius}
-              className="stroke-white/5"
+              style={{ stroke: "var(--border-color)" }}
               strokeWidth="9"
               fill="transparent"
             />
@@ -104,8 +107,8 @@ function AnalysisSummary({ resume, analysis }) {
             />
           </svg>
           <div className="absolute flex flex-col items-center justify-center">
-            <span className="text-3xl font-extrabold text-white tracking-tight">{score}</span>
-            <span className="text-[9px] uppercase font-bold text-gray-500 tracking-wider">ATS Score</span>
+            <span className="text-3xl font-extrabold tracking-tight" style={{ color: "var(--text-primary)" }}>{score}</span>
+            <span className="text-[9px] uppercase font-bold tracking-wider" style={{ color: "var(--text-secondary)" }}>ATS Score</span>
           </div>
         </div>
 
@@ -114,10 +117,10 @@ function AnalysisSummary({ resume, analysis }) {
           <span className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold border ${getScoreBgClass(score)}`}>
             {score >= 80 ? "ATS Ready" : score >= 60 ? "Needs Polish" : "Weak Match"}
           </span>
-          <h3 className="text-base font-bold text-white leading-tight">
+          <h3 className="text-base font-bold leading-tight" style={{ color: "var(--text-primary)" }}>
             ATS Compatibility Rating
           </h3>
-          <p className="text-xs text-gray-400 leading-relaxed max-w-[200px]">
+          <p className="text-xs leading-relaxed max-w-[200px]" style={{ color: "var(--text-secondary)" }}>
             Calculated based on standard parser rules, resume completeness, and skill matches.
           </p>
         </div>
@@ -130,17 +133,20 @@ function AnalysisSummary({ resume, analysis }) {
           return (
             <Card
               key={item.title}
-              className="!p-5 border border-white/5 hover:border-white/10 transition-all duration-200"
+              className="!p-5 border hover:border-white/10 transition-all duration-200"
+              style={{ background: "var(--bg-card)", borderColor: "var(--border-color)" }}
             >
               <div className="flex items-center justify-between gap-3">
                 <div className="min-w-0">
                   <p
-                    className="text-xs font-semibold text-gray-500 uppercase tracking-wider truncate"
+                    className="text-xs font-semibold uppercase tracking-wider truncate"
+                    style={{ color: "var(--text-secondary)" }}
                   >
                     {item.title}
                   </p>
                   <h3
-                    className="text-2xl font-black text-white mt-1.5 leading-none"
+                    className="text-2xl font-black mt-1.5 leading-none"
+                    style={{ color: "var(--text-primary)" }}
                   >
                     {item.value}
                   </h3>

@@ -1,6 +1,6 @@
 import { useState, useMemo } from "react";
 import { Link } from "react-router-dom";
-import { Bell, Sparkles, BellOff, ArrowRight } from "lucide-react";
+import { Bell, Sparkles, BellOff, ArrowRight, Inbox, ChevronDown } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import NotificationCard from "../../components/notification/NotificationCard.jsx";
 import Button from "../../components/common/Button.jsx";
@@ -25,6 +25,7 @@ const itemVariants = {
 function NotificationsPage() {
   const [notifications, setNotifications] = useState(MOCK_NOTIFICATIONS);
   const [filter, setFilter] = useState("all");
+  const [isOpen, setIsOpen] = useState(false);
 
   const filtered = useMemo(() => {
     return notifications.filter((n) => (filter === "unread" ? !n.read : true));
@@ -73,11 +74,11 @@ function NotificationsPage() {
       {/* Top Header Control Area */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b pb-4" style={{ borderColor: "var(--border-color)" }}>
         <div>
-          <h1 className="text-2xl md:text-3xl font-extrabold text-white flex items-center gap-2.5 tracking-tight">
+          <h1 className="text-2xl md:text-3xl font-extrabold flex items-center gap-2.5 tracking-tight" style={{ color: "var(--text-primary)" }}>
             <Bell className="text-accent" />
             Alert Center
           </h1>
-          <p className="text-sm text-gray-400 mt-1.5 leading-relaxed">
+          <p className="text-sm mt-1.5 leading-relaxed" style={{ color: "var(--text-secondary)" }}>
             Stay updated with mock interviews, career coach replies, and job recommendations.
             {unreadCount > 0 && (
               <span className="text-accent-light font-bold ml-1">
@@ -87,18 +88,95 @@ function NotificationsPage() {
           </p>
         </div>
 
-        <div className="flex items-center gap-3 shrink-0">
-          <select 
-            value={filter} 
-            onChange={(e) => setFilter(e.target.value)} 
-            className="rounded-xl border border-white/5 bg-white/5 px-3 py-2 text-xs font-semibold text-white focus:outline-none focus:ring-2 focus:ring-accent cursor-pointer"
-            style={{ background: "var(--bg-elevated)" }}
-          >
-            <option value="all" className="bg-navy">All Alerts</option>
-            <option value="unread" className="bg-navy">Unread</option>
-          </select>
+      <div className="flex items-center gap-3 shrink-0">
+        <div className="relative">
+          <button
+              onClick={() => setIsOpen(!isOpen)}
+              className="rounded-xl border px-3.5 py-2 text-xs font-bold focus:outline-none focus:ring-2 focus:ring-accent cursor-pointer flex items-center gap-2 select-none"
+              style={{ background: "var(--bg-card)", borderColor: "var(--border-color)", color: "var(--text-primary)" }}
+            >
+              {filter === "all" ? (
+                <span className="flex items-center gap-1.5">
+                  <Bell size={12} className="text-accent" />
+                  All Alerts
+                </span>
+              ) : (
+                <span className="flex items-center gap-1.5">
+                  <span className="h-2 w-2 rounded-full bg-accent animate-pulse" />
+                  Unread Only
+                </span>
+              )}
+              <ChevronDown size={14} style={{ color: "var(--text-secondary)" }} className={`transition-transform duration-200 ${isOpen ? "rotate-180" : ""}`} />
+            </button>
+
+            <AnimatePresence>
+              {isOpen && (
+                <>
+                  <div className="fixed inset-0 z-40" onClick={() => setIsOpen(false)} />
+                  <motion.div
+                    initial={{ opacity: 0, y: 8, scale: 0.95 }}
+                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                    exit={{ opacity: 0, y: 8, scale: 0.95 }}
+                    transition={{ duration: 0.12 }}
+                    className="absolute right-0 mt-2 w-44 rounded-2xl border p-1.5 shadow-2xl z-50 overflow-hidden flex flex-col gap-1 backdrop-blur-md"
+                    style={{ background: "var(--bg-card)", borderColor: "var(--border-color)" }}
+                  >
+                    <button
+                      onClick={() => {
+                        setFilter("all");
+                        setIsOpen(false);
+                      }}
+                      className={`w-full text-left px-3 py-2 rounded-xl text-xs font-bold flex items-center justify-between transition-colors cursor-pointer select-none ${
+                        filter === "all" 
+                          ? "bg-accent/10 text-accent-light" 
+                          : "hover:bg-black/5 dark:hover:bg-white/5"
+                      }`}
+                      style={{ color: filter === "all" ? "var(--color-accent-light)" : "var(--text-primary)" }}
+                    >
+                      <span className="flex items-center gap-2">
+                        <Bell size={12} className={filter === "all" ? "text-accent-light" : "text-gray-400"} />
+                        All Alerts
+                      </span>
+                      {filter === "all" && <span className="h-1.5 w-1.5 rounded-full bg-accent" />}
+                    </button>
+
+                    <button
+                      onClick={() => {
+                        setFilter("unread");
+                        setIsOpen(false);
+                      }}
+                      className={`w-full text-left px-3 py-2 rounded-xl text-xs font-bold flex items-center justify-between transition-colors cursor-pointer select-none ${
+                        filter === "unread" 
+                          ? "bg-accent/10 text-accent-light" 
+                          : "hover:bg-black/5 dark:hover:bg-white/5"
+                      }`}
+                      style={{ color: filter === "unread" ? "var(--color-accent-light)" : "var(--text-primary)" }}
+                    >
+                      <span className="flex items-center gap-2">
+                        <Inbox size={12} className={filter === "unread" ? "text-accent-light" : "text-gray-400"} />
+                        Unread
+                      </span>
+                      {unreadCount > 0 ? (
+                        <span className="bg-accent text-white rounded-full text-[9px] font-black h-4 px-1.5 flex items-center justify-center min-w-4">
+                          {unreadCount}
+                        </span>
+                      ) : (
+                        filter === "unread" && <span className="h-1.5 w-1.5 rounded-full bg-accent" />
+                      )}
+                    </button>
+                  </motion.div>
+                </>
+              )}
+            </AnimatePresence>
+          </div>
           
-          <Button size="sm" variant="outline" onClick={markAllRead} className="!text-xs font-bold py-2 px-3 rounded-xl border border-white/5 cursor-pointer">
+          <Button 
+            size="sm" 
+            variant="outline" 
+            onClick={markAllRead} 
+            className="!text-xs font-bold py-2 px-3 rounded-xl border cursor-pointer hover:bg-black/5 dark:hover:bg-white/5"
+            style={{ background: "var(--bg-card)", borderColor: "var(--border-color)", color: "var(--text-secondary)" }}
+          >
             Mark all read
           </Button>
         </div>
@@ -115,7 +193,7 @@ function NotificationsPage() {
           {/* Today Group */}
           {grouped.today.length > 0 && (
             <motion.div variants={itemVariants} className="space-y-2.5">
-              <h3 className="text-[10px] font-extrabold text-gray-500 uppercase tracking-widest pl-1">
+              <h3 className="text-[10px] font-extrabold uppercase tracking-widest pl-1" style={{ color: "var(--text-secondary)" }}>
                 Today
               </h3>
               <div className="space-y-3">
@@ -129,7 +207,7 @@ function NotificationsPage() {
           {/* Yesterday Group */}
           {grouped.yesterday.length > 0 && (
             <motion.div variants={itemVariants} className="space-y-2.5">
-              <h3 className="text-[10px] font-extrabold text-gray-500 uppercase tracking-widest pl-1">
+              <h3 className="text-[10px] font-extrabold uppercase tracking-widest pl-1" style={{ color: "var(--text-secondary)" }}>
                 Yesterday
               </h3>
               <div className="space-y-3">
@@ -143,7 +221,7 @@ function NotificationsPage() {
           {/* Earlier Group */}
           {grouped.earlier.length > 0 && (
             <motion.div variants={itemVariants} className="space-y-2.5">
-              <h3 className="text-[10px] font-extrabold text-gray-500 uppercase tracking-widest pl-1">
+              <h3 className="text-[10px] font-extrabold uppercase tracking-widest pl-1" style={{ color: "var(--text-secondary)" }}>
                 Earlier
               </h3>
               <div className="space-y-3">

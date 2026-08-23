@@ -66,10 +66,7 @@ function App() {
           }
         />
 
-        <Route
-          path="/resume-analyzer"
-          element={<ResumeAnalyzerPage />}
-        />
+
 
         {/* User */}
         <Route element={<ProtectedRoute />}>
