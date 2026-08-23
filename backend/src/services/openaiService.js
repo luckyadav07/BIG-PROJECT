@@ -18,10 +18,13 @@ export const analyzeResumeWithAI = async (resumeData) => {
         const client = getGroqClient()
 
         const prompt = createAnalysisPrompt(resumeData)
+        
+        const envModel = (process.env.GROQ_MODEL || process.env.model || "").trim();
+        const activeModel = (!envModel || envModel.includes("-instant") || envModel.includes("llama")) ? "openai/gpt-oss-20b" : envModel;
 
         // Call Groq API (same format as OpenAI)
         const response = await client.chat.completions.create({
-             model: "llama-3.1-8b-instant", 
+             model: activeModel, 
             // Groq's fast model
             messages: [
                 {
@@ -51,9 +54,12 @@ export const analyzeResumeWithAI = async (resumeData) => {
 export const chatWithAI = async (messages) => {
     try {
         const client = getGroqClient();
+        
+        const envModel = (process.env.GROQ_MODEL || process.env.model || "").trim();
+        const activeModel = (!envModel || envModel.includes("-instant") || envModel.includes("llama")) ? "openai/gpt-oss-20b" : envModel;
 
         const response = await client.chat.completions.create({
-            model: "llama-3.1-8b-instant",
+            model: activeModel,
             messages,
             temperature: 0.7,
             max_tokens: 1000,

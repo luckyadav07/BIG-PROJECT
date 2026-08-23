@@ -120,11 +120,11 @@ function JobDetailPage() {
     try {
       setApplying(true);
       await applyJob(job._id || job.id);
-      showToast("Application submitted successfully!", "success");
+      showToast({ message: "Application submitted successfully!", type: "success" });
       fetchApplications();
     } catch (err) {
       const message = err.response?.data?.message || "Failed to apply";
-      showToast(message, "error");
+      showToast({ message, type: "error" });
     } finally {
       setApplying(false);
     }
@@ -132,12 +132,15 @@ function JobDetailPage() {
 
   const handleSave = () => {
     setSaved(!saved);
-    showToast(saved ? "Job removed from bookmarks!" : "Job saved successfully!", "success");
+    showToast({
+      message: saved ? "Job removed from bookmarks!" : "Job saved successfully!",
+      type: "success",
+    });
   };
 
   const handleShare = () => {
     navigator.clipboard.writeText(window.location.href);
-    showToast("Job link copied to clipboard!", "success");
+    showToast({ message: "Job link copied to clipboard!", type: "success" });
   };
 
   const jobTypeLabel = job ? (JOB_TYPE_LABELS[job.jobType] || job.jobType || JOB_TYPE_LABELS[job.type] || job.type || "Full-time") : "";

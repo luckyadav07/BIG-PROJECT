@@ -65,11 +65,11 @@ function RecommendedJobsPage() {
     try {
       const jobId = job._id || job.id;
       await applyJob(jobId);
-      showToast("Application submitted!", "success");
+      showToast({ message: "Application submitted!", type: "success" });
       await fetchApplications();
       await fetchRecommended();
     } catch (err) {
-      showToast(err.response?.data?.message || "Failed to apply", "error");
+      showToast({ message: err.response?.data?.message || "Failed to apply", type: "error" });
     }
   };
 
@@ -155,7 +155,7 @@ function RecommendedJobsPage() {
                 applied={appliedJobs.has(job._id || job.id)}
                 showMatchReason={true}
                 onApply={handleApply}
-                onSave={() => showToast("Job bookmarked successfully!", "success")}
+                onSave={() => showToast({ message: "Job bookmarked successfully!", type: "success" })}
               />
             </motion.div>
           ))}

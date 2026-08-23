@@ -1,34 +1,41 @@
 import Card from "../common/Card.jsx";
 import { CheckCircle2 } from "lucide-react";
+import { motion } from "framer-motion";
 
 function StrengthCard({ strengths = [] }) {
   return (
-    <Card>
+    <Card className="border border-white/5 relative overflow-hidden h-full">
+      {/* Light decorative gradient */}
+      <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-500/5 rounded-full blur-2xl pointer-events-none" />
+
       <h2
-        className="text-xl font-semibold mb-5"
-        style={{ color: "var(--text-primary)" }}
+        className="text-base font-bold mb-5 pb-2 border-b flex items-center gap-2 text-white"
+        style={{ borderColor: "var(--border-color)" }}
       >
-        💪 Strengths
+        <span className="text-emerald-400">💪</span>
+        Key Strengths
       </h2>
 
       {strengths.length ? (
         <div className="space-y-3">
-          {strengths.map((item) => (
-            <div
+          {strengths.map((item, index) => (
+            <motion.div
               key={item}
-              className="flex items-center gap-3 rounded-lg bg-green-500/10 border border-green-500/20 p-3"
+              initial={{ opacity: 0, x: -10 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: index * 0.05, duration: 0.3 }}
+              className="flex items-start gap-3 rounded-xl bg-emerald-500/5 border border-emerald-500/10 p-3.5 hover:border-emerald-500/20 transition-all duration-200"
             >
-              <CheckCircle2 className="text-green-400" size={18} />
-
-              <span style={{ color: "var(--text-primary)" }}>
+              <CheckCircle2 className="text-emerald-400 shrink-0 mt-0.5" size={16} />
+              <span className="text-sm text-gray-200 leading-relaxed font-medium">
                 {item}
               </span>
-            </div>
+            </motion.div>
           ))}
         </div>
       ) : (
-        <p style={{ color: "var(--text-secondary)" }}>
-          No strengths found.
+        <p className="text-sm text-gray-400">
+          No strengths identified yet.
         </p>
       )}
     </Card>
