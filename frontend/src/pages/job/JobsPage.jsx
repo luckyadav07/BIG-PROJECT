@@ -1,6 +1,7 @@
 import { useEffect, useState, useMemo } from "react";
 import { useSearchParams } from "react-router-dom";
 import { Search, X, SlidersHorizontal, SearchX } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 import JobCard from "../../components/job/JobCard.jsx";
 import FilterPanel from "../../components/job/FilterPanel.jsx";
 import JobCardSkeleton from "../../components/job/JobCardSkeleton.jsx";
@@ -21,10 +22,32 @@ const defaultFilters = {
   sortBy: "relevance",
 };
 
+const containerVariants = {
+  hidden: { opacity: 0 },
+  show: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.08,
+    },
+  },
+};
+
+const itemVariants = {
+  hidden: { y: 20, opacity: 0 },
+  show: {
+    y: 0,
+    opacity: 1,
+    transition: {
+      type: "spring",
+      stiffness: 100,
+      damping: 15,
+    },
+  },
+};
+
 const getJobExperience = (job) => {
   if (job.experienceLevel) return job.experienceLevel.toLowerCase();
   
-  // Infer from title/description
   const title = (job.title || "").toLowerCase();
   const desc = (job.description || "").toLowerCase();
   if (
@@ -126,7 +149,6 @@ function JobsPage() {
   const filtered = useMemo(() => {
     let result = [...jobs];
 
-    // Search query match (title, company, skills)
     if (filters.search) {
       const q = filters.search.toLowerCase();
       result = result.filter(
@@ -137,7 +159,6 @@ function JobsPage() {
       );
     }
 
-    // Category mapping & match
     if (filters.category) {
       result = result.filter((job) => {
         const title = (job.title || "").toLowerCase();
@@ -217,7 +238,6 @@ function JobsPage() {
       });
     }
 
-    // Job Type match (multi-select)
     if (filters.jobTypes && filters.jobTypes.length > 0) {
       result = result.filter((job) => {
         const jt = job.jobType || job.type || "";
@@ -226,7 +246,6 @@ function JobsPage() {
       });
     }
 
-    // Experience level match (multi-select)
     if (filters.experienceLevels && filters.experienceLevels.length > 0) {
       result = result.filter((job) => {
         const jobExp = getJobExperience(job);
@@ -234,7 +253,6 @@ function JobsPage() {
       });
     }
 
-    // Min Salary check
     if (filters.salary && filters.salary > 0) {
       result = result.filter((job) => {
         const lpa = parseSalaryToLpa(job);
@@ -242,7 +260,6 @@ function JobsPage() {
       });
     }
 
-    // Sort mappings
     if (filters.sortBy === "match") {
       result.sort((a, b) => (b.matchScore || 0) - (a.matchScore || 0));
     } else if (filters.sortBy === "newest") {
@@ -274,8 +291,11 @@ function JobsPage() {
 
   return (
     <div className="max-w-7xl mx-auto pb-12">
-      {/* Search Header Banner */}
-      <div
+      {/* Search Header Banner with Anim */}
+      <motion.div
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.4 }}
         className="relative rounded-2xl p-6 md:p-8 mb-8 overflow-hidden border border-white/5 shadow-md flex flex-col md:flex-row md:items-center justify-between gap-6"
         style={{
           background: "linear-gradient(135deg, rgba(26, 31, 43, 0.9) 0%, rgba(20, 24, 32, 0.95) 100%)",
@@ -329,7 +349,7 @@ function JobsPage() {
             </div>
           </div>
         </div>
-      </div>
+      </motion.div>
 
       <div className="grid lg:grid-cols-4 gap-6 items-start">
         {/* Sidebar for Desktop */}
@@ -381,29 +401,41 @@ function JobsPage() {
               ))}
             </div>
           ) : paginated.length === 0 ? (
-            <EmptyState
-              icon={SearchX}
-              title="No jobs matches your criteria"
-              description="We couldn't find any jobs matching your current filters. Try resetting them or search with a different keyword."
-              action={
-                <Button onClick={() => setFilters(defaultFilters)}>
-                  Reset Filters
-                </Button>
-              }
-            />
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.3 }}
+            >
+              <EmptyState
+                icon={SearchX}
+                title="No jobs matches your criteria"
+                description="We couldn't find any jobs matching your current filters. Try resetting them or search with a different keyword."
+                action={
+                  <Button onClick={() => setFilters(defaultFilters)}>
+                    Reset Filters
+                  </Button>
+                }
+              />
+            </motion.div>
           ) : (
             <>
-              <div className="grid md:grid-cols-2 gap-4">
+              <motion.div
+                variants={containerVariants}
+                initial="hidden"
+                animate="show"
+                className="grid md:grid-cols-2 gap-4"
+              >
                 {paginated.map((job) => (
-                  <JobCard
-                    key={job._id || job.id}
-                    job={job}
-                    applied={appliedJobs.has(job._id || job.id)}
-                    onApply={() => handleApply(job._id || job.id)}
-                    onSave={() => success("Job bookmarked successfully!")}
-                  />
+                  <motion.div key={job._id || job.id} variants={itemVariants}>
+                    <JobCard
+                      job={job}
+                      applied={appliedJobs.has(job._id || job.id)}
+                      onApply={() => handleApply(job._id || job.id)}
+                      onSave={() => success("Job bookmarked successfully!")}
+                    />
+                  </motion.div>
                 ))}
-              </div>
+              </motion.div>
 
               {/* Pagination component */}
               <Pagination page={page} totalPages={totalPages} onPageChange={setPage} />
@@ -412,59 +444,68 @@ function JobsPage() {
         </div>
       </div>
 
-      {/* Mobile Filters Drawer Overlay */}
-      {showMobileFilters && (
-        <div className="fixed inset-0 z-50 flex justify-end">
-          {/* Backdrop */}
-          <div
-            className="absolute inset-0 bg-black/60 backdrop-blur-sm"
-            onClick={() => setShowMobileFilters(false)}
-          />
-          {/* Drawer content */}
-          <div
-            className="relative w-full max-w-sm h-full flex flex-col shadow-2xl p-6 overflow-y-auto"
-            style={{ background: "var(--bg-main)" }}
-          >
-            <div
-              className="flex items-center justify-between mb-5 pb-3 border-b"
-              style={{ borderColor: "var(--border-color)" }}
-            >
-              <h2 className="text-lg font-bold text-white flex items-center gap-2">
-                <SlidersHorizontal size={18} className="text-accent" />
-                Filters
-              </h2>
-              <button
-                onClick={() => setShowMobileFilters(false)}
-                className="p-1.5 rounded-lg text-gray-400 hover:text-white hover:bg-white/5 cursor-pointer"
-              >
-                <X size={20} />
-              </button>
-            </div>
-
-            <FilterPanel
-              filters={filters}
-              onFilterChange={(newFilters) => {
-                setFilters(newFilters);
-                setPage(1);
-              }}
-              onReset={() => {
-                setFilters(defaultFilters);
-                setPage(1);
-              }}
-              className="!static !shadow-none !p-0"
+      {/* Mobile Filters Drawer Overlay with AnimatePresence */}
+      <AnimatePresence>
+        {showMobileFilters && (
+          <div className="fixed inset-0 z-50 flex justify-end">
+            {/* Backdrop */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="absolute inset-0 bg-black/60 backdrop-blur-sm z-40"
+              onClick={() => setShowMobileFilters(false)}
             />
-
-            <div
-              className="mt-8 pt-4 border-t"
-              style={{ borderColor: "var(--border-color)" }}
+            {/* Drawer content */}
+            <motion.div
+              initial={{ x: "100%" }}
+              animate={{ x: 0 }}
+              exit={{ x: "100%" }}
+              transition={{ type: "tween", duration: 0.3, ease: "easeOut" }}
+              className="relative w-full max-w-sm h-full flex flex-col shadow-2xl p-6 overflow-y-auto z-50"
+              style={{ background: "var(--bg-main)" }}
             >
-              <Button className="w-full font-semibold" onClick={() => setShowMobileFilters(false)}>
-                Show {filtered.length} Jobs
-              </Button>
-            </div>
+              <div
+                className="flex items-center justify-between mb-5 pb-3 border-b"
+                style={{ borderColor: "var(--border-color)" }}
+              >
+                <h2 className="text-lg font-bold text-white flex items-center gap-2">
+                  <SlidersHorizontal size={18} className="text-accent" />
+                  Filters
+                </h2>
+                <button
+                  onClick={() => setShowMobileFilters(false)}
+                  className="p-1.5 rounded-lg text-gray-400 hover:text-white hover:bg-white/5 cursor-pointer"
+                >
+                  <X size={20} />
+                </button>
+              </div>
+
+              <FilterPanel
+                filters={filters}
+                onFilterChange={(newFilters) => {
+                  setFilters(newFilters);
+                  setPage(1);
+                }}
+                onReset={() => {
+                  setFilters(defaultFilters);
+                  setPage(1);
+                }}
+                className="!static !shadow-none !p-0"
+              />
+
+              <div
+                className="mt-8 pt-4 border-t"
+                style={{ borderColor: "var(--border-color)" }}
+              >
+                <Button className="w-full font-semibold" onClick={() => setShowMobileFilters(false)}>
+                  Show {filtered.length} Jobs
+                </Button>
+              </div>
+            </motion.div>
           </div>
-        </div>
-      )}
+        )}
+      </AnimatePresence>
     </div>
   );
 }

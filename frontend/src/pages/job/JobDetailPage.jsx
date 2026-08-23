@@ -15,6 +15,7 @@ import {
   ExternalLink,
   MessageCircle,
 } from "lucide-react";
+import { motion } from "framer-motion";
 import api from "../../services/api.js";
 import { applyJob } from "../../services/applicationService.js";
 import { MOCK_JOBS } from "../../utils/mockData.js";
@@ -46,6 +47,21 @@ const getLogoStyle = (companyName) => {
     background: `linear-gradient(135deg, hsl(${h1}, 75%, 60%) 0%, hsl(${h2}, 80%, 40%) 100%)`,
     textShadow: "0 1px 2px rgba(0,0,0,0.2)",
   };
+};
+
+const fadeInUp = {
+  hidden: { opacity: 0, y: 15 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.35, ease: "easeOut" } },
+};
+
+const staggerContainer = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.06,
+    },
+  },
 };
 
 function JobDetailPage() {
@@ -84,7 +100,6 @@ function JobDetailPage() {
       .some((app) => (app.jobId._id || app.jobId.id) === (job?._id || job?.id));
   }, [applications, job]);
 
-  // Client-side Similar Jobs Matching algorithm based on overlapping skills
   const similarJobs = useMemo(() => {
     if (!job || !jobs || jobs.length === 0) return [];
     
@@ -92,14 +107,13 @@ function JobDetailPage() {
     const currentSkills = new Set((job.skills || []).map((s) => s.toLowerCase()));
     
     return jobs
-      .filter((j) => (j._id || j.id) !== currentId) // exclude current job
+      .filter((j) => (j._id || j.id) !== currentId)
       .map((j) => {
-        // Calculate overlapping skills count
         const overlap = (j.skills || []).filter((s) => currentSkills.has(s.toLowerCase())).length;
         return { ...j, overlap };
       })
-      .sort((a, b) => b.overlap - a.overlap) // sort by overlap descending
-      .slice(0, 3); // top 3 matches
+      .sort((a, b) => b.overlap - a.overlap)
+      .slice(0, 3);
   }, [job, jobs]);
 
   const handleApply = async () => {
@@ -131,10 +145,8 @@ function JobDetailPage() {
   if (loading) {
     return (
       <div className="max-w-5xl mx-auto space-y-6 pb-12 animate-pulse">
-        {/* Back Link skeleton */}
         <div className="h-4 w-32 bg-white/5 rounded-md" />
 
-        {/* Hero Banner Skeleton */}
         <Card className="!p-6 md:!p-8 border border-white/5">
           <div className="flex flex-col md:flex-row items-start md:items-center gap-5">
             <Skeleton width="64px" height="64px" className="!rounded-2xl shrink-0" />
@@ -150,7 +162,6 @@ function JobDetailPage() {
           </div>
         </Card>
 
-        {/* Body columns */}
         <div className="grid lg:grid-cols-3 gap-6">
           <div className="lg:col-span-2 space-y-6">
             <Card className="space-y-4">
@@ -214,155 +225,173 @@ function JobDetailPage() {
         Back to Jobs
       </Link>
 
-      {/* Hero Banner Header */}
-      <Card
-        className="relative overflow-hidden border border-white/5 shadow-md !p-6 md:!p-8"
-        style={{
-          background: "linear-gradient(135deg, rgba(26, 31, 43, 0.9) 0%, rgba(20, 24, 32, 0.95) 100%)",
-        }}
+      {/* Hero Banner Header with animation */}
+      <motion.div
+        initial={{ opacity: 0, y: -15 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.35 }}
       >
-        {/* Decorative ambient light */}
-        <div className="absolute top-0 right-0 w-72 h-72 bg-accent/5 rounded-full blur-3xl pointer-events-none -z-10" />
+        <Card
+          className="relative overflow-hidden border border-white/5 shadow-md !p-6 md:!p-8"
+          style={{
+            background: "linear-gradient(135deg, rgba(26, 31, 43, 0.9) 0%, rgba(20, 24, 32, 0.95) 100%)",
+          }}
+        >
+          <div className="absolute top-0 right-0 w-72 h-72 bg-accent/5 rounded-full blur-3xl pointer-events-none -z-10" />
 
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
-          <div className="flex items-start md:items-center gap-5">
-            <div
-              className="flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl text-xl font-extrabold text-white shadow-md"
-              style={getLogoStyle(job.company)}
-            >
-              {getInitials(job.company)}
-            </div>
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
+            <div className="flex items-start md:items-center gap-5">
+              <div
+                className="flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl text-xl font-extrabold text-white shadow-md"
+                style={getLogoStyle(job.company)}
+              >
+                {getInitials(job.company)}
+              </div>
 
-            <div className="min-w-0">
-              <h1 className="text-xl md:text-2xl font-extrabold text-white tracking-tight">
-                {job.title}
-              </h1>
-              <p className="text-base text-gray-300 font-medium mt-0.5">
-                {job.company}
-              </p>
-              
-              <div className="flex flex-wrap gap-2 mt-3">
-                <Badge variant="neutral" className="flex items-center gap-1.5 py-1">
-                  <MapPin size={12} className="text-gray-400" />
-                  <span className="text-xs">{job.location || "Remote"}</span>
-                </Badge>
+              <div className="min-w-0">
+                <h1 className="text-xl md:text-2xl font-extrabold text-white tracking-tight">
+                  {job.title}
+                </h1>
+                <p className="text-base text-gray-300 font-medium mt-0.5">
+                  {job.company}
+                </p>
                 
-                {jobTypeLabel && (
-                  <Badge variant="info" className="flex items-center gap-1.5 py-1">
-                    <Briefcase size={12} className="opacity-80" />
-                    <span className="text-xs">{jobTypeLabel}</span>
+                <div className="flex flex-wrap gap-2 mt-3">
+                  <Badge variant="neutral" className="flex items-center gap-1.5 py-1">
+                    <MapPin size={12} className="text-gray-400" />
+                    <span className="text-xs">{job.location || "Remote"}</span>
                   </Badge>
-                )}
+                  
+                  {jobTypeLabel && (
+                    <Badge variant="info" className="flex items-center gap-1.5 py-1">
+                      <Briefcase size={12} className="opacity-80" />
+                      <span className="text-xs">{jobTypeLabel}</span>
+                    </Badge>
+                  )}
 
-                {job.experienceLevel && (
-                  <Badge variant="warning" className="flex items-center gap-1.5 py-1">
-                    <span className="text-xs font-semibold">Exp:</span>
-                    <span className="text-xs">{job.experienceLevel}</span>
-                  </Badge>
-                )}
+                  {job.experienceLevel && (
+                    <Badge variant="warning" className="flex items-center gap-1.5 py-1">
+                      <span className="text-xs font-semibold">Exp:</span>
+                      <span className="text-xs">{job.experienceLevel}</span>
+                    </Badge>
+                  )}
 
-                {(job.salary || job.stipend) && (
-                  <Badge variant="success" className="flex items-center gap-1.5 py-1">
-                    <span className="text-xs font-semibold">₹</span>
-                    <span className="text-xs">{job.salary || `${job.stipend} LPA`}</span>
-                  </Badge>
-                )}
+                  {(job.salary || job.stipend) && (
+                    <Badge variant="success" className="flex items-center gap-1.5 py-1">
+                      <span className="text-xs font-semibold">₹</span>
+                      <span className="text-xs">{job.salary || `${job.stipend} LPA`}</span>
+                    </Badge>
+                  )}
+                </div>
               </div>
             </div>
-          </div>
 
-          <div className="flex items-center gap-3 self-start md:self-center">
-            {job.matchScore && (
-              <div className="text-right shrink-0">
-                <Badge variant={job.matchScore >= 85 ? "purple" : "info"} className="flex items-center gap-1 py-1.5 font-bold">
-                  <Sparkles size={11} />
-                  {job.matchScore}% Skill Match
-                </Badge>
-                {job.postedAt && (
-                  <p className="text-[10px] text-gray-500 mt-1.5 flex items-center justify-end gap-1 font-semibold">
-                    <Clock size={10} />
-                    Posted {formatRelativeTime(job.postedAt)}
-                  </p>
-                )}
-              </div>
-            )}
+            <div className="flex items-center gap-3 self-start md:self-center">
+              {job.matchScore && (
+                <div className="text-right shrink-0">
+                  <Badge variant={job.matchScore >= 85 ? "purple" : "info"} className="flex items-center gap-1 py-1.5 font-bold">
+                    <Sparkles size={11} />
+                    {job.matchScore}% Skill Match
+                  </Badge>
+                  {job.postedAt && (
+                    <p className="text-[10px] text-gray-500 mt-1.5 flex items-center justify-end gap-1 font-semibold">
+                      <Clock size={10} />
+                      Posted {formatRelativeTime(job.postedAt)}
+                    </p>
+                  )}
+                </div>
+              )}
+            </div>
           </div>
-        </div>
-      </Card>
+        </Card>
+      </motion.div>
 
-      {/* Main Grid Section */}
-      <div className="grid lg:grid-cols-3 gap-6 items-start">
+      {/* Main Grid Section with staggered layout */}
+      <motion.div
+        variants={staggerContainer}
+        initial="hidden"
+        animate="visible"
+        className="grid lg:grid-cols-3 gap-6 items-start"
+      >
         {/* Left Column: Job Description & Details */}
         <div className="lg:col-span-2 space-y-6">
           
           {/* Job Description Card */}
-          <Card className="border border-white/5">
-            <h2 className="text-base font-bold text-white mb-4 pb-2 border-b" style={{ borderColor: "var(--border-color)" }}>
-              Job Description
-            </h2>
-            <p className="text-gray-300 text-sm leading-relaxed whitespace-pre-wrap">
-              {job.description || "No description provided for this role."}
-            </p>
-          </Card>
+          <motion.div variants={fadeInUp}>
+            <Card className="border border-white/5">
+              <h2 className="text-base font-bold text-white mb-4 pb-2 border-b" style={{ borderColor: "var(--border-color)" }}>
+                Job Description
+              </h2>
+              <p className="text-gray-300 text-sm leading-relaxed whitespace-pre-wrap">
+                {job.description || "No description provided for this role."}
+              </p>
+            </Card>
+          </motion.div>
 
           {/* Required Skills Card */}
-          <Card className="border border-white/5">
-            <h2 className="text-base font-bold text-white mb-4 pb-2 border-b" style={{ borderColor: "var(--border-color)" }}>
-              Required Skills
-            </h2>
-            <div className="flex flex-wrap gap-2">
-              {(job.skills || []).map((s) => (
-                <span
-                  key={s}
-                  className="rounded-lg px-3 py-1.5 text-xs font-semibold border border-white/5 transition hover:bg-white/10"
-                  style={{
-                    background: "var(--glass-bg)",
-                    color: "var(--text-secondary)",
-                  }}
-                >
-                  {s}
-                </span>
-              ))}
-            </div>
-          </Card>
+          <motion.div variants={fadeInUp}>
+            <Card className="border border-white/5">
+              <h2 className="text-base font-bold text-white mb-4 pb-2 border-b" style={{ borderColor: "var(--border-color)" }}>
+                Required Skills
+              </h2>
+              <div className="flex flex-wrap gap-2">
+                {(job.skills || []).map((s) => (
+                  <span
+                    key={s}
+                    className="rounded-lg px-3 py-1.5 text-xs font-semibold border border-white/5 transition hover:bg-white/10"
+                    style={{
+                      background: "var(--glass-bg)",
+                      color: "var(--text-secondary)",
+                    }}
+                  >
+                    {s}
+                  </span>
+                ))}
+              </div>
+            </Card>
+          </motion.div>
 
           {/* Requirements Card */}
           {job.requirements && job.requirements.length > 0 && (
-            <Card className="border border-white/5">
-              <h2 className="text-base font-bold text-white mb-4 pb-2 border-b" style={{ borderColor: "var(--border-color)" }}>
-                Key Requirements
-              </h2>
-              <ul className="space-y-3">
-                {job.requirements.map((r, i) => (
-                  <li key={i} className="flex items-start gap-3 text-sm text-gray-300">
-                    <CheckCircle2 size={16} className="text-success shrink-0 mt-0.5" />
-                    <span>{r}</span>
-                  </li>
-                ))}
-              </ul>
-            </Card>
+            <motion.div variants={fadeInUp}>
+              <Card className="border border-white/5">
+                <h2 className="text-base font-bold text-white mb-4 pb-2 border-b" style={{ borderColor: "var(--border-color)" }}>
+                  Key Requirements
+                </h2>
+                <ul className="space-y-3">
+                  {job.requirements.map((r, i) => (
+                    <li key={i} className="flex items-start gap-3 text-sm text-gray-300">
+                      <CheckCircle2 size={16} className="text-success shrink-0 mt-0.5" />
+                      <span>{r}</span>
+                    </li>
+                  ))}
+                </ul>
+              </Card>
+            </motion.div>
           )}
 
           {/* Benefits Card */}
           {job.benefits && job.benefits.length > 0 && (
-            <Card className="border border-white/5">
-              <h2 className="text-base font-bold text-white mb-4 pb-2 border-b" style={{ borderColor: "var(--border-color)" }}>
-                Benefits & Perks
-              </h2>
-              <ul className="space-y-3">
-                {job.benefits.map((b, i) => (
-                  <li key={i} className="flex items-start gap-3 text-sm text-gray-300">
-                    <Sparkles size={16} className="text-accent shrink-0 mt-0.5" />
-                    <span>{b}</span>
-                  </li>
-                ))}
-              </ul>
-            </Card>
+            <motion.div variants={fadeInUp}>
+              <Card className="border border-white/5">
+                <h2 className="text-base font-bold text-white mb-4 pb-2 border-b" style={{ borderColor: "var(--border-color)" }}>
+                  Benefits & Perks
+                </h2>
+                <ul className="space-y-3">
+                  {job.benefits.map((b, i) => (
+                    <li key={i} className="flex items-start gap-3 text-sm text-gray-300">
+                      <Sparkles size={16} className="text-accent shrink-0 mt-0.5" />
+                      <span>{b}</span>
+                    </li>
+                  ))}
+                </ul>
+              </Card>
+            </motion.div>
           )}
         </div>
 
         {/* Right Column: Sticky Apply Card & Similar Jobs */}
-        <div className="space-y-6">
+        <motion.div className="space-y-6" variants={fadeInUp}>
           {/* Sticky Apply card */}
           <Card className="sticky top-24 border border-white/5 flex flex-col gap-4">
             <h2 className="text-sm font-bold uppercase tracking-wider text-gray-400">
@@ -402,7 +431,6 @@ function JobDetailPage() {
               </Button>
             </div>
 
-            {/* External link fallback */}
             {job.jobUrl && (
               <a
                 href={job.jobUrl}
@@ -511,8 +539,8 @@ function JobDetailPage() {
               </div>
             </div>
           )}
-        </div>
-      </div>
+        </motion.div>
+      </motion.div>
     </div>
   );
 }

@@ -4,8 +4,8 @@ import {
   SlidersHorizontal,
   ChevronDown,
   X,
-  Sparkles,
 } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 import Card from "../common/Card.jsx";
 import Select from "../common/Select.jsx";
 
@@ -78,7 +78,19 @@ function FilterSection({ title, defaultOpen = true, children }) {
         />
       </button>
 
-      {open && <div className="mt-3 space-y-2">{children}</div>}
+      <AnimatePresence initial={false}>
+        {open && (
+          <motion.div
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: "auto", opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.2, ease: "easeInOut" }}
+            className="overflow-hidden"
+          >
+            <div className="pt-3 space-y-2">{children}</div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
@@ -94,7 +106,10 @@ function CustomCheckbox({ label, checked, onChange, id }) {
           onChange={onChange}
           className="peer sr-only"
         />
-        <div className="h-5 w-5 rounded-lg border border-white/10 bg-white/5 transition-all duration-200 peer-checked:bg-accent peer-checked:border-accent group-hover:border-accent/40 flex items-center justify-center">
+        <motion.div
+          className="h-5 w-5 rounded-lg border border-white/10 bg-white/5 transition-all duration-200 peer-checked:bg-accent peer-checked:border-accent group-hover:border-accent/40 flex items-center justify-center"
+          whileTap={{ scale: 0.9 }}
+        >
           <svg
             className="h-3.5 w-3.5 text-white scale-0 transition-transform duration-200 peer-checked:scale-100"
             fill="none"
@@ -104,7 +119,7 @@ function CustomCheckbox({ label, checked, onChange, id }) {
           >
             <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
           </svg>
-        </div>
+        </motion.div>
       </div>
       <span className="text-sm font-medium transition-colors duration-200 text-gray-400 group-hover:text-gray-200 peer-checked:text-white">
         {label}
@@ -124,9 +139,12 @@ function CustomRadio({ label, checked, onChange, id }) {
           onChange={onChange}
           className="peer sr-only"
         />
-        <div className="h-5 w-5 rounded-full border border-white/10 bg-white/5 transition-all duration-200 peer-checked:border-accent group-hover:border-accent/40 flex items-center justify-center">
+        <motion.div
+          className="h-5 w-5 rounded-full border border-white/10 bg-white/5 transition-all duration-200 peer-checked:border-accent group-hover:border-accent/40 flex items-center justify-center"
+          whileTap={{ scale: 0.9 }}
+        >
           <div className="h-2 w-2 rounded-full bg-accent scale-0 transition-transform duration-200 peer-checked:scale-100" />
-        </div>
+        </motion.div>
       </div>
       <span className="text-sm font-medium transition-colors duration-200 text-gray-400 group-hover:text-gray-200 peer-checked:text-white">
         {label}
@@ -152,7 +170,6 @@ function FilterPanel({
     }
   };
 
-  // Build list of active filter chips
   const activeChips = [];
   if (filters.search) {
     activeChips.push({ key: "search", type: "search", label: `"${filters.search}"` });
@@ -230,29 +247,40 @@ function FilterPanel({
       </div>
 
       {/* Active Filter Chips */}
-      {activeChips.length > 0 && (
-        <div className="space-y-2">
-          <div className="text-[10px] uppercase font-bold tracking-wider text-gray-500">Active Filters</div>
-          <div className="flex flex-wrap gap-1.5">
-            {activeChips.map((chip) => (
-              <button
-                key={chip.key}
-                type="button"
-                onClick={() => removeChip(chip)}
-                className="focus-ring inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-xs font-semibold transition cursor-pointer hover:brightness-110"
-                style={{
-                  background: "var(--sidebar-active-bg)",
-                  color: "var(--sidebar-active-text)",
-                  border: "1px solid var(--border-color)",
-                }}
-              >
-                {chip.label}
-                <X size={12} className="opacity-70 hover:opacity-100" />
-              </button>
-            ))}
-          </div>
-        </div>
-      )}
+      <AnimatePresence>
+        {activeChips.length > 0 && (
+          <motion.div
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            className="space-y-2"
+          >
+            <div className="text-[10px] uppercase font-bold tracking-wider text-gray-500">Active Filters</div>
+            <div className="flex flex-wrap gap-1.5">
+              {activeChips.map((chip) => (
+                <motion.button
+                  key={chip.key}
+                  layout
+                  initial={{ scale: 0.8, opacity: 0 }}
+                  animate={{ scale: 1, opacity: 1 }}
+                  exit={{ scale: 0.8, opacity: 0 }}
+                  type="button"
+                  onClick={() => removeChip(chip)}
+                  className="focus-ring inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-xs font-semibold transition cursor-pointer hover:brightness-110"
+                  style={{
+                    background: "var(--sidebar-active-bg)",
+                    color: "var(--sidebar-active-text)",
+                    border: "1px solid var(--border-color)",
+                  }}
+                >
+                  {chip.label}
+                  <X size={12} className="opacity-70 hover:opacity-100" />
+                </motion.button>
+              ))}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* Category Accordion */}
       <FilterSection title="Category" defaultOpen={true}>
@@ -260,8 +288,10 @@ function FilterPanel({
           {CATEGORIES.map((cat) => {
             const isActive = filters.category === cat.value;
             return (
-              <button
+              <motion.button
                 key={cat.value}
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
                 onClick={() => update("category", cat.value)}
                 className={`focus-ring text-left px-3 py-2 text-xs font-medium rounded-xl transition duration-200 cursor-pointer ${
                   isActive
@@ -279,7 +309,7 @@ function FilterPanel({
                 }
               >
                 {cat.label}
-              </button>
+              </motion.button>
             );
           })}
         </div>
